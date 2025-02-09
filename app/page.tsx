@@ -1,4 +1,5 @@
 import BestAccom from "@/components/best-accom"
+import ChatBot from "@/components/chat-bot"
 import Footer from "@/components/footer"
 import GuestReviews from "@/components/guest-reviews"
 import NavBar from "@/components/nav-bar"
@@ -47,15 +48,16 @@ export default function Home() {
             by fresh air and crystal-clear waters, our resort offers the perfect
             retreat for nature lovers and adventurers alike. Whether you’re here
             for a peaceful overnight stay or seeking a tranquil environment for
-            your team, we provide comfortable accommodations and a warm, welcoming
-            atmosphere. Experience the beauty of nature while enjoying the
-            comforts of home at Nature&apos;s Haven Resort.
+            your team, we provide comfortable accommodations and a warm,
+            welcoming atmosphere. Experience the beauty of nature while enjoying
+            the comforts of home at Nature&apos;s Haven Resort.
           </p>
         </div>
       </div>
-      <BestAccom/>
-      <GuestReviews/>
-      <Footer/>
+      <BestAccom />
+      <GuestReviews />
+      <Footer />
+      <ChatBot />
     </>
   )
 }

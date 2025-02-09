@@ -18,8 +18,8 @@ export default function Footer() {
             />
           </div>
 
-          <div className="grid grid-cols-4 gap-3 col-span-2">
-            <div className="flex flex-col gap-2 col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-3 col-span-2">
+            <div className="flex flex-col gap-2 md:col-span-2">
               <h4 className="font-bold">CONTACT INFORMATION</h4>
               <div className="flex items-center gap-2">
                 <Image
@@ -122,7 +122,9 @@ export default function Footer() {
       </section>
 
       {/* Bottom */}
-      <p className="bg-green-600 text-center text-white/75 p-2 text-sm">@nature&apos;s Haven Resort</p>
+      <p className="bg-green-600 text-center text-white/75 p-2 text-sm">
+        @nature&apos;s Haven Resort
+      </p>
     </footer>
   )
 }
