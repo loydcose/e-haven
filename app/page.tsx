@@ -1,4 +1,5 @@
 import BestAccom from "@/components/best-accom"
+import Footer from "@/components/footer"
 import GuestReviews from "@/components/guest-reviews"
 import NavBar from "@/components/nav-bar"
 import { Button } from "@/components/ui/button"
@@ -54,6 +55,7 @@ export default function Home() {
       </div>
       <BestAccom/>
       <GuestReviews/>
+      <Footer/>
     </>
   )
 }
