@@ -20,7 +20,7 @@ export default function NavBar() {
           <Link className="hover:underline" href="/">
             Home
           </Link>
-          <Link className="hover:underline" href="/accommodation">
+          <Link className="hover:underline" href="/accommodations">
             Accommodation
           </Link>
           <Link className="hover:underline" href="/about">
@@ -29,7 +29,11 @@ export default function NavBar() {
         </div>
 
         <Button type="button">Book now</Button>
-        <Button type="button" size={"icon"} className="rounded-full overflow-hidden">
+        <Button
+          type="button"
+          size={"icon"}
+          className="rounded-full overflow-hidden"
+        >
           <Image
             src="/avatar.png"
             alt="avatar"
