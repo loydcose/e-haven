@@ -23,7 +23,7 @@ export default function NavBar() {
           <Link className="hover:underline" href="/accommodations">
             Accommodation
           </Link>
-          <Link className="hover:underline" href="/about">
+          <Link className="hover:underline" href="/about-us">
             About
           </Link>
         </div>

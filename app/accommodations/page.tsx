@@ -78,7 +78,7 @@ export default function page() {
             {accommodations.map((accom, index) => (
               <li
                 key={accom.id}
-                className="flex flex-col md:flex-row gap-4 md:gap-8 md:gap-12"
+                className="flex flex-col md:flex-row gap-4 md:gap-12"
               >
                 <div
                   className={`aspect-square grow shrink-0 w-full  max-w-[350px] ${
