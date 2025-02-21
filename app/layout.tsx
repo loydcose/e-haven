@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Rubik } from "next/font/google"
 import "./globals.css"
+import { Toaster } from "@/components/ui/toaster"
 
 const rubikSans = Rubik({
   subsets: ["latin"],
@@ -18,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rubikSans.className} antialiased`}>{children}</body>
+      <body className={`${rubikSans.className} antialiased`}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }
