@@ -2,10 +2,11 @@ import NavBar from "@/components/nav-bar"
 import Image from "next/image"
 import React from "react"
 import CalendarSelection from "./calendar-selection"
-import { CircleCheck, CirclePlus } from "lucide-react"
+import { CircleCheck } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Footer from "@/components/footer"
+import GuestInformation from "./guest-information"
 
 const amenities = [
   "Free parking",
@@ -123,74 +124,7 @@ export default function page() {
             </div>
           </div>
 
-          <div>
-            <h2 className="mb-4 md:mb-6 font-bold text-xl md:text-2xl text-center">
-              Guest Information
-            </h2>
-
-            <div className="bg-amber-950 p-6 md:p-8 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <div>
-                <label htmlFor="name" className="mb-1">
-                  Name
-                  <span className="text-red-600">*</span>
-                </label>
-                <Input
-                  type="text"
-                  id="name"
-                  placeholder="Enter your name..."
-                  className="bg-white text-black"
-                />
-              </div>
-              <div>
-                <label htmlFor="birthday" className="mb-1">
-                  Birthday
-                  <span className="text-red-600">*</span>
-                </label>
-                <Input
-                  type="text"
-                  id="birthday"
-                  placeholder="Enter birthday..."
-                  className="bg-white text-black"
-                />
-              </div>
-              <div>
-                <label htmlFor="gender" className="mb-1">
-                  Gender
-                  <span className="text-red-600">*</span>
-                </label>
-                <Input
-                  type="text"
-                  id="gender"
-                  placeholder="Enter gender..."
-                  className="bg-white text-black"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="healthIssues" className="">
-                  Health Issues
-                </label>
-                <select
-                  name="healthIssues"
-                  id="healthIssues"
-                  className="text-black rounded-lg h-9 px-2 text-base"
-                >
-                  <option value="none">None</option>
-                  <option value="allergies">Allergies</option>
-                  <option value="asthma">Asthma</option>
-                  <option value="diabetes">Diabetes</option>
-                  <option value="hypertension">Hypertension</option>
-                  <option value="others">Others</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <Button
-            type="button"
-            className="flex items-center gap-2 w-fit mx-auto bg-amber-400 hover:bg-amber-500 text-black"
-            size={"lg"}
-          >
-            Add more <CirclePlus className="text-white/75" />
-          </Button>
+          <GuestInformation/>
 
           <div className="flex items-center gap-2 w-fit mx-auto">
             <Button

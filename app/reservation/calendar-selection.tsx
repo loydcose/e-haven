@@ -28,7 +28,7 @@ export default function CalendarSelection({
   const { control, watch } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      date: null,
+      date: undefined,
     },
   })
 
