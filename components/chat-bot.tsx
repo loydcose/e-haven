@@ -5,7 +5,7 @@ import React from "react"
 import { Input } from "./ui/input"
 
 export default function ChatBot() {
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = React.useState(false)
 
   return (
     <div

@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { Button } from "./ui/button"
 import Link from "next/link"
+import ProfileDropdown from "./profile-dropdown"
 
 export default function NavBar() {
   return (
@@ -15,33 +16,23 @@ export default function NavBar() {
         />
       </div>
 
-      <div className="md:flex hidden items-center gap-8">
-        <div className="flex items-center gap-6 text-white font-bold">
-          <Link className="hover:underline" href="/">
-            Home
-          </Link>
-          <Link className="hover:underline" href="/accommodations">
-            Accommodation
-          </Link>
-          <Link className="hover:underline" href="/about-us">
-            About
-          </Link>
-        </div>
+      <div className="flex items-center gap-8">
+        <div className="md:flex hidden items-center gap-8">
+          <div className="flex items-center gap-6 text-white font-bold">
+            <Link className="hover:underline" href="/">
+              Home
+            </Link>
+            <Link className="hover:underline" href="/accommodations">
+              Accommodation
+            </Link>
+            <Link className="hover:underline" href="/about-us">
+              About
+            </Link>
+          </div>
 
-        <Button type="button">Book now</Button>
-        <Button
-          type="button"
-          size={"icon"}
-          className="rounded-full overflow-hidden"
-        >
-          <Image
-            src="/avatar.png"
-            alt="avatar"
-            width={84}
-            height={84}
-            className="size-full object-cover"
-          />
-        </Button>
+          <Button type="button">Book now</Button>
+        </div>
+        <ProfileDropdown />
       </div>
     </nav>
   )
