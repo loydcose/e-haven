@@ -1,8 +1,7 @@
 import AuthCardLayout from "@/components/layouts/auth-card-layout"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import React from "react"
+import SignUp from "./sign-up"
 
 export default function page() {
   return (
@@ -33,51 +32,7 @@ export default function page() {
             Sign up
           </h2>
 
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="firstName">First name</label>
-              <Input
-                type="text"
-                id="firstName"
-                placeholder="Enter your first name..."
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label htmlFor="lastName">Last name</label>
-              <Input
-                type="text"
-                id="lastName"
-                placeholder="Enter your last name..."
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1 mb-4">
-            <label htmlFor="password">Password</label>
-            <Input
-              type="password"
-              id="password"
-              placeholder="Enter your password..."
-            />
-          </div>
-
-          <div className="flex flex-col gap-1 mb-8">
-            <label htmlFor="confirmPassword">Confirm password</label>
-            <Input
-              type="password"
-              id="confirmPassword"
-              placeholder="Confirm your password..."
-            />
-          </div>
-
-          <Button
-            type="button"
-            size={"lg"}
-            className="mb-8 w-full font-bold text-lg h-12"
-          >
-            Sign up
-          </Button>
+          <SignUp />
         </AuthCardLayout>
       </main>
     </>
