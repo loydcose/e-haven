@@ -1,10 +1,8 @@
 import AuthCardLayout from "@/components/layouts/auth-card-layout"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
-import PassInput from "./pass-input"
+import SignIn from "./sign-in"
 
 export default function page() {
   return (
@@ -35,32 +33,7 @@ export default function page() {
             Sign in
           </h2>
 
-          <div className="flex flex-col gap-1 mb-4">
-            <label htmlFor="username">Username</label>
-            <Input type="text" placeholder="Enter your username..." />
-          </div>
-
-          <div className="flex flex-col gap-1 mb-2">
-            <label htmlFor="password">Password</label>
-            <PassInput />
-          </div>
-
-          <div className="flex items-center justify-between gap-2 mb-8">
-            <Link href="/forgot-password" className="hover:underline">
-              Forgot password?
-            </Link>
-            <Link href="/admin-login" className="hover:underline">
-              Admin login
-            </Link>
-          </div>
-
-          <Button
-            type="button"
-            size={"lg"}
-            className="mb-8 w-full font-bold text-lg h-12"
-          >
-            Login account
-          </Button>
+          <SignIn />
 
           <div className="flex items-center gap-2 justify-between">
             <p>Don&apos;t have an account?</p>
