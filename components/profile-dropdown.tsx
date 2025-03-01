@@ -5,8 +5,18 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Button, buttonVariants } from "./ui/button"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function ProfileDropdown() {
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await fetch("/api/log-out", {
+      method: "POST",
+    })
+    router.push("/sign-in")
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -73,6 +83,7 @@ export default function ProfileDropdown() {
               My Reservations
             </Link>
             <Button
+              onClick={handleLogout}
               type="button"
               variant={"ghost"}
               className="text-red-600 hover:text-red hover:bg-gray-200"

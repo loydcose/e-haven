@@ -7,7 +7,7 @@ import Link from "next/link"
 import { Eye, EyeClosed } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
-export default function SignIn({ modal }: { modal: string | null | string[]}) {
+export default function SignIn({ modal }: { modal: string | null | string[] }) {
   const [showPass, setShowPass] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
@@ -21,7 +21,9 @@ export default function SignIn({ modal }: { modal: string | null | string[]}) {
     //   title: "Error",
     //   description: "hello",
     // })
-    alert(modal)
+    if (modal) {
+      alert(modal)
+    }
   }, [modal])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
