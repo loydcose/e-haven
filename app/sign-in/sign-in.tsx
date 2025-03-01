@@ -1,19 +1,28 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Eye, EyeClosed } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
-export default function SignIn() {
+export default function SignIn({ modal }: { modal: string | null | string[]}) {
   const [showPass, setShowPass] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   })
   const { toast } = useToast()
+
+  useEffect(() => {
+    // toast({
+    //   variant: "destructive",
+    //   title: "Error",
+    //   description: "hello",
+    // })
+    alert(modal)
+  }, [modal])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target

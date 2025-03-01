@@ -4,7 +4,11 @@ import Link from "next/link"
 import React from "react"
 import SignIn from "./sign-in"
 
-export default function page() {
+export default async function page({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}) {
   return (
     <>
       <div className="fixed inset-0 -z-10">
@@ -33,7 +37,7 @@ export default function page() {
             Sign in
           </h2>
 
-          <SignIn />
+          <SignIn modal={(await searchParams)?.modal || null} />
 
           <div className="flex items-center gap-2 justify-between">
             <p>Don&apos;t have an account?</p>

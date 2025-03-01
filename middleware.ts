@@ -42,7 +42,9 @@ export async function middleware(req: NextRequest) {
         path: "/",
         expires: new Date(0),
       })
-      const response = NextResponse.redirect(new URL("/sign-in", req.url))
+      const response = NextResponse.redirect(
+        new URL("/sign-in?modal=Session expired", req.url)
+      )
       response.headers.set("Set-Cookie", expiredCookie)
       return response
     }
