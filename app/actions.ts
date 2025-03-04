@@ -17,6 +17,10 @@ const userSchema = z
       .string()
       .min(2, "Username must be at least 2 characters")
       .max(64, "Username must be at most 64 characters"),
+    email: z
+      .string()
+      .min(8, "Email must be at least 8 characters")
+      .max(128, "Email must be at most 128 characters"),
     password: z
       .string()
       .min(6, "Password must be at least 6 characters")
@@ -35,6 +39,7 @@ export async function addUser(formData: {
   firstName: string
   lastName: string
   username: string
+  email: string
   password: string
   confirmPassword: string
 }) {
@@ -49,6 +54,11 @@ export async function addUser(formData: {
     })
     if (existingUser) {
       return { message: "Username already exists" }
+    }
+
+    // @ts-expect-error email is not exist in type never
+    if (existingUser && existingUser.email === formData.email) {
+      return { message: "Email already exists" }
     }
 
     await db.user.create({ data: formData })

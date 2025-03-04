@@ -58,7 +58,7 @@ export default function SignIn({ modal }: { modal: string | null | string[] }) {
       }
 
       toast({
-        title: "Sign up successful",
+        title: "Login successful",
         description: "Redirecting to home page...",
         variant: "success",
       })

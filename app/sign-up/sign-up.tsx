@@ -13,6 +13,7 @@ export default function SignUp() {
     firstName: "",
     lastName: "",
     username: "",
+    email: "",
     password: "",
     confirmPassword: "",
   })
@@ -29,12 +30,45 @@ export default function SignUp() {
     e.preventDefault()
     const res = await addUser(formData)
     if (!res) {
-      console.log(res)
-      toast({
-        title: "Sign up successful",
-        description: "Redirecting to home page...",
-        variant: "success",
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       })
+
+      if (response.ok) {
+        const data = await response.json()
+        console.log(data)
+
+        if (!data.success) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: data.message,
+          })
+          return
+        }
+
+        toast({
+          title: "Sign up successful",
+          description: "Redirecting to home page...",
+          variant: "success",
+        })
+
+        // add 2 seconds delay before redirecting to home page
+        setTimeout(() => {
+          window.location.href = "/"
+        }, 2000)
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Server error",
+          description: "Try again later",
+        })
+      }
+
       return
     }
 
@@ -80,6 +114,18 @@ export default function SignUp() {
           id="username"
           placeholder="Enter your username..."
           value={formData.username}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-1 mb-4">
+        <label htmlFor="email">Email</label>
+        <Input
+          type="email"
+          id="email"
+          placeholder="Enter your email..."
+          value={formData.email}
           onChange={handleChange}
           required
         />
