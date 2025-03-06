@@ -22,6 +22,7 @@ async function verifyToken(token: string) {
   }
 }
 
+// TODO: ADD adminToken functionality here as well
 // Middleware function to handle authentication and redirection
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value
