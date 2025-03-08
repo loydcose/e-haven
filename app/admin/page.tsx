@@ -1,7 +1,7 @@
-import NavBar from "@/components/nav-bar"
 import Image from "next/image"
 import React from "react"
 import Footer from "@/components/footer"
+import AdminNavbar from "@/components/admin-nav-bar"
 
 export default function page() {
   return (
@@ -17,7 +17,7 @@ export default function page() {
         />
       </div>
       <section className="mx-auto w-11/12 z-10">
-        <NavBar />
+        <AdminNavbar />
         <h1 className="font-extrabold tracking-tight text-center text-3xl md:text-4xl text-white mb-6 md:mb-12">
           ADMIN DASHBOARD
         </h1>
