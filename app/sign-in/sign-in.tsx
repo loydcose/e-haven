@@ -116,7 +116,7 @@ export default function SignIn({ modal }: { modal: string | null | string[] }) {
         <Link href="/forgot-password" className="hover:underline">
           Forgot password?
         </Link>
-        <Link href="/admin-login" className="hover:underline">
+        <Link href="/admin/sign-in" className="hover:underline">
           Admin login
         </Link>
       </div>
