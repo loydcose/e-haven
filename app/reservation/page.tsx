@@ -20,8 +20,20 @@ const amenities = [
 ]
 
 const inputFields = [
-  { id: "firstName", label: "First name", type: "text", required: true },
-  { id: "lastName", label: "Last name", type: "text", required: true },
+  {
+    id: "firstName",
+    label: "First name",
+    type: "text",
+    defaultValue: "Loyd",
+    required: true,
+  },
+  {
+    id: "lastName",
+    label: "Last name",
+    type: "text",
+    defaultValue: "Cose",
+    required: true,
+  },
   {
     id: "address",
     label: "Address",
@@ -29,9 +41,16 @@ const inputFields = [
     required: true,
     colSpan: true,
   },
-  { id: "email", label: "Email", type: "email", colSpan: true },
-  { id: "birthday", label: "Birthday", type: "date" },
-  { id: "contactNumber", label: "Contact number", type: "tel" },
+  {
+    id: "email",
+    label: "Email",
+    type: "email",
+    defaultValue: "loydcose@gmail.com",
+    colSpan: true,
+    required: true,
+  },
+  { id: "birthday", label: "Birthday", type: "date", required: true },
+  { id: "contactNumber", label: "Contact number", type: "tel", required: true },
 ]
 
 export default function page() {
@@ -117,14 +136,16 @@ export default function page() {
                     type={field.type}
                     id={field.id}
                     placeholder={`Enter your ${field.label.toLowerCase()}...`}
+                    defaultValue={field.defaultValue || ""}
                     className="bg-white text-black"
+                    required={field.required}
                   />
                 </div>
               ))}
             </div>
           </div>
 
-          <GuestInformation/>
+          <GuestInformation />
 
           <div className="flex items-center gap-2 w-fit mx-auto">
             <Button

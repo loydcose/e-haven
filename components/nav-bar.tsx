@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Button } from "./ui/button"
+import { buttonVariants } from "./ui/button"
 import Link from "next/link"
 import ProfileDropdown from "./profile-dropdown"
 
@@ -30,7 +30,12 @@ export default function NavBar() {
             </Link>
           </div>
 
-          <Button type="button">Book now</Button>
+          <Link
+            href="/reservation"
+            className={buttonVariants({ variant: "default" })}
+          >
+            Book now
+          </Link>
         </div>
         <ProfileDropdown />
       </div>

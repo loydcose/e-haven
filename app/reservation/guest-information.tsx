@@ -64,35 +64,6 @@ export default function GuestInformation() {
                 className="bg-white text-black"
               />
             </div>
-            <div>
-              <label htmlFor={`gender-${guest.id}`} className="mb-1">
-                Gender
-                <span className="text-red-600">*</span>
-              </label>
-              <Input
-                type="text"
-                id={`gender-${guest.id}`}
-                placeholder="Enter gender..."
-                className="bg-white text-black"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor={`healthIssues-${guest.id}`} className="">
-                Health Issues
-              </label>
-              <select
-                name={`healthIssues-${guest.id}`}
-                id={`healthIssues-${guest.id}`}
-                className="text-black rounded-lg h-9 px-2 text-base"
-              >
-                <option value="none">None</option>
-                <option value="allergies">Allergies</option>
-                <option value="asthma">Asthma</option>
-                <option value="diabetes">Diabetes</option>
-                <option value="hypertension">Hypertension</option>
-                <option value="others">Others</option>
-              </select>
-            </div>
           </div>
         ))}
       </div>
