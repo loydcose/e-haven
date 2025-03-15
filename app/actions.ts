@@ -71,3 +71,9 @@ export async function addUser(formData: {
 export async function getAccommodations() {
   return await db.accommodation.findMany()
 }
+
+
+// get single accommodation base on slug
+export async function getAccommodation(slug: string) {
+  return await db.accommodation.findUnique({ where: { slug } })
+}
