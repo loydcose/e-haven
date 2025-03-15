@@ -66,3 +66,8 @@ export async function addUser(formData: {
     return { message: "Server error, please try again later." }
   }
 }
+
+// get all accommodations
+export async function getAccommodations() {
+  return await db.accommodation.findMany()
+}

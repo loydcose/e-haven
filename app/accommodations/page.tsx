@@ -5,56 +5,10 @@ import { Tag } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
+import { getAccommodations } from "../actions"
 
-const accommodations = [
-  {
-    id: 1,
-    name: "Nipa Hut Cottage",
-    description:
-      "Open-air cottage made with bamboo and anahaw leaves as a roofing surrounded by different kinds of beautiful trees",
-    price: 300,
-    link: "/accommodations",
-    image: "/accommodations/accomm-image1.png",
-  },
-  {
-    id: 2,
-    name: "Nipa Hut Room Cottage",
-    description:
-      "Perfect place for relaxing. It has comfortable one double-sized beds and a warm, welcoming feel. Surrounded by nature, it's a great spot to unwind and enjoy a peaceful stay.",
-    price: 300,
-    link: "/accommodations",
-    image: "/accommodations/accomm-image2.png",
-  },
-  {
-    id: 3,
-    name: "Overlooking Hut Cottage",
-    description:
-      "This cozy retreat invites you to unwind and connect with nature. Imagine sipping your morning coffee while soaking in the breathtaking landscape, Perfect for couples, families, or solo adventurers. Escape the everyday and create lasting memories in this enchanting hideaway!",
-    price: 800,
-    link: "/accommodations",
-    image: "/accommodations/accomm-image3.png",
-  },
-  {
-    id: 4,
-    name: "Cozy Hut Cottage",
-    description:
-      "Cozy space built like a small house with a spacious interior. Room has Two (2) double decks accommodating Four persons. Ideal for families or friends looking to escape the hustle and bustle.",
-    price: 1000,
-    link: "/accommodations",
-    image: "/accommodations/accomm-image4.png",
-  },
-  {
-    id: 5,
-    name: "Family House Nipa Cottage",
-    description:
-      "Comfortable place for family getaway. Fresh and natural cold air without needing a fan. This room can accommodate Ten (10) persons with larger room space, perfect for storing bags and other belongings",
-    price: 1500,
-    link: "/accommodations",
-    image: "/accommodations/accomm-image5.png",
-  },
-]
-
-export default function page() {
+export default async function page() {
+  const accommodations = await getAccommodations()
   return (
     <main className="relative">
       <div className="bg-black/20 absolute inset-0 -z-10"></div>
@@ -81,13 +35,13 @@ export default function page() {
                 className="flex flex-col md:flex-row gap-4 md:gap-12"
               >
                 <div
-                  className={`aspect-square grow shrink-0 w-full  max-w-[350px] ${
+                  className={`aspect-square grow shrink-0 w-full max-w-[350px] ${
                     index % 2 === 0 ? "order-1" : "order-1 md:order-2"
                   }`}
                 >
                   <Image
                     src={accom.image}
-                    alt={`${accom.name}'s image`}
+                    alt={`${accom.title}'s image`}
                     width={400}
                     height={400}
                     className="size-full object-cover"
@@ -96,13 +50,11 @@ export default function page() {
 
                 <div
                   className={`${
-                    index === 0 ? "order-1 md:order-2" : "order-1"
+                    index % 2 === 0 ? "order-1 md:order-2" : "order-1"
                   }`}
                 >
-                  <h2
-                    className={`mb-2 md:mb-4 font-bold text-2xl md:text-3xl tracking-tight`}
-                  >
-                    {accom.name}
+                  <h2 className="mb-2 md:mb-4 font-bold text-2xl md:text-3xl tracking-tight">
+                    {accom.title}
                   </h2>
                   <p className="mb-6 md:mb-12">{accom.description}</p>
                   <div className="flex items-center gap-2 mb-2">
@@ -112,7 +64,7 @@ export default function page() {
                     </span>
                   </div>
                   <Link
-                    href={accom.link}
+                    href={`/accommodations/${accom.slug}`}
                     className={`${buttonVariants({
                       variant: "secondary",
                       size: "lg",
