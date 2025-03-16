@@ -2,46 +2,13 @@ import NavBar from "@/components/nav-bar"
 import Image from "next/image"
 import React from "react"
 import { CircleCheck } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Footer from "@/components/footer"
 import GuestInformation from "../guest-information"
 import { getAccommodation } from "@/app/actions"
 import { CalendarSelection } from "../calendar-selection"
-
-const inputFields = [
-  {
-    id: "firstName",
-    label: "First name",
-    type: "text",
-    defaultValue: "Loyd",
-    required: true,
-  },
-  {
-    id: "lastName",
-    label: "Last name",
-    type: "text",
-    defaultValue: "Cose",
-    required: true,
-  },
-  {
-    id: "address",
-    label: "Address",
-    type: "text",
-    required: true,
-    colSpan: true,
-  },
-  {
-    id: "email",
-    label: "Email",
-    type: "email",
-    defaultValue: "loydcose@gmail.com",
-    colSpan: true,
-    required: true,
-  },
-  { id: "birthday", label: "Birthday", type: "date", required: true },
-  { id: "contactNumber", label: "Contact number", type: "tel", required: true },
-]
+import CustomerInformation from "../customer-information"
+import SubmitButton from "../submit-btn"
 
 // TODO: add skeleton laoder using nextjs streaming
 
@@ -107,35 +74,7 @@ export default async function page({ params }: { params: { slug: string } }) {
                 </ul>
               </div>
 
-              <div>
-                <h2 className="mb-4 md:mb-6 font-bold text-xl md:text-2xl text-center">
-                  Customer Information
-                </h2>
-
-                <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
-                  {inputFields.map((field) => (
-                    <div
-                      key={field.id}
-                      className={field.colSpan ? "md:col-span-2" : ""}
-                    >
-                      <label htmlFor={field.id} className="mb-1">
-                        {field.label}
-                        {field.required && (
-                          <span className="text-red-600">*</span>
-                        )}
-                      </label>
-                      <Input
-                        type={field.type}
-                        id={field.id}
-                        placeholder={`Enter your ${field.label.toLowerCase()}...`}
-                        defaultValue={field.defaultValue || ""}
-                        className="bg-white text-black"
-                        required={field.required}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <CustomerInformation />
 
               <GuestInformation />
 
@@ -147,13 +86,7 @@ export default async function page({ params }: { params: { slug: string } }) {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="button"
-                  size={"lg"}
-                  className="text-white bg-green-600 hover:bg-green-700"
-                >
-                  Continue
-                </Button>
+                <SubmitButton />
               </div>
             </div>
           ) : (

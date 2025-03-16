@@ -13,14 +13,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useReservationStore } from "@/stores/reservation"
 
 export function CalendarSelection({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  })
+  const [date, setDate] = React.useState<DateRange | undefined>(undefined)
+  const { setCheckIn, setCheckOut } = useReservationStore()
+
+  React.useEffect(() => {
+    if (date?.from && date?.to) {
+      setCheckIn(date.from)
+      setCheckOut(date.to)
+    }
+  }, [date?.from, date?.to])
 
   return (
     <div className={cn("grid gap-2", className)}>

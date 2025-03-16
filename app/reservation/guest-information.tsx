@@ -3,17 +3,42 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CirclePlus, X } from "lucide-react"
-import React, { useState } from "react"
+import { useReservationStore } from "@/stores/reservation"
+import { useEffect } from "react"
 
 export default function GuestInformation() {
-  const [guests, setGuests] = useState([{ id: Date.now() + Math.random() }])
+  const { guests, addGuest, removeGuest, updateGuest } = useReservationStore()
 
-  const addGuest = () => {
-    setGuests([...guests, { id: Date.now() + Math.random() }])
+  // Ensure there is always at least one guest
+  useEffect(() => {
+    if (guests.length === 0) {
+      addGuest({ id: generateId(), name: "", birthday: new Date() })
+    }
+  }, [guests, addGuest])
+
+  const generateId = () =>
+    `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
+  const handleAddGuest = () => {
+    addGuest({ id: generateId(), name: "", birthday: new Date() })
   }
 
-  const removeGuest = (id: number) => {
-    setGuests(guests.filter((guest) => guest.id !== id))
+  const handleRemoveGuest = (index: number) => {
+    if (guests.length > 1) {
+      removeGuest(index)
+    }
+  }
+
+  const handleGuestChange = (
+    index: number,
+    field: "name" | "birthday",
+    value: string
+  ) => {
+    const updatedGuest = {
+      ...guests[index],
+      [field]: field === "birthday" ? new Date(value) : value,
+    }
+    updateGuest(index, updatedGuest)
   }
 
   return (
@@ -23,9 +48,9 @@ export default function GuestInformation() {
           Guest Information
         </h2>
 
-        {guests.map((guest) => (
+        {guests.map((guest, index) => (
           <div
-            key={guest.id}
+            key={guest.id} // Use the unique `id` property for rendering
             className="bg-amber-950 p-6 md:p-8 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 relative"
           >
             {guests.length > 1 && (
@@ -35,7 +60,7 @@ export default function GuestInformation() {
                 size={"icon"}
                 className="absolute top-2 right-2 rounded-full"
                 title="Remove guest"
-                onClick={() => removeGuest(guest.id)}
+                onClick={() => handleRemoveGuest(index)}
               >
                 <X />
               </Button>
@@ -50,6 +75,10 @@ export default function GuestInformation() {
                 id={`name-${guest.id}`}
                 placeholder="Enter your name..."
                 className="bg-white text-black"
+                value={guest.name}
+                onChange={(e) =>
+                  handleGuestChange(index, "name", e.target.value)
+                }
               />
             </div>
             <div>
@@ -58,10 +87,14 @@ export default function GuestInformation() {
                 <span className="text-red-600">*</span>
               </label>
               <Input
-                type="text"
+                type="date"
                 id={`birthday-${guest.id}`}
                 placeholder="Enter birthday..."
                 className="bg-white text-black"
+                value={guest.birthday.toISOString().split("T")[0]} // Format date for input
+                onChange={(e) =>
+                  handleGuestChange(index, "birthday", e.target.value)
+                }
               />
             </div>
           </div>
@@ -71,7 +104,7 @@ export default function GuestInformation() {
         type="button"
         className="flex items-center gap-2 w-fit mx-auto bg-amber-400 hover:bg-amber-500 text-black"
         size={"lg"}
-        onClick={addGuest}
+        onClick={handleAddGuest}
       >
         Add more <CirclePlus className="text-white/75" />
       </Button>
