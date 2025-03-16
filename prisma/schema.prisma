@@ -45,6 +45,9 @@ model Reservation {
   userId          String
   checkIn         DateTime
   checkOut        DateTime
+  address         String
+  birthday        DateTime
+  contactNumber   String
   guests          Json
   totalPrice      Float
 

@@ -5,9 +5,9 @@ import { CircleCheck } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Footer from "@/components/footer"
-import CalendarSelection from "../calendar-selection"
 import GuestInformation from "../guest-information"
 import { getAccommodation } from "@/app/actions"
+import { CalendarSelection } from "../calendar-selection"
 
 const inputFields = [
   {
@@ -43,6 +43,8 @@ const inputFields = [
   { id: "contactNumber", label: "Contact number", type: "tel", required: true },
 ]
 
+// TODO: add skeleton laoder using nextjs streaming
+
 export default async function page({ params }: { params: { slug: string } }) {
   const accommodation = await getAccommodation(params.slug)
   console.log(accommodation?.image)
@@ -68,16 +70,9 @@ export default async function page({ params }: { params: { slug: string } }) {
                 RESERVATION
               </h1>
 
-              {/* calendar */}
-              <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-3">
-                <div>
-                  <p>Check in</p>
-                  <CalendarSelection className="w-full md:w-72" />
-                </div>
-                <div>
-                  <p>Check Out</p>
-                  <CalendarSelection className="w-full md:w-72" />
-                </div>
+              <div>
+                <p className="mb-2">Check in - Check out</p>
+                <CalendarSelection className="w-full md:w-72" />
               </div>
 
               <div>
