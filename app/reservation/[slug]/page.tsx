@@ -5,16 +5,28 @@ import { CircleCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Footer from "@/components/footer"
 import GuestInformation from "../guest-information"
-import { getAccommodation } from "@/app/actions"
+import { getAccommodation, getUserFromToken } from "@/app/actions"
 import { CalendarSelection } from "../calendar-selection"
 import CustomerInformation from "../customer-information"
 import SubmitButton from "../submit-btn"
 
 // TODO: add skeleton laoder using nextjs streaming
 
+type UserType = {
+  id: string
+  exp: number
+  username: string
+}
+
 export default async function page({ params }: { params: { slug: string } }) {
   const accommodation = await getAccommodation(params.slug)
-  console.log(accommodation?.image)
+  // @ts-expect-error no error here
+  const user: UserType | null = await getUserFromToken()
+  console.log(user)
+
+  if (!user) {
+    return <h1>Unauthorized</h1>
+  }
 
   return (
     <main className="relative">
@@ -86,7 +98,7 @@ export default async function page({ params }: { params: { slug: string } }) {
                 >
                   Cancel
                 </Button>
-                <SubmitButton />
+                <SubmitButton accommodation={accommodation} userId={user.id} />
               </div>
             </div>
           ) : (

@@ -7,25 +7,35 @@ import { useReservationStore } from "@/stores/reservation"
 import { useEffect } from "react"
 
 export default function GuestInformation() {
-  const { guests, addGuest, removeGuest, updateGuest } = useReservationStore()
+  const {
+    guests,
+    addGuest,
+    removeGuest,
+    updateGuest,
+    setTotalPrice,
+    totalPrice,
+  } = useReservationStore()
 
   // Ensure there is always at least one guest
   useEffect(() => {
     if (guests.length === 0) {
       addGuest({ id: generateId(), name: "", birthday: new Date() })
+      setTotalPrice(100) // Initialize total price for the first guest
     }
-  }, [guests, addGuest])
+  }, [guests, addGuest, setTotalPrice])
 
   const generateId = () =>
     `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
   const handleAddGuest = () => {
     addGuest({ id: generateId(), name: "", birthday: new Date() })
+    setTotalPrice(totalPrice + 100) // Increment total price by 100
   }
 
   const handleRemoveGuest = (index: number) => {
     if (guests.length > 1) {
       removeGuest(index)
+      setTotalPrice(totalPrice - 100) // Decrement total price by 100
     }
   }
 

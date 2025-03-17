@@ -1,25 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { jwtVerify } from "jose"
 import { serialize } from "cookie"
+import { verifyToken } from "./lib/utils"
 
-// Encode the JWT secret
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 
-// Function to verify the JWT token
-async function verifyToken(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET)
-    return payload
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    if (error.code === "ERR_JWT_EXPIRED") {
-      console.error({ code: error.code, message: "Token expired" })
-    } else {
-      console.error("Invalid token:", error.message)
-    }
-    return null
-  }
-}
 
 // Middleware function to handle authentication and redirection
 export async function middleware(req: NextRequest) {

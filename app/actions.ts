@@ -2,6 +2,8 @@
 
 import { z } from "zod"
 import db from "@/lib/db"
+import { cookies } from "next/headers"
+import { verifyToken } from "@/lib/utils"
 
 const userSchema = z
   .object({
@@ -34,6 +36,13 @@ const userSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   })
+
+export async function getUserFromToken() {
+  const cookiesStore = await cookies()
+  const token = cookiesStore.get("token")?.value
+  if (!token) return null
+  return await verifyToken(token)
+}
 
 export async function addUser(formData: {
   firstName: string
@@ -77,8 +86,8 @@ export async function getAccommodation(slug: string) {
   return await db.accommodation.findUnique({ where: { slug } })
 }
 const reservationSchema = z.object({
-  // accommodationId: z.string().nonempty("Accommodation ID is required"),
-  // userId: z.string().nonempty("User ID is required"),
+  accommodationId: z.string().nonempty("Accommodation ID is required"),
+  userId: z.string().nonempty("User ID is required"),
   checkIn: z
     .date()
     .nullable()
