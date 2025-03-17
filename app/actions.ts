@@ -150,22 +150,25 @@ export async function addReservation(reservationData: {
       error.path.includes("userId") ||
       error.path.includes("accommodationId")
     ) {
-      return { message: "Server error, please try again later." }
+      return {
+        success: false,
+        message: "Server error, please try again later.",
+      }
     }
 
     // Return the specific error message for other validation errors
-    return { message: error.message }
+    return { success: false, message: error.message }
   }
 
   try {
     // Add the reservation to the database
     console.log(reservationData)
-    // await db.reservation.create({
-    //   data: reservationData,
-    // })
-    return { message: "Reservation added successfully" }
+    await db.reservation.create({
+      data: reservationData,
+    })
+    return { success: true, message: "Reservation added successfully" }
   } catch (error) {
     console.error("Error adding reservation:", error)
-    return { message: "Server error, please try again later." }
+    return { success: false, message: "Server error, please try again later." }
   }
 }
