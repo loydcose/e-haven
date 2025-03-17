@@ -5,6 +5,9 @@ import { useReservationStore } from "@/stores/reservation"
 import { addReservation } from "@/app/actions"
 import type { Accommodation } from "@prisma/client"
 import { useToast } from "@/hooks/use-toast"
+import { DownPaymentNotice } from "./downpayment-notice"
+import { Confirmation } from "./confirmation"
+import { useState } from "react"
 
 // TODO: TOBE CONTINUED - adding reservation to database
 
@@ -17,6 +20,8 @@ export default function SubmitButton({
 }) {
   const store = useReservationStore()
   const { toast } = useToast()
+  const [dpNoticeOpen, setDpNoticeOpen] = useState(false)
+  const [confirmationOpen, setConfirmationOpen] = useState(false)
   console.log({ accommodation, userId })
 
   const handleClick = async () => {
@@ -34,9 +39,9 @@ export default function SubmitButton({
     if (response.success) {
       toast({
         title: "Reservation added successfully",
-        description: "Redirecting to home page...",
         variant: "success",
       })
+      setDpNoticeOpen(true)
     } else {
       toast({
         title: "Failed to add reservation",
@@ -48,13 +53,24 @@ export default function SubmitButton({
   }
 
   return (
-    <Button
-      type="button"
-      size={"lg"}
-      className="text-white bg-green-600 hover:bg-green-700"
-      onClick={handleClick}
-    >
-      Continue
-    </Button>
+    <>
+      <DownPaymentNotice 
+        dpNoticeOpen={dpNoticeOpen}
+        setDpNoticeOpen={setDpNoticeOpen}
+        setConfirmationOpen={setConfirmationOpen}
+      />
+      <Confirmation 
+        confirmationOpen={confirmationOpen}
+        setConfirmationOpen={setConfirmationOpen}
+      />
+      <Button
+        type="button"
+        size={"lg"}
+        className="text-white bg-green-600 hover:bg-green-700"
+        onClick={handleClick}
+      >
+        Continue
+      </Button>
+    </>
   )
 }

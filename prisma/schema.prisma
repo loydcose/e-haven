@@ -50,6 +50,8 @@ model Reservation {
   contactNumber   String
   guests          Json
   totalPrice      Float
+  isConfirmed     Boolean  @default(false)
+  isPaid          Boolean  @default(false)
 
   user          User          @relation(fields: [userId], references: [id])
   accommodation Accommodation @relation(fields: [accommodationId], references: [id])
