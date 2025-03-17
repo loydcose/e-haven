@@ -7,6 +7,7 @@ type Guest = {
 }
 
 type ReservationStore = {
+  accommodationId: string
   userId: string
   checkIn: Date | null
   checkOut: Date | null
@@ -15,6 +16,7 @@ type ReservationStore = {
   contactNumber: string
   guests: Guest[]
   totalPrice: number
+  setAccommodationId: (accommodationId: string) => void
   setUserId: (userId: string) => void
   setCheckIn: (checkIn: Date) => void
   setCheckOut: (checkOut: Date) => void
@@ -28,6 +30,7 @@ type ReservationStore = {
 }
 
 export const useReservationStore = create<ReservationStore>()((set) => ({
+  accommodationId: "",
   userId: "",
   checkIn: null,
   checkOut: null,
@@ -36,6 +39,7 @@ export const useReservationStore = create<ReservationStore>()((set) => ({
   contactNumber: "",
   guests: [],
   totalPrice: 0,
+  setAccommodationId: (accommodationId) => set(() => ({ accommodationId })),
   setUserId: (userId) => set(() => ({ userId })),
   setCheckIn: (checkIn) => set(() => ({ checkIn })),
   setCheckOut: (checkOut) => set(() => ({ checkOut })),

@@ -72,8 +72,91 @@ export async function getAccommodations() {
   return await db.accommodation.findMany()
 }
 
-
 // get single accommodation base on slug
 export async function getAccommodation(slug: string) {
   return await db.accommodation.findUnique({ where: { slug } })
+}
+const reservationSchema = z.object({
+  // accommodationId: z.string().nonempty("Accommodation ID is required"),
+  // userId: z.string().nonempty("User ID is required"),
+  checkIn: z
+    .date()
+    .nullable()
+    .refine((date) => date !== null, {
+      message: "Check-in date is required",
+    }),
+  checkOut: z
+    .date()
+    .nullable()
+    .refine((date) => date !== null, {
+      message: "Check-out date is required",
+    }),
+
+  address: z.string().nonempty("Address is required"),
+  birthday: z
+    .date()
+    .nullable()
+    .refine((date) => date !== null, {
+      message: "Customer birthday is required",
+    }),
+  contactNumber: z.string().nonempty("Contact number is required"),
+  guests: z
+    .array(
+      z.object({
+        id: z.string().nonempty("Guest ID is required"),
+        name: z.string().nonempty("Guest name is required"),
+        birthday: z
+          .date()
+          .nullable()
+          .refine((date) => date !== null, {
+            message: "Guest birthday is required",
+          }),
+      })
+    )
+    .nonempty("At least one guest is required"),
+  totalPrice: z.number().positive("Total price must be greater than zero"),
+})
+
+// add reservation
+export async function addReservation(reservationData: {
+  accommodationId: string
+  userId: string
+  checkIn: Date
+  checkOut: Date
+  address: string
+  birthday: Date
+  contactNumber: string
+  guests: { id: string; name: string; birthday: Date }[]
+  totalPrice: number
+}) {
+  console.log(reservationData)
+  // Validate the input data
+  const result = reservationSchema.safeParse(reservationData)
+  if (!result.success) {
+    const error = result.error.errors[0] // Get the first validation error
+    console.log(error.message) // Log the error message
+
+    // Check if the error path is either 'userId' or 'accommodationId'
+    if (
+      error.path.includes("userId") ||
+      error.path.includes("accommodationId")
+    ) {
+      return { message: "Server error, please try again later." }
+    }
+
+    // Return the specific error message for other validation errors
+    return { message: error.message }
+  }
+
+  try {
+    // Add the reservation to the database
+    console.log(reservationData)
+    // await db.reservation.create({
+    //   data: reservationData,
+    // })
+    return { message: "Reservation added successfully" }
+  } catch (error) {
+    console.error("Error adding reservation:", error)
+    return { message: "Server error, please try again later." }
+  }
 }

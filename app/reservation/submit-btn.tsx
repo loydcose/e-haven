@@ -2,18 +2,20 @@
 
 import { Button } from "@/components/ui/button"
 import { useReservationStore } from "@/stores/reservation"
+import { addReservation } from "@/app/actions"
 
 export default function SubmitButton() {
   const store = useReservationStore()
 
-  const handleClick = () => {
-    // Filter out the setter functions
+  const handleClick = async () => {
     const filteredStore = Object.fromEntries(
-      Object.entries(store).filter(
-        ([key, value]) => typeof value !== "function"
-      )
+      Object.entries(store).filter(([, value]) => typeof value !== "function")
     )
+
     console.log(filteredStore)
+    // @ts-expect-error `addReservation` expects a filtered store
+    const response = await addReservation(filteredStore)
+    console.log(response.message)
   }
 
   return (
