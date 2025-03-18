@@ -12,13 +12,14 @@ datasource db {
 }
 
 model User {
-  id              String @id @default(uuid()) @map("_id")
-  firstName       String
-  lastName        String
-  username        String @unique
-  email           String @unique
-  password        String
-  confirmPassword String
+  id                String   @id @default(uuid()) @map("_id")
+  firstName         String
+  lastName          String
+  username          String   @unique
+  email             String   @unique
+  password          String
+  confirmPassword   String
+  lastPasswordReset DateTime @default(now())
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt

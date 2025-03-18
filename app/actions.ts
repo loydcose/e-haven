@@ -44,6 +44,49 @@ export async function getUserFromToken() {
   return await verifyToken(token)
 }
 
+export async function getUserByEmail(email: string) {
+  try {
+    const user = await db.user.findUnique({
+      where: { email },
+    })
+    return user
+  } catch (error) {
+    console.error("Error fetching user by email:", error.message)
+    return null
+  }
+}
+
+export async function getUserById(userId: string) {
+  try {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+    })
+    return user || null
+  } catch (error) {
+    console.error("Error fetching user by ID:", error)
+    return null
+  }
+}
+
+export async function updateUser(userId: string, data: object) {
+  try {
+    const existingUser = await getUserById(userId)
+    if (!existingUser) {
+      return { success: false, message: "User not found" }
+    }
+
+    await db.user.update({
+      where: { id: userId },
+      data,
+    })
+
+    return { success: true, message: "User updated successfully" }
+  } catch (error) {
+    console.error("Error updating user:", error.message)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
+
 export async function addUser(formData: {
   firstName: string
   lastName: string
