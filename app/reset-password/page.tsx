@@ -58,7 +58,7 @@ export default async function page({
         </div>
         <AuthCardLayout>
           {/* Render InvalidToken if the token is invalid, otherwise ResetPassword */}
-          {isValidToken ? <ResetPassword /> : <TokenInvalid />}
+          {isValidToken ? <ResetPassword token={token}/> : <TokenInvalid />}
         </AuthCardLayout>
       </main>
     </>

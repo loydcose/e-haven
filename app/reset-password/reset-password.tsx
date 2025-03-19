@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 
-export default function ResetPassword() {
+export default function ResetPassword({ token }: { token: string }) {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -14,7 +14,6 @@ export default function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       toast({
         variant: "destructive",
@@ -32,7 +31,7 @@ export default function ResetPassword() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ token, password }),
       })
 
       const data = await response.json()
@@ -49,12 +48,11 @@ export default function ResetPassword() {
 
       toast({
         variant: "default",
-        title: "Success",
-        description: "Your password has been reset successfully.",
+        title: "Reset successful",
+        description: "Redirecting to login page...",
       })
-
-      // Optionally redirect the user to the login page
-      // window.location.href = "/login"
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      window.location.href = "/sign-in"
     } catch (error) {
       console.error("Error resetting password:", error)
       toast({

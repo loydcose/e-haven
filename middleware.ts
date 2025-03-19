@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { serialize } from "cookie"
 import { verifyToken } from "./lib/utils"
 
-
-
 // Middleware function to handle authentication and redirection
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value
@@ -13,14 +11,19 @@ export async function middleware(req: NextRequest) {
     req.nextUrl.pathname
   )
   const isAdminPage = req.nextUrl.pathname.startsWith("/admin")
+  const isPasswordPage = ["/forgot-password", "/reset-password"].includes(
+    req.nextUrl.pathname
+  )
 
   // Handle regular user token
   if (token) {
     const user = await verifyToken(token)
+
     // Redirect authenticated users away from auth pages
-    if (user && isAuthPage) {
+    if (user && (isAuthPage || isPasswordPage)) {
       return NextResponse.redirect(new URL("/", req.url))
     }
+
     // Handle expired or invalid token
     if (!user) {
       const expiredCookie = serialize("token", "", {
@@ -41,10 +44,12 @@ export async function middleware(req: NextRequest) {
   // Handle admin user token
   if (adminToken) {
     const adminUser = await verifyToken(adminToken)
+
     // Redirect authenticated admin users away from admin auth pages
     if (adminUser && isAdminAuthPage) {
       return NextResponse.redirect(new URL("/admin", req.url))
     }
+
     // Handle expired or invalid admin token
     if (!adminUser) {
       const expiredAdminCookie = serialize("adminToken", "", {
@@ -63,7 +68,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Redirect unauthenticated users trying to access protected pages
-  if (!token && !isAuthPage && !isAdminPage) {
+  if (!token && !isAuthPage && !isAdminPage && !isPasswordPage) {
     return NextResponse.redirect(new URL("/sign-in", req.url))
   }
 
@@ -77,5 +82,12 @@ export async function middleware(req: NextRequest) {
 
 // Configuration for the middleware to match specific routes
 export const config = {
-  matcher: ["/", "/sign-in", "/sign-up", "/admin/:path*"], // List of protected pages and auth pages
+  matcher: [
+    "/",
+    "/sign-in",
+    "/sign-up",
+    "/forgot-password",
+    "/reset-password",
+    "/admin/:path*",
+  ], // List of protected pages and auth pages
 }

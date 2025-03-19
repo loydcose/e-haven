@@ -18,7 +18,6 @@ model User {
   username          String   @unique
   email             String   @unique
   password          String
-  confirmPassword   String
   lastPasswordReset DateTime @default(now())
 
   createdAt   DateTime      @default(now())

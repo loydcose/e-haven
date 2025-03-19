@@ -95,6 +95,8 @@ export async function addUser(formData: {
   password: string
   confirmPassword: string
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { confirmPassword, ...rest } = formData
   const result = userSchema.safeParse(formData)
   if (!result.success) {
     return { message: result.error.errors[0].message }
@@ -113,7 +115,7 @@ export async function addUser(formData: {
       return { message: "Email already exists" }
     }
 
-    await db.user.create({ data: formData })
+    await db.user.create({ data: rest })
   } catch {
     return { message: "Server error, please try again later." }
   }
