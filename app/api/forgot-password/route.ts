@@ -6,7 +6,9 @@ import { getUserByEmail, updateUser } from "@/app/actions"
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 const resend = new Resend(process.env.RESEND_API_KEY)
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL
+
+// always make this in sync
+const tokenExpiration = { expiresIn: "5m", label: "5 minutes" }
 
 export async function POST(req: Request) {
   try {
@@ -38,20 +40,26 @@ export async function POST(req: Request) {
       )
     }
 
-    const token = await new SignJWT({ userId: user.id, iat: nowUnix }) // Use UNIX timestamp for iat
+    const token = await new SignJWT({ userId: user.id, iat: nowUnix })
       .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("5m")
+      .setExpirationTime(tokenExpiration.expiresIn)
       .sign(SECRET)
 
-    const resetLink = `${APP_URL}/reset-password?token=${token}`
+    const resetLink = `${process.env.PUBLIC_URL}/reset-password?token=${token}`
 
-    await resend.emails.send({
+    const emailRes = await resend.emails.send({
       from: "onboarding@resend.dev",
-      // TODO: test email must be `email.trim()`
-      to: "loydcose.01@gmail.com",
+      to: email.trim(),
       subject: "Reset Your Password",
-      react: EmailTemplate({ resetLink }),
+      react: EmailTemplate({
+        resetLink,
+        tokenExpiration: tokenExpiration.label,
+      }),
     })
+    console.log(emailRes)
+    if (!emailRes.data) {
+      throw new Error(emailRes?.error?.message || "Failed to send email")
+    }
 
     return NextResponse.json(
       { success: true, message: "Reset link sent!" },
