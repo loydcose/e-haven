@@ -64,7 +64,7 @@ export default async function page() {
                     </span>
                   </div>
                   <Link
-                    href={`/accommodations/${accom.slug}`}
+                    href={`/reservation/${accom.slug}`}
                     className={`${buttonVariants({
                       variant: "secondary",
                       size: "lg",
