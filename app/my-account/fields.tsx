@@ -9,8 +9,11 @@ import { User } from "@prisma/client"
 import { useToast } from "@/hooks/use-toast"
 import { updateUser } from "../actions"
 import Spinner from "@/components/icons/spinner"
+import { CheckEmailModal } from "./check-email-modal"
+import { VerifyEmailButton } from "./verify-email-button"
 
 export default function Fields({ user }: { user: User }) {
+  const [checkEmailModalOpen, setCheckEmailModalOpen] = useState(false)
   const [data, setData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
@@ -102,187 +105,190 @@ export default function Fields({ user }: { user: User }) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-      {/* First Name Field */}
-      <div>
-        <label htmlFor="firstName" className="mb-1">
-          First Name
-          <span className="text-red-600">*</span>
-        </label>
-        <div className="flex items-center gap-2">
+    <>
+      <CheckEmailModal
+        checkEmailModalOpen={checkEmailModalOpen}
+        setCheckEmailModalOpen={setCheckEmailModalOpen}
+        email={user.email}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div>
+          <label htmlFor="firstName" className="mb-1">
+            First Name
+            <span className="text-red-600">*</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              id="firstName"
+              value={data.firstName}
+              onChange={handleChange}
+              disabled={!editMode.firstName || loading}
+              className="bg-white text-black"
+              required
+              ref={inputRefs.firstName}
+            />
+            <Button
+              type="button"
+              size={"icon"}
+              variant={"ghost"}
+              onClick={() =>
+                editMode.firstName
+                  ? handleUpdate("firstName")
+                  : handleEditClick("firstName")
+              }
+              disabled={loading}
+            >
+              {loading && editMode.firstName ? (
+                <Spinner />
+              ) : editMode.firstName ? (
+                <Check strokeWidth={2.5} />
+              ) : (
+                <Pencil strokeWidth={2.5} />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Last Name Field */}
+        <div>
+          <label htmlFor="lastName" className="mb-1">
+            Last Name
+            <span className="text-red-600">*</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              id="lastName"
+              value={data.lastName}
+              onChange={handleChange}
+              disabled={!editMode.lastName || loading}
+              className="bg-white text-black"
+              required
+              ref={inputRefs.lastName}
+            />
+            <Button
+              type="button"
+              size={"icon"}
+              variant={"ghost"}
+              onClick={() =>
+                editMode.lastName
+                  ? handleUpdate("lastName")
+                  : handleEditClick("lastName")
+              }
+              disabled={loading}
+            >
+              {loading && editMode.lastName ? (
+                <Spinner />
+              ) : editMode.lastName ? (
+                <Check strokeWidth={2.5} />
+              ) : (
+                <Pencil strokeWidth={2.5} />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Username Field */}
+        <div>
+          <label htmlFor="username" className="mb-1">
+            Username
+            <span className="text-red-600">*</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              id="username"
+              value={data.username}
+              onChange={handleChange}
+              disabled={!editMode.username || loading}
+              className="bg-white text-black"
+              required
+              ref={inputRefs.username}
+            />
+            <Button
+              type="button"
+              size={"icon"}
+              variant={"ghost"}
+              onClick={() =>
+                editMode.username
+                  ? handleUpdate("username")
+                  : handleEditClick("username")
+              }
+              disabled={loading}
+            >
+              {loading && editMode.username ? (
+                <Spinner />
+              ) : editMode.username ? (
+                <Check strokeWidth={2.5} />
+              ) : (
+                <Pencil strokeWidth={2.5} />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Email Field */}
+        <div>
+          <label htmlFor="email" className="mb-1">
+            Email
+            <span className="text-red-600">*</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="email"
+              id="email"
+              value={data.email}
+              onChange={handleChange}
+              disabled={!editMode.email || loading}
+              className="bg-white text-black"
+              required
+              ref={inputRefs.email}
+            />
+            <VerifyEmailButton
+              email={user.email}
+              isVerified={user.isEmailVerified}
+            />
+            <Button
+              type="button"
+              size={"icon"}
+              variant={"ghost"}
+              onClick={() =>
+                editMode.email
+                  ? handleUpdate("email")
+                  : handleEditClick("email")
+              }
+              disabled={loading}
+            >
+              {loading && editMode.email ? (
+                <Spinner />
+              ) : editMode.email ? (
+                <Check strokeWidth={2.5} />
+              ) : (
+                <Pencil strokeWidth={2.5} />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Password Field */}
+        <div>
+          <label htmlFor="password" className="mb-1">
+            Password
+            <span className="text-red-600">*</span>
+          </label>
           <Input
-            type="text"
-            id="firstName"
-            value={data.firstName}
-            onChange={handleChange}
-            disabled={!editMode.firstName || loading}
+            type="password"
+            id="password"
+            placeholder="Enter your password..."
             className="bg-white text-black"
             required
-            ref={inputRefs.firstName}
+            defaultValue="********" // Masked password
+            disabled
           />
-          <Button
-            type="button"
-            size={"icon"}
-            variant={"ghost"}
-            onClick={() =>
-              editMode.firstName
-                ? handleUpdate("firstName")
-                : handleEditClick("firstName")
-            }
-            disabled={loading}
-          >
-            {loading && editMode.firstName ? (
-              <Spinner />
-            ) : editMode.firstName ? (
-              <Check strokeWidth={2.5} />
-            ) : (
-              <Pencil strokeWidth={2.5} />
-            )}
-          </Button>
         </div>
+        <EditPassword />
       </div>
-
-      {/* Last Name Field */}
-      <div>
-        <label htmlFor="lastName" className="mb-1">
-          Last Name
-          <span className="text-red-600">*</span>
-        </label>
-        <div className="flex items-center gap-2">
-          <Input
-            type="text"
-            id="lastName"
-            value={data.lastName}
-            onChange={handleChange}
-            disabled={!editMode.lastName || loading}
-            className="bg-white text-black"
-            required
-            ref={inputRefs.lastName}
-          />
-          <Button
-            type="button"
-            size={"icon"}
-            variant={"ghost"}
-            onClick={() =>
-              editMode.lastName
-                ? handleUpdate("lastName")
-                : handleEditClick("lastName")
-            }
-            disabled={loading}
-          >
-            {loading && editMode.lastName ? (
-              <Spinner />
-            ) : editMode.lastName ? (
-              <Check strokeWidth={2.5} />
-            ) : (
-              <Pencil strokeWidth={2.5} />
-            )}
-          </Button>
-        </div>
-      </div>
-
-      {/* Username Field */}
-      <div>
-        <label htmlFor="username" className="mb-1">
-          Username
-          <span className="text-red-600">*</span>
-        </label>
-        <div className="flex items-center gap-2">
-          <Input
-            type="text"
-            id="username"
-            value={data.username}
-            onChange={handleChange}
-            disabled={!editMode.username || loading}
-            className="bg-white text-black"
-            required
-            ref={inputRefs.username}
-          />
-          <Button
-            type="button"
-            size={"icon"}
-            variant={"ghost"}
-            onClick={() =>
-              editMode.username
-                ? handleUpdate("username")
-                : handleEditClick("username")
-            }
-            disabled={loading}
-          >
-            {loading && editMode.username ? (
-              <Spinner />
-            ) : editMode.username ? (
-              <Check strokeWidth={2.5} />
-            ) : (
-              <Pencil strokeWidth={2.5} />
-            )}
-          </Button>
-        </div>
-      </div>
-
-      {/* Email Field */}
-      <div>
-        <label htmlFor="email" className="mb-1">
-          Email
-          <span className="text-red-600">*</span>
-        </label>
-        <div className="flex items-center gap-2">
-          <Input
-            type="email"
-            id="email"
-            value={data.email}
-            onChange={handleChange}
-            disabled={!editMode.email || loading}
-            className="bg-white text-black"
-            required
-            ref={inputRefs.email}
-          />
-          <Button
-            type="button"
-            size={"sm"}
-            variant={"default"}
-            onClick={() => alert("Verify email clicked!")} // Replace with actual functionality
-            disabled={loading}
-          >
-            Verify Email
-          </Button>
-          <Button
-            type="button"
-            size={"icon"}
-            variant={"ghost"}
-            onClick={() =>
-              editMode.email ? handleUpdate("email") : handleEditClick("email")
-            }
-            disabled={loading}
-          >
-            {loading && editMode.email ? (
-              <Spinner />
-            ) : editMode.email ? (
-              <Check strokeWidth={2.5} />
-            ) : (
-              <Pencil strokeWidth={2.5} />
-            )}
-          </Button>
-        </div>
-      </div>
-
-      {/* Password Field */}
-      <div>
-        <label htmlFor="password" className="mb-1">
-          Password
-          <span className="text-red-600">*</span>
-        </label>
-        <Input
-          type="password"
-          id="password"
-          placeholder="Enter your password..."
-          className="bg-white text-black"
-          required
-          defaultValue="********" // Masked password
-          disabled
-        />
-      </div>
-      <EditPassword />
-    </div>
+    </>
   )
 }
