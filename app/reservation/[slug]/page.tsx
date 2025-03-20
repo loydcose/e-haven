@@ -18,8 +18,13 @@ type UserType = {
   username: string
 }
 
-export default async function page({ params }: { params: { slug: string } }) {
-  const accommodation = await getAccommodation(params.slug)
+export default async function page({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const slug = (await params).slug
+  const accommodation = await getAccommodation(slug)
   // @ts-expect-error no error here
   const user: UserType | null = await getUserFromToken()
   console.log(user)
@@ -103,7 +108,7 @@ export default async function page({ params }: { params: { slug: string } }) {
             </div>
           ) : (
             <h2 className="text-xl font-bold md:text-2xl">
-              {params.slug} accommodation not found
+              {slug} accommodation not found
             </h2>
           )}
         </div>

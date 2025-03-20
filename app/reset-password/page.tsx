@@ -7,9 +7,9 @@ import TokenInvalid from "./token-invalid"
 export default async function page({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const token = searchParams?.token
+  const token = (await searchParams)?.token
   let isValidToken = false
 
   try {

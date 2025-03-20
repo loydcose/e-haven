@@ -7,7 +7,7 @@ import SignIn from "./sign-in"
 export default async function page({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   return (
     <>

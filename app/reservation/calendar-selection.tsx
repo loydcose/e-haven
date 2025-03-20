@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { addDays, format } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
@@ -26,7 +26,8 @@ export function CalendarSelection({
       setCheckIn(date.from)
       setCheckOut(date.to)
     }
-  }, [date?.from, date?.to])
+    // TODO: sets fucntion are temporary
+  }, [date?.from, date?.to, setCheckIn, setCheckOut])
 
   return (
     <div className={cn("grid gap-2", className)}>

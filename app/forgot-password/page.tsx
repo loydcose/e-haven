@@ -3,11 +3,7 @@ import Image from "next/image"
 import React from "react"
 import ForgotPassword from "./forgot-password"
 
-export default async function page({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined }
-}) {
+export default async function page() {
   return (
     <>
       <div className="fixed inset-0 -z-10">

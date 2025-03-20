@@ -3,12 +3,22 @@ import Image from "next/image"
 import React from "react"
 import Footer from "@/components/footer"
 
-export default async function page({
+/*
+{
+  params,
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined }
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+*/
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const token = searchParams?.token
+  const token =  (await searchParams)?.token
   let isValidToken = false
 
   // TODO: remove this line
@@ -36,7 +46,7 @@ export default async function page({
     console.error("Error verifying token:", error)
   }
 
-  // TODO: to be continued, the tsx below hasn't been changed yet, we must chage nit
+  // TODO: to be continued, the tsx below hasn't been changed yet, we must change it
   console.log(isValidToken)
 
   return (
