@@ -110,6 +110,8 @@ export async function GET() {
   } catch (error) {
     console.error("Error inserting data:", error)
     return NextResponse.json(
+      // TODO: remove this line
+      // @ts-expect-error error is not exist in type never
       { message: "Error inserting data", error: error.message },
       { status: 500 }
     )

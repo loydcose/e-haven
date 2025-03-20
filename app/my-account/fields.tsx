@@ -38,6 +38,8 @@ export default function Fields({ user }: { user: User }) {
   }
 
   const handleEditClick = (field: string) => {
+    // TODO: remove this line
+    // @ts-expect-error field is not exist in type never
     setEditMode((prev) => ({ ...prev, [field]: !prev[field] }))
     if (!editMode[field as keyof typeof editMode]) {
       setTimeout(() => {

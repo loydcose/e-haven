@@ -3,8 +3,41 @@ import Image from "next/image"
 import React from "react"
 import Footer from "@/components/footer"
 
-export default async function page() {
+export default async function page({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}) {
+  const token = searchParams?.token
+  let isValidToken = false
+
+  // TODO: remove this line
   const isExpired = false
+
+  try {
+    const response = await fetch(
+      `${process.env.PUBLIC_URL}/api/verify-token-on-reset`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      }
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+      isValidToken = data.success // Check if the token is valid
+    } else {
+      isValidToken = false
+    }
+  } catch (error) {
+    console.error("Error verifying token:", error)
+  }
+
+  // TODO: to be continued, the tsx below hasn't been changed yet, we must chage nit
+  console.log(isValidToken)
 
   return (
     <main className="relative">

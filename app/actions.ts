@@ -51,7 +51,11 @@ export async function getUserByEmail(email: string) {
     })
     return user
   } catch (error) {
-    console.error("Error fetching user by email:", error.message)
+    if (error instanceof Error) {
+      console.error("Error fetching user by email:", error.message)
+    } else {
+      console.error("Error fetching user by email:", error)
+    }
     return null
   }
 }
@@ -118,7 +122,11 @@ export async function updateUser(userId: string, data: object) {
 
     return { success: true, message: "User updated successfully" }
   } catch (error) {
-    console.error("Error updating user:", error.message)
+    if (error instanceof Error) {
+      console.error("Error updating user:", error.message)
+    } else {
+      console.error("Error updating user:", error)
+    }
     return { success: false, message: "Server error, please try again later." }
   }
 }
