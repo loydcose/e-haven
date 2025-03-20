@@ -67,17 +67,53 @@ export async function getUserById(userId: string) {
     return null
   }
 }
+// Define the user schema for validation
+const userUpdateSchema = z.object({
+  firstName: z
+    .string()
+    .min(2, "First name must be at least 2 characters")
+    .max(128, "First name must be at most 128 characters")
+    .optional(),
+  lastName: z
+    .string()
+    .min(2, "Last name must be at least 2 characters")
+    .max(128, "Last name must be at most 128 characters")
+    .optional(),
+  username: z
+    .string()
+    .min(2, "Username must be at least 2 characters")
+    .max(64, "Username must be at most 64 characters")
+    .optional(),
+  email: z
+    .string()
+    .email("Invalid email format")
+    .min(8, "Email must be at least 8 characters")
+    .max(128, "Email must be at most 128 characters")
+    .optional(),
+})
 
 export async function updateUser(userId: string, data: object) {
   try {
+    // Validate the input data using zod
+    const validationResult = userUpdateSchema.safeParse(data)
+    if (!validationResult.success) {
+      // Return the first validation error message
+      return {
+        success: false,
+        message: validationResult.error.errors[0].message,
+      }
+    }
+
+    // Check if the user exists
     const existingUser = await getUserById(userId)
     if (!existingUser) {
       return { success: false, message: "User not found" }
     }
 
+    // Update the user in the database
     await db.user.update({
       where: { id: userId },
-      data,
+      data: validationResult.data, // Use the validated data
     })
 
     return { success: true, message: "User updated successfully" }
