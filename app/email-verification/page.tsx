@@ -18,15 +18,13 @@ export default async function Page({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const token =  (await searchParams)?.token
+  const token = (await searchParams)?.token
   let isValidToken = false
-
-  // TODO: remove this line
-  const isExpired = false
+  let errorMessage = "Invalid or expired token"
 
   try {
     const response = await fetch(
-      `${process.env.PUBLIC_URL}/api/verify-token-on-reset`,
+      `${process.env.PUBLIC_URL}/api/verify-token-from-email-verification`,
       {
         method: "POST",
         headers: {
@@ -38,16 +36,20 @@ export default async function Page({
 
     if (response.ok) {
       const data = await response.json()
-      isValidToken = data.success // Check if the token is valid
+      console.log({ data })
+      if (data.success) {
+        isValidToken = true
+      } else {
+        errorMessage = data.message
+        isValidToken = false
+      }
+      isValidToken = data.success
     } else {
       isValidToken = false
     }
   } catch (error) {
     console.error("Error verifying token:", error)
   }
-
-  // TODO: to be continued, the tsx below hasn't been changed yet, we must change it
-  console.log(isValidToken)
 
   return (
     <main className="relative">
@@ -65,11 +67,11 @@ export default async function Page({
         <NavBar />
         <div className="mb-16 bg-amber-900/75 p-6 md:p-16 text-white max-w-[1150px] mx-auto rounded-xl text-center">
           <h1 className="font-extrabold tracking-tight text-center text-2xl md:text-3xl mb-6 md:mb-8">
-            {isExpired ? "Link or token expired" : "Email has been verified!"}
+            {!isValidToken ? "There was an error." : "Email has been verified!"}
           </h1>
           <p>
-            {isExpired
-              ? "There was an error. Please request a new one."
+            {!isValidToken
+              ? errorMessage
               : "Your email has been successfully verified. You can now close this page."}
           </p>
         </div>

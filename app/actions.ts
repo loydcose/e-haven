@@ -117,7 +117,7 @@ export async function updateUser(userId: string, data: object) {
     // Update the user in the database
     await db.user.update({
       where: { id: userId },
-      data: validationResult.data, // Use the validated data
+      data: data,
     })
 
     return { success: true, message: "User updated successfully" }

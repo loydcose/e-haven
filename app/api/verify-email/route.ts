@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       .sign(SECRET)
 
     // Construct the verification link
-    const verificationLink = `${process.env.PUBLIC_URL}/verify-email?token=${token}`
+    const verificationLink = `${process.env.PUBLIC_URL}/email-verification?token=${token}`
 
     // Send the verification email
     const emailRes = await resend.emails.send({
