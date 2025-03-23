@@ -311,3 +311,13 @@ export async function changePassword(
     return { success: false, message: "Server error, please try again later." }
   }
 }
+
+export async function getBookDatesFromAccommodation(accommodationId: string) {
+  return await db.reservation.findMany({
+    where: { accommodationId },
+    select: {
+      checkIn: true,
+      checkOut: true,
+    },
+  })
+}

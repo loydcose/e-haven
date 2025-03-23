@@ -21,24 +21,37 @@ import {
 import { useReservationStore } from "@/stores/reservation"
 import { useEffect, useState } from "react"
 import { useToast } from "@/hooks/use-toast"
+import { getBookDatesFromAccommodation } from "../actions"
 
-const bookedDates = [
-  {
-    from: new Date("2025-03-24"),
-    to: new Date("2025-03-25"),
-  },
-  {
-    from: new Date("2025-03-28"),
-    to: new Date("2025-03-30"),
-  },
-]
+type BookedDates = {
+  checkIn: Date
+  checkOut: Date
+}
 
 export function CalendarSelection({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+  accommodationId,
+}: {
+  className?: string
+  accommodationId: string
+}) {
+  const [bookedDates, setBookedDates] = useState<BookedDates[]>([])
   const [date, setDate] = useState<DateRange | undefined>(undefined)
   const { setCheckIn, setCheckOut } = useReservationStore()
   const { toast } = useToast()
+
+  useEffect(() => {
+    const fetchDates = async () => {
+      try {
+        const dates = await getBookDatesFromAccommodation(accommodationId)
+        setBookedDates(dates)
+      } catch (error) {
+        console.error("Error fetching booked dates:", error)
+      }
+    }
+
+    fetchDates()
+  }, [])
 
   useEffect(() => {
     if (date?.from && date?.to) {
@@ -55,8 +68,8 @@ export function CalendarSelection({
     const normalizedTo = startOfDay(range.to)
 
     return !bookedDates.some((bookedRange) => {
-      const bookedFrom = startOfDay(bookedRange.from)
-      const bookedTo = startOfDay(bookedRange.to)
+      const bookedFrom = startOfDay(bookedRange.checkIn)
+      const bookedTo = startOfDay(bookedRange.checkOut)
 
       // Check if the selected range overlaps with any booked range
       return (
@@ -91,8 +104,8 @@ export function CalendarSelection({
     booked: (date: Date) =>
       bookedDates.some((range) =>
         isWithinInterval(startOfDay(date), {
-          start: startOfDay(range.from),
-          end: startOfDay(range.to),
+          start: startOfDay(range.checkIn),
+          end: startOfDay(range.checkOut),
         })
       ),
   }

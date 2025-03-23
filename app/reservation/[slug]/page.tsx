@@ -56,7 +56,7 @@ export default async function page({
 
               <div>
                 <p className="mb-2">Check in - Check out</p>
-                <CalendarSelection className="w-full md:w-72" />
+                <CalendarSelection className="w-full md:w-72" accommodationId={accommodation.id}/>
               </div>
 
               <div>
