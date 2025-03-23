@@ -32,8 +32,16 @@ export function VerifyEmailButton({
       const result = await response.json()
 
       if (response.ok) {
-        setShowVerifyBtn(false)
-        setCheckEmailModalOpen(true)
+        if (result.success) {
+          setShowVerifyBtn(false)
+          setCheckEmailModalOpen(true)
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: result.message || "Failed to send verification email.",
+          })
+        }
       } else {
         toast({
           variant: "destructive",
