@@ -5,6 +5,17 @@ import db from "@/lib/db"
 import { cookies } from "next/headers"
 import { verifyToken } from "@/lib/utils"
 
+const passwordSchema = z.object({
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .max(128, "Password must be at most 128 characters"),
+  confirmPassword: z
+    .string()
+    .min(6, "Confirm password must be at least 6 characters")
+    .max(128, "Confirm password must be at most 128 characters"),
+})
+
 const userSchema = z
   .object({
     firstName: z
@@ -21,17 +32,11 @@ const userSchema = z
       .max(64, "Username must be at most 64 characters"),
     email: z
       .string()
+      .email("Invalid email format")
       .min(8, "Email must be at least 8 characters")
       .max(128, "Email must be at most 128 characters"),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(128, "Password must be at most 128 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Confirm password must be at least 6 characters")
-      .max(128, "Confirm password must be at most 128 characters"),
   })
+  .merge(passwordSchema)
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
@@ -258,6 +263,51 @@ export async function addReservation(reservationData: {
     return { success: true, message: "Reservation added successfully" }
   } catch (error) {
     console.error("Error adding reservation:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
+
+export async function changePassword(
+  userId: string,
+  data: {
+    currentPassword: string
+    password: string
+    confirmPassword: string
+  }
+) {
+  const { currentPassword, password, confirmPassword } = data
+
+  if (password !== confirmPassword) {
+    return { success: false, message: "Passwords do not match" }
+  }
+
+  const result = passwordSchema.safeParse({ password, confirmPassword })
+  if (!result.success) {
+    return { success: false, message: result.error.errors[0].message }
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: { password: true },
+    })
+
+    if (!user) {
+      return { success: false, message: "User not found" }
+    }
+
+    if (currentPassword !== user.password) {
+      return { success: false, message: "Current password is incorrect" }
+    }
+
+    await db.user.update({
+      where: { id: userId },
+      data: { password },
+    })
+
+    return { success: true, message: "Password changed successfully" }
+  } catch (error) {
+    console.error("Error changing password:", error)
     return { success: false, message: "Server error, please try again later." }
   }
 }

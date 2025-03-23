@@ -289,7 +289,7 @@ export default function Fields({ user }: { user: User }) {
             disabled
           />
         </div>
-        <EditPassword />
+        <EditPassword userId={user.id} />
       </div>
     </>
   )
