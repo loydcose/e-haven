@@ -11,6 +11,7 @@ import {
 import Image from "next/image"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Accommodation, Reservation, User } from "@prisma/client"
+import { ConfirmDeletion } from "./confirm-deletion"
 
 export function ViewDetails({
   reservation,
@@ -116,12 +117,7 @@ export function ViewDetails({
               </Button>
             </DialogClose>
             {reservation.status === "pending" && (
-              <Button
-                type="button"
-                className="w-full sm:w-fit bg-red-600 text-white hover:bg-red-700"
-              >
-                Cancel this reservation
-              </Button>
+              <ConfirmDeletion reservationId={reservation.id} />
             )}
           </DialogFooter>
         </DialogContent>

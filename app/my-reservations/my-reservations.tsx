@@ -98,6 +98,12 @@ export default async function MyReservations() {
 
   return (
     <>
+      {reservations.length === 0 && (
+        <h2 className="text-center text-lg">
+          You don&apos;t have any reservations yet. Start booking now!
+        </h2>
+      )}
+
       {/* Active or pending reservations */}
       {pendingReservations.length > 0 && (
         <div className="mb-24 md:mb-32">

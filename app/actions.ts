@@ -328,3 +328,15 @@ export async function getReservationsByUser(userId: string) {
     include: { accommodation: true, user: true },
   })
 } 
+
+
+// delete reservation
+export async function deleteReservation(reservationId: string) {
+  try {
+    await db.reservation.delete({ where: { id: reservationId } })
+    return { success: true, message: "Reservation deleted successfully" }
+  } catch (error) {
+    console.error("Error deleting reservation:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
