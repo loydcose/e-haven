@@ -29,7 +29,7 @@ export function Confirmation({
           <CircleCheckBig className="text-green-600 m-auto" size={90} />
         </div>
         <AlertDialogFooter>
-          <AlertDialogAction onClick={() => (location.href = "/")}>
+          <AlertDialogAction onClick={() => (location.href = "/my-reservations")}>
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>
