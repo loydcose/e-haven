@@ -10,8 +10,15 @@ import {
 } from "@/components/ui/dialog"
 import Image from "next/image"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Accommodation, Reservation, User } from "@prisma/client"
 
-export function ViewDetails() {
+export function ViewDetails({
+  reservation,
+}: {
+  reservation: Reservation & { accommodation: Accommodation } & {
+    user: User
+  }
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -24,11 +31,12 @@ export function ViewDetails() {
       </DialogTrigger>
       <ScrollArea className="rounded-md">
         <DialogContent className="h-[80%] overflow-y-auto w-[90%] rounded-md md:w-[75%] mx-auto max-w-auto">
+          {/* Accommodation Details */}
           <div className="flex flex-col md:flex-row items-start gap-2 md:gap-4 w-full">
             <div className="aspect-[4:3] h-full w-full md:w-auto">
               <Image
-                src="/my-reservations/img1.png"
-                alt="my reservation 1"
+                src={reservation.accommodation.image}
+                alt={reservation.accommodation.title}
                 width={253}
                 height={163}
                 className="w-full object-cover"
@@ -37,48 +45,64 @@ export function ViewDetails() {
             <div className="flex flex-col w-full">
               <div className="flex items-center gap-2 mb-2 md:mb-3 w-full flex-wrap">
                 <h3 className="text-lg md:text-xl font-bold">
-                  Nipa Hut Cottage
+                  {reservation.accommodation.title}
                 </h3>
-                <span className="ml-auto bg-amber-500 text-white rounded-full px-2 py-1 text-sm">
-                  Waiting to accept
+                <span
+                  className={`ml-auto rounded-full px-2 py-1 text-sm ${
+                    reservation.status === "pending"
+                      ? "bg-orange-500 text-white"
+                      : reservation.status === "accepted"
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-500 text-white"
+                  }`}
+                >
+                  {reservation.status === "pending"
+                    ? "Waiting to accept"
+                    : reservation.status === "accepted"
+                    ? "Accepted"
+                    : "Paid"}
                 </span>
               </div>
-              <p className="font-bold text-green-600">600 php</p>
+              <p className="font-bold text-green-600">
+                {reservation.totalPrice} php
+              </p>
             </div>
           </div>
 
-          {/* dates */}
+          {/* Dates */}
           <div className="flex flex-col gap-2 md:gap-4">
             <div>
               <h4 className="font-bold">Check In</h4>
-              <p>August 23, 2024</p>
+              <p>{new Date(reservation.checkIn).toLocaleDateString()}</p>
             </div>
             <div>
-              <h4 className="font-bold">Check In</h4>
-              <p>August 23, 2024</p>
+              <h4 className="font-bold">Check Out</h4>
+              <p>{new Date(reservation.checkOut).toLocaleDateString()}</p>
             </div>
           </div>
 
-          {/* customer information */}
+          {/* Customer Information */}
           <div className="flex flex-col gap-1">
             <h4 className="font-bold">Customer Information</h4>
-            <p>Angelo S. Solomon</p>
-            <p>Sitio Brgy Purok, Mambugan, Antipolo City, Rizal</p>
-            <p>angelo@gmail.com</p>
-            <p>03/26/2002</p>
+            <p>
+              {reservation.user?.firstName} {reservation.user?.lastName}
+            </p>
+            <p>{reservation.address}</p>
+            <p>{reservation.user?.email}</p>
+            <p>{new Date(reservation.birthday).toLocaleDateString()}</p>
           </div>
 
-          {/* guest information */}
+          {/* Guest Information */}
           <div className="flex flex-col gap-1">
             <h4 className="font-bold">Guest Information</h4>
-            <div className="mb-2 md:mb-4">
-              <p>Angelo S. Solomon</p>
-              <p>03/26/2002</p>
-            </div>
-            <div>
-              <p>Angelo S. Solomon</p>
-              <p>03/26/2002</p>
-            </div>
+            {Array.isArray(reservation.guests) &&
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              reservation.guests.map((guest: any, index: number) => (
+                <div key={index} className="mb-2 md:mb-4">
+                  <p>{guest.name}</p>
+                  <p>{new Date(guest.birthday).toLocaleDateString()}</p>
+                </div>
+              ))}
           </div>
 
           <DialogFooter className="justify-end flex items-center gap-2">
@@ -91,12 +115,14 @@ export function ViewDetails() {
                 Close
               </Button>
             </DialogClose>
-            <Button
-              type="button"
-              className="w-full sm:w-fit bg-red-600 text-white hover:bg-amber-700"
-            >
-              Delete this reservation
-            </Button>
+            {reservation.status === "pending" && (
+              <Button
+                type="button"
+                className="w-full sm:w-fit bg-red-600 text-white hover:bg-red-700"
+              >
+                Cancel this reservation
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </ScrollArea>

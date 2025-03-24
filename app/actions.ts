@@ -321,3 +321,10 @@ export async function getBookDatesFromAccommodation(accommodationId: string) {
     },
   })
 }
+
+export async function getReservationsByUser(userId: string) {
+  return await db.reservation.findMany({
+    where: { userId },
+    include: { accommodation: true, user: true },
+  })
+} 

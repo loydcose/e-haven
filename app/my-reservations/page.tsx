@@ -1,8 +1,9 @@
 import NavBar from "@/components/nav-bar"
 import Image from "next/image"
-import React from "react"
+import React, { Suspense } from "react"
 import Footer from "@/components/footer"
 import MyReservations from "./my-reservations"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function page() {
   return (
@@ -22,7 +23,18 @@ export default function page() {
         <h1 className="font-extrabold tracking-tight text-center text-3xl md:text-4xl text-white mb-6 md:mb-12">
           My Reservations
         </h1>
-        <MyReservations />
+        <div className="mb-16 bg-amber-900 p-6 md:p-16 text-white max-w-[1150px] mx-auto rounded-xl flex flex-col">
+          <Suspense
+            fallback={
+              <div>
+                <Skeleton className="w-full h-56 bg-amber-800 mb-6 md:mb-10" />
+                <Skeleton className="w-full h-56 bg-amber-800" />
+              </div>
+            }
+          >
+            <MyReservations />
+          </Suspense>
+        </div>
       </section>
       <Footer />
     </main>
