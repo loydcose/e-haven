@@ -51,12 +51,17 @@ model Reservation {
   contactNumber   String
   guests          Json
   totalPrice      Float
-  isConfirmed     Boolean  @default(false)
-  isPaid          Boolean  @default(false)
+  status          ReservationStatus   @default(pending) 
 
   user          User          @relation(fields: [userId], references: [id])
   accommodation Accommodation @relation(fields: [accommodationId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum ReservationStatus {
+  pending
+  accepted
+  paid
 }
