@@ -104,7 +104,7 @@ export default function MakeReview() {
     }
   }
   return (
-    <div className="bg-amber-900 rounded-xl p-6 md:p-8 text-white h-fit">
+    <div className="md:mt-16 bg-amber-900 rounded-xl p-6 md:p-8 text-white h-fit">
       <h4 className="text-center font-bold text-xl md:text-2xl mb-4 md:mb-6">
         We appreciate your input. Please tell us about your visit
       </h4>

@@ -408,9 +408,18 @@ export async function addReview(
   }
 }
 
-// get all reviews
-export async function getReviews() {
+// get all reviews with pagination
+export async function getReviews(page: number = 1, limit: number = 10) {
+  const skip = (page - 1) * limit
   return await db.review.findMany({
     include: { user: true },
+    skip,
+    take: limit,
   })
 }
+
+// export async function getReviews() {
+//   return await db.review.findMany({
+//     include: { user: true },
+//   })
+// }
