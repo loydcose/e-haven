@@ -26,6 +26,7 @@
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",
     "date-fns": "^3.6.0",
+    "embla-carousel-react": "^8.5.2",
     "jose": "^6.0.8",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.474.0",
