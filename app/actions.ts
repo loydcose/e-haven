@@ -327,8 +327,7 @@ export async function getReservationsByUser(userId: string) {
     where: { userId },
     include: { accommodation: true, user: true },
   })
-} 
-
+}
 
 // delete reservation
 export async function deleteReservation(reservationId: string) {
@@ -349,4 +348,69 @@ export async function getUsers() {
 // get all reservations
 export async function getReservations() {
   return await db.reservation.findMany()
+}
+
+// add review
+export async function addReview(
+  userId: string,
+  data: {
+    rating: number
+    comment: string
+  },
+  overwrite: boolean = false
+) {
+  console.log(userId, data)
+
+  try {
+    // Check if the user already has a review
+    const existingReview = await db.review.findFirst({
+      where: { userId },
+    })
+
+    if (existingReview) {
+      if (overwrite) {
+        // Overwrite the existing review
+        const updatedReview = await db.review.update({
+          where: { id: existingReview.id },
+          data: {
+            rating: data.rating,
+            comment: data.comment,
+            updatedAt: new Date(), // Update the timestamp
+          },
+        })
+
+        return {
+          success: true,
+          message: "Review updated successfully.",
+          review: updatedReview,
+        }
+      } else {
+        // Return failure if overwrite is false
+        return {
+          success: false,
+          message: "You have already submitted a review.",
+        }
+      }
+    }
+
+    // Create a new review if no existing review is found
+    const review = await db.review.create({
+      data: {
+        ...data,
+        userId, // Associate the review with the user
+      },
+    })
+
+    return { success: true, message: "Review added successfully.", review }
+  } catch (error) {
+    console.error("Error adding review:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
+
+// get all reviews
+export async function getReviews() {
+  return await db.review.findMany({
+    include: { user: true },
+  })
 }

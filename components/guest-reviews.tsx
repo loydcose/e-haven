@@ -1,10 +1,8 @@
 import Image from "next/image"
-import React from "react"
 import StarFilled from "./icons/star-filled"
 import { Button } from "./ui/button"
 import StarUnfilled from "./icons/star-unfilled"
-import { Input } from "./ui/input"
-import { Textarea } from "./ui/textarea"
+import MakeReview from "./make-review"
 
 const reviews = [
   {
@@ -83,48 +81,7 @@ export default function GuestReviews() {
         </div>
 
         {/* contact section */}
-        <div className="bg-amber-900 rounded-xl p-6 md:p-8 text-white h-fit">
-          <h4 className="text-center font-bold text-xl md:text-2xl mb-4 md:mb-6">
-            We appreciate your input. Please tell us about your visit
-          </h4>
-          <div className="flex items-center gap-3 justify-center mb-3 md:mb-4">
-            <p>Rate: </p>
-            <div className="flex items-center gap-1">
-              <StarFilled className="size-[16px] md:size-[18px]" />
-              <StarFilled className="size-[16px] md:size-[18px]" />
-              <StarFilled className="size-[16px] md:size-[18px]" />
-              <StarFilled className="size-[16px] md:size-[18px]" />
-              <StarUnfilled className="size-[16px] md:size-[18px]" />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 md:gap-3 mb-3 md:mb-4">
-            <Input
-              type="text"
-              className="placeholder:text-white/50"
-              placeholder="Your email address"
-            />
-            <Input
-              type="text"
-              className="placeholder:text-white/50"
-              placeholder="Your name"
-            />
-            <Textarea
-              placeholder="Description"
-              className="placeholder:text-white/50"
-            />
-          </div>
-
-          <div className="w-full md:w-fit mx-auto">
-            <Button
-              type="button"
-              className="font-bold w-full md:w-fit"
-              variant={"secondary"}
-            >
-              Submit
-            </Button>
-          </div>
-        </div>
+        <MakeReview />
       </section>
     </div>
   )

@@ -24,6 +24,7 @@ model User {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   Reservation Reservation[]
+  Review      Review[]
 }
 
 model Accommodation {
@@ -41,7 +42,7 @@ model Accommodation {
 }
 
 model Reservation {
-  id              String   @id @default(uuid()) @map("_id")
+  id              String            @id @default(uuid()) @map("_id")
   accommodationId String
   userId          String
   checkIn         DateTime
@@ -51,7 +52,7 @@ model Reservation {
   contactNumber   String
   guests          Json
   totalPrice      Float
-  status          ReservationStatus   @default(pending) 
+  status          ReservationStatus @default(pending)
 
   user          User          @relation(fields: [userId], references: [id])
   accommodation Accommodation @relation(fields: [accommodationId], references: [id])
@@ -64,4 +65,18 @@ enum ReservationStatus {
   pending
   accepted
   paid
+}
+
+// review schema
+model Review {
+  id         String  @id @default(uuid()) @map("_id")
+  userId     String
+  rating     Int
+  comment    String
+  visibility Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
