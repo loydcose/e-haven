@@ -2,6 +2,7 @@ import Image from "next/image"
 import React from "react"
 import Footer from "@/components/footer"
 import AdminNavbar from "@/components/admin-nav-bar"
+import { Admin } from "./admin"
 
 export default function page() {
   return (
@@ -22,7 +23,7 @@ export default function page() {
           ADMIN DASHBOARD
         </h1>
         <div className="mb-16 bg-amber-900 p-6 md:p-16 text-white max-w-[1150px] mx-auto rounded-xl flex flex-col">
-          <h1>hello world</h1>
+          <Admin />
         </div>
       </section>
       <Footer />

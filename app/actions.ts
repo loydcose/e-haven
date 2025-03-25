@@ -340,3 +340,13 @@ export async function deleteReservation(reservationId: string) {
     return { success: false, message: "Server error, please try again later." }
   }
 }
+
+// get all users
+export async function getUsers() {
+  return await db.user.findMany()
+}
+
+// get all reservations
+export async function getReservations() {
+  return await db.reservation.findMany()
+}
