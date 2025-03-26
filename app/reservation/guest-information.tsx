@@ -19,7 +19,7 @@ export default function GuestInformation() {
   // Ensure there is always at least one guest
   useEffect(() => {
     if (guests.length === 0) {
-      addGuest({ id: generateId(), name: "", birthday: new Date() })
+      addGuest({ id: generateId(), name: "", birthday: null }) // Initialize birthday as null
       setTotalPrice(100) // Initialize total price for the first guest
     }
   }, [guests, addGuest, setTotalPrice])
@@ -28,7 +28,7 @@ export default function GuestInformation() {
     `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
   const handleAddGuest = () => {
-    addGuest({ id: generateId(), name: "", birthday: new Date() })
+    addGuest({ id: generateId(), name: "", birthday: null }) // Initialize birthday as null
     setTotalPrice(totalPrice + 100) // Increment total price by 100
   }
 
@@ -46,7 +46,7 @@ export default function GuestInformation() {
   ) => {
     const updatedGuest = {
       ...guests[index],
-      [field]: field === "birthday" ? new Date(value) : value,
+      [field]: field === "birthday" ? new Date(value) : value, // Convert birthday to a Date object
     }
     updateGuest(index, updatedGuest)
   }
@@ -101,7 +101,11 @@ export default function GuestInformation() {
                 id={`birthday-${guest.id}`}
                 placeholder="Enter birthday..."
                 className="bg-white text-black"
-                value={guest.birthday.toISOString().split("T")[0]} // Format date for input
+                value={
+                  guest.birthday
+                    ? new Date(guest.birthday).toISOString().split("T")[0]
+                    : ""
+                } 
                 onChange={(e) =>
                   handleGuestChange(index, "birthday", e.target.value)
                 }

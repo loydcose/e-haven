@@ -44,20 +44,13 @@ export default function page() {
         <div className="mx-auto w-11/12 z-10 mb-16 md:mb-20 flex flex-col h-full">
           <NavBar />
           <div className="my-auto text-center text-white flex flex-col gap-1">
-            <h1 className="font-extrabold text-4xl md:text-6xl tracking-tight">
+            <h1 className="font-extrabold text-4xl md:text-5xl tracking-tight">
               ABOUT US
             </h1>
-            <p className="font-bold">Welcome to</p>
-
-            <div className="w-full max-w-[700px] mx-auto mb-28">
-              <Image
-                src="/about-us/title.png"
-                alt="title"
-                width={800}
-                height={114}
-                className="size-full object-contain"
-              />
-            </div>
+            <p className="font-bold text-lg">Welcome to</p>
+            <h2 className="font-extrabold text-4xl md:text-6xl tracking-tight">
+              Nature&apos;s Haven Resort
+            </h2>
           </div>
         </div>
       </section>

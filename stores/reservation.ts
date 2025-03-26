@@ -3,7 +3,7 @@ import { create } from "zustand"
 type Guest = {
   id: string
   name: string
-  birthday: Date
+  birthday: Date | null
 }
 
 type ReservationStore = {

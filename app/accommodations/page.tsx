@@ -11,16 +11,8 @@ export default async function page() {
   const accommodations = await getAccommodations()
   return (
     <main className="relative">
-      <div className="bg-black/20 absolute inset-0 -z-10"></div>
-      <div className="size-full absolute inset-0 -z-20">
-        <Image
-          src="/accommodations/accommodations-image.png"
-          alt="accommodations background image"
-          width={1736}
-          height={2626}
-          className="size-full object-cover object-top"
-        />
-      </div>
+      <div className="bg-amber-800 absolute inset-0 -z-10"></div>
+      
       <div className="mx-auto w-11/12 z-10 mb-16 md:mb-20">
         <NavBar />
         <div className="bg-black/60 p-10 md:p-16 text-white max-w-[1150px] mx-auto">
