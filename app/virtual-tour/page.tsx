@@ -3,42 +3,14 @@ import NavBar from "@/components/nav-bar"
 import { buttonVariants } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
+import { getAccommodations } from "@/app/actions" // Import the function to fetch accommodations
 import React from "react"
+import { cn } from "@/lib/utils"
 
-const clips = [
-  {
-    id: 1,
-    name: "Nipa Hut Cottage",
-    image: "/virtual-tour/img2.png",
-    link: "/virtual-tour",
-  },
-  {
-    id: 2,
-    name: "Nipa Hut Room Cottage",
-    image: "/virtual-tour/img3.png",
-    link: "/virtual-tour",
-  },
-  {
-    id: 3,
-    name: "Overlooking Hut Cottage",
-    image: "/virtual-tour/img4.png",
-    link: "/virtual-tour",
-  },
-  {
-    id: 4,
-    name: "Cozy House Cottage",
-    image: "/virtual-tour/img5.png",
-    link: "/virtual-tour",
-  },
-  {
-    id: 5,
-    name: "Family House Nipa Cottage",
-    image: "/virtual-tour/img6.png",
-    link: "/virtual-tour",
-  },
-]
+export default async function Page() {
+  // Fetch accommodations from the database
+  const accommodations = await getAccommodations()
 
-export default function page() {
   return (
     <main>
       <section className="relative h-screen flex flex-col">
@@ -87,25 +59,28 @@ export default function page() {
           <h2 className="font-bold text-center text-3xl md:text-4xl mb-8 md:mb-12 tracking-tight">
             NATURE&apos;S HAVEN RESORT VIDEO CLIPS
           </h2>
-          <ul className="grid grid-cols md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
-            {clips.map((clip) => (
-              <li key={clip.id}>
-                <div className="aspect-square mb-3">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
+            {accommodations.map((accom) => (
+              <li key={accom.id}>
+                <div className="aspect-square mb-3 rounded-lg overflow-hidden shadow-lg">
                   <Image
-                    src={clip.image}
-                    alt={`${clip.name}'s image`}
+                    src={accom.image}
+                    alt={`${accom.title}'s image`}
                     width={400}
                     height={400}
                     className="size-full object-cover"
                   />
                 </div>
                 <div className="flex items-center gap-2 justify-between">
-                  <p className="font-medium">{clip.name}</p>
+                  <p className="font-medium">{accom.title}</p>
                   <Link
-                    href={clip.link}
-                    className={`${buttonVariants({
-                      variant: "outline",
-                    })} font-bold underline`}
+                    href={`/virtual-tour/view?room=${accom.slug}`}
+                    className={cn(
+                      buttonVariants({
+                        variant: "default",
+                      }),
+                      "font-bold bg-amber-600 hover:bg-amber-700"
+                    )}
                   >
                     View 360
                   </Link>
