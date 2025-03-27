@@ -1,7 +1,7 @@
 import Footer from "@/components/footer"
 import NavBar from "@/components/nav-bar"
 import { buttonVariants } from "@/components/ui/button"
-import { Tag } from "lucide-react"
+import { CircleCheckBig, Tag } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
@@ -12,7 +12,7 @@ export default async function page() {
   return (
     <main className="relative">
       <div className="bg-amber-800 absolute inset-0 -z-10"></div>
-      
+
       <div className="mx-auto w-11/12 z-10 mb-16 md:mb-20">
         <NavBar />
         <div className="bg-black/60 p-10 md:p-16 text-white max-w-[1150px] mx-auto">
@@ -27,7 +27,7 @@ export default async function page() {
                 className="flex flex-col md:flex-row gap-4 md:gap-12"
               >
                 <div
-                  className={`aspect-square grow shrink-0 w-full max-w-[350px] ${
+                  className={`aspect-square grow shrink-0 w-full max-w-[350px] rounded-2xl overflow-hidden ${
                     index % 2 === 0 ? "order-1" : "order-1 md:order-2"
                   }`}
                 >
@@ -48,7 +48,15 @@ export default async function page() {
                   <h2 className="mb-2 md:mb-4 font-bold text-2xl md:text-3xl tracking-tight">
                     {accom.title}
                   </h2>
-                  <p className="mb-6 md:mb-12">{accom.description}</p>
+                  <p className="mb-4 md:mb-6">{accom.description}</p>
+                  <ul className="flex items-center gap-2 flex-wrap mb-4 md:mb-6">
+                    {accom.amenities.map((amenity) => (
+                      <li key={amenity} className="flex items-center gap-2">
+                        <CircleCheckBig className="text-green-600" />
+                        {amenity}
+                      </li>
+                    ))}
+                  </ul>
                   <div className="flex items-center gap-2 mb-2">
                     <Tag />
                     <span className="font-bold text-lg md:text-xl">
