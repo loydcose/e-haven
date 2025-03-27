@@ -9,6 +9,7 @@ import { getAccommodation, getUserFromToken } from "@/app/actions"
 import { CalendarSelection } from "../calendar-selection"
 import CustomerInformation from "../customer-information"
 import SubmitButton from "../submit-btn"
+import AgreementCheck from "../agreement-check"
 
 // TODO: add skeleton laoder using nextjs streaming
 
@@ -56,7 +57,10 @@ export default async function page({
 
               <div>
                 <p className="mb-2">Check in - Check out</p>
-                <CalendarSelection className="w-full md:w-72" accommodationId={accommodation.id}/>
+                <CalendarSelection
+                  className="w-full md:w-72"
+                  accommodationId={accommodation.id}
+                />
               </div>
 
               <div>
@@ -95,15 +99,23 @@ export default async function page({
 
               <GuestInformation />
 
-              <div className="flex items-center gap-2 w-fit mx-auto">
-                <Button
-                  type="button"
-                  size={"lg"}
-                  className="text-white bg-gray-500 hover:bg-gray-600"
-                >
-                  Cancel
-                </Button>
-                <SubmitButton accommodation={accommodation} userId={user.id} />
+              <div>
+                <div className="mb-4 w-fit mx-auto">
+                  <AgreementCheck />
+                </div>
+                <div className="flex items-center gap-2 w-fit mx-auto">
+                  <Button
+                    type="button"
+                    size={"lg"}
+                    className="text-white bg-gray-500 hover:bg-gray-600"
+                  >
+                    Cancel
+                  </Button>
+                  <SubmitButton
+                    accommodation={accommodation}
+                    userId={user.id}
+                  />
+                </div>
               </div>
             </div>
           ) : (

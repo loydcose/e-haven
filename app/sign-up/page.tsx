@@ -2,6 +2,7 @@ import AuthCardLayout from "@/components/layouts/auth-card-layout"
 import Image from "next/image"
 import React from "react"
 import SignUp from "./sign-up"
+import Link from "next/link"
 
 export default function page() {
   return (
@@ -33,6 +34,12 @@ export default function page() {
           </h2>
 
           <SignUp />
+          <div className="flex items-center gap-2 justify-between">
+            <p>Already have an account?</p>
+            <Link href="/sign-up" className="hover:underline">
+              Sign in
+            </Link>
+          </div>
         </AuthCardLayout>
       </main>
     </>

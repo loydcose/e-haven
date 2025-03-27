@@ -16,6 +16,7 @@ type ReservationStore = {
   contactNumber: string
   guests: Guest[]
   totalPrice: number
+  hasCheckAgreement: boolean
   setAccommodationId: (accommodationId: string) => void
   setUserId: (userId: string) => void
   setCheckIn: (checkIn: Date) => void
@@ -27,6 +28,7 @@ type ReservationStore = {
   removeGuest: (index: number) => void
   updateGuest: (index: number, updatedGuest: Guest) => void // Added type for updateGuest
   setTotalPrice: (totalPrice: number) => void
+  setHasCheckAgreement: (hasCheckAgreement: boolean) => void
 }
 
 export const useReservationStore = create<ReservationStore>()((set) => ({
@@ -39,6 +41,7 @@ export const useReservationStore = create<ReservationStore>()((set) => ({
   contactNumber: "",
   guests: [],
   totalPrice: 0,
+  hasCheckAgreement: false,
   setAccommodationId: (accommodationId) => set(() => ({ accommodationId })),
   setUserId: (userId) => set(() => ({ userId })),
   setCheckIn: (checkIn) => set(() => ({ checkIn })),
@@ -59,4 +62,6 @@ export const useReservationStore = create<ReservationStore>()((set) => ({
     })
   },
   setTotalPrice: (totalPrice) => set(() => ({ totalPrice })),
+  setHasCheckAgreement: (hasCheckAgreement) =>
+    set(() => ({ hasCheckAgreement })),
 }))

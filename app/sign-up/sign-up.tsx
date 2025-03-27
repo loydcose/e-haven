@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { addUser } from "../actions"
 import { useToast } from "@/hooks/use-toast"
+import Agreement from "./agreement"
 
 export default function SignUp() {
   const { toast } = useToast()
+  const [hasCheckAgreement, setHasCheckAgreement] = useState(false)
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,6 +30,16 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (!hasCheckAgreement) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please check the agreement",
+      })
+      return
+    }
+
     const res = await addUser(formData)
     if (!res) {
       const response = await fetch("/api/login", {
@@ -154,7 +166,10 @@ export default function SignUp() {
           required
         />
       </div>
-
+      <Agreement
+        hasCheckAgreement={hasCheckAgreement}
+        setHasCheckAgreement={setHasCheckAgreement}
+      />
       <Button
         type="submit"
         size={"lg"}
