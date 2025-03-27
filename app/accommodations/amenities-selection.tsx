@@ -9,34 +9,34 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ChevronsUpDown } from "lucide-react"
-import { useState } from "react"
+import { useAccommodationFilterStore } from "@/stores/accommodation-filter" // Import the store
 
 const amenities = [
   "Karaoke",
   "Billiards",
-  "Free Parking",
-  "Basic Kitchenwares",
-  "Air Conditioning",
-  "Blanket and Pillow",
+  "Free parking",
+  "Basic kitchenwares",
+  "Air conditioning",
+  "Blanket and pillow",
 ]
 
 export function AmenitiesSelection() {
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
+  const { amenities: selectedAmenities, setAmenities } =
+    useAccommodationFilterStore()
 
   const handleToggleAmenity = (amenity: string) => {
-    setSelectedAmenities(
-      (prev) =>
-        prev.includes(amenity)
-          ? prev.filter((item) => item !== amenity) // Remove if already selected
-          : [...prev, amenity] // Add if not selected
-    )
+    const updatedAmenities = selectedAmenities.includes(amenity)
+      ? selectedAmenities.filter((item) => item !== amenity)
+      : [...selectedAmenities, amenity]
+
+    setAmenities(updatedAmenities)
   }
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button type="button" className="w-40 flex items-center gap-2">
-          Select Amenities <ChevronsUpDown className="opacity-75"/>
+          Select Amenities <ChevronsUpDown className="opacity-75" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80" align="start">
@@ -46,8 +46,8 @@ export function AmenitiesSelection() {
             <div key={amenity} className="flex items-center space-x-2">
               <Checkbox
                 id={amenity}
-                checked={selectedAmenities.includes(amenity)}
-                onCheckedChange={() => handleToggleAmenity(amenity)}
+                checked={selectedAmenities.includes(amenity)} // Check if the amenity is selected
+                onCheckedChange={() => handleToggleAmenity(amenity)} // Toggle the amenity
               />
               <Label
                 htmlFor={amenity}

@@ -176,6 +176,14 @@ export async function getAccommodations() {
   return await db.accommodation.findMany()
 }
 
+export async function getAccommodationsWithReservation() {
+  return await db.accommodation.findMany({
+    include: {
+      reservations: true,
+    },
+  })
+}
+
 // get single accommodation base on slug
 export async function getAccommodation(slug: string) {
   return await db.accommodation.findUnique({ where: { slug } })

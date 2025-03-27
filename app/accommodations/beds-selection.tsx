@@ -10,13 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Bed } from "lucide-react"
+import { useAccommodationFilterStore } from "@/stores/accommodation-filter"
 
 export function BedsSelection() {
-  const [selectedBed, setSelectedBed] = React.useState<string | null>(null)
+  const { setNoOfBed } = useAccommodationFilterStore()
 
   const handleValueChange = (value: string) => {
-    setSelectedBed(value) // Update the state with the selected value
-    console.log("Selected bed:", value) // Log the selected value (optional)
+    setNoOfBed(Number(value))
+    console.log("Selected bed:", value)
   }
 
   return (
@@ -33,7 +34,7 @@ export function BedsSelection() {
           {[1, 2, 3, 4, 5, 6].map((item) => (
             <SelectItem key={item} value={String(item)}>
               <div className="flex items-center gap-2">
-                <Bed size={18}/> <p>{item}x bed</p>
+                <Bed size={18} /> <p>{item}x bed</p>
               </div>
             </SelectItem>
           ))}

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { addDays, format } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
 
@@ -13,11 +13,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useAccommodationFilterStore } from "@/stores/accommodation-filter"
 
 export function DateSelection({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>(undefined)
+  const { setDateRange } = useAccommodationFilterStore()
+
+  React.useEffect(() => {
+    if (date?.from && date?.to) {
+      setDateRange({ from: date.from, to: date.to })
+    }
+  }, [date, setDateRange])
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -42,7 +50,7 @@ export function DateSelection({
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Date availability range</span>
+              <span>Date range availability</span>
             )}
           </Button>
         </PopoverTrigger>
