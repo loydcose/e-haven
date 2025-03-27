@@ -99,6 +99,7 @@ const userUpdateSchema = z.object({
     .min(8, "Email must be at least 8 characters")
     .max(128, "Email must be at most 128 characters")
     .optional(),
+  hasShownCookieMsg: z.boolean().optional(),
 })
 
 export async function updateUser(userId: string, data: object) {

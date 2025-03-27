@@ -89,30 +89,38 @@ const data = [
 
 export async function GET() {
   try {
-    // Insert data into the database
-    for (const item of data) {
-      await db.accommodation.create({
-        data: {
-          slug: item.slug,
-          title: item.title,
-          description: item.description,
-          image: item.image,
-          price: item.price,
-          amenities: item.amenities,
-        },
-      })
-    }
+    // Insert accommodations into the database
+    // for (const item of data) {
+    //   await db.accommodation.create({
+    //     data: {
+    //       slug: item.slug,
+    //       title: item.title,
+    //       description: item.description,
+    //       image: item.image,
+    //       price: item.price,
+    //       amenities: item.amenities,
+    //     },
+    //   });
+    // }
+
+    // Update all users to have the `hasShownCookieMsg` property set to false
+    await db.user.updateMany({
+      data: {
+        hasShownCookieMsg: false,
+      },
+    })
 
     return NextResponse.json(
-      { message: "Data inserted successfully" },
+      { message: "Data inserted and users updated successfully" },
       { status: 200 }
     )
   } catch (error) {
-    console.error("Error inserting data:", error)
+    console.error("Error inserting data or updating users:", error)
     return NextResponse.json(
-      // TODO: remove this line
-      // @ts-expect-error error is not exist in type never
-      { message: "Error inserting data", error: error.message },
+      {
+        message: "Error inserting data or updating users",
+        error: (error as { message: string }).message,
+      },
       { status: 500 }
     )
   }
