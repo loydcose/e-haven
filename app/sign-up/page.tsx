@@ -36,7 +36,7 @@ export default function page() {
           <SignUp />
           <div className="flex items-center gap-2 justify-between">
             <p>Already have an account?</p>
-            <Link href="/sign-up" className="hover:underline">
+            <Link href="/sign-in" className="hover:underline">
               Sign in
             </Link>
           </div>

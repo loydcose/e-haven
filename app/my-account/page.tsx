@@ -30,7 +30,7 @@ export default async function page() {
       </div>
       <section className="mx-auto w-11/12 z-10">
         <NavBar />
-        <div className="mb-16 bg-amber-900/75 pfp-6 md:p-16 text-white max-w-[1150px] mx-auto rounded-xl">
+        <div className="mb-16 bg-amber-900/75 p-6 md:p-16 text-white max-w-[1150px] mx-auto rounded-xl">
           <h1 className="font-extrabold tracking-tight text-center text-3xl md:text-4xl mb-12 md:mb-16">
             My Account
           </h1>

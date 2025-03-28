@@ -11,6 +11,7 @@ import { updateUser } from "../actions"
 import Spinner from "@/components/icons/spinner"
 import { CheckEmailModal } from "./check-email-modal"
 import { VerifyEmailButton } from "./verify-email-button"
+import { DeleteAccount } from "./delete-account"
 
 export default function Fields({ user }: { user: User }) {
   const [checkEmailModalOpen, setCheckEmailModalOpen] = useState(false)
@@ -290,6 +291,9 @@ export default function Fields({ user }: { user: User }) {
           />
         </div>
         <EditPassword userId={user.id} />
+      </div>
+      <div className="mt-4 md:mt-8">
+        <DeleteAccount userId={user.id}/>
       </div>
     </>
   )

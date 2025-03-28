@@ -479,8 +479,42 @@ export async function getReviews(page: number = 1, limit: number = 10) {
   })
 }
 
-// export async function getReviews() {
-//   return await db.review.findMany({
-//     include: { user: true },
-//   })
-// }
+export async function deleteUserAccount(userId: string) {
+  const cookiesStore = await cookies()
+
+  try {
+    // Check if the user exists
+    const user = await db.user.findUnique({
+      where: { id: userId },
+    })
+
+    if (!user) {
+      return { success: false, message: "User not found" }
+    }
+
+    // Delete all reservations associated with the user
+    await db.reservation.deleteMany({
+      where: { userId },
+    })
+
+    // Delete all reviews associated with the user
+    await db.review.deleteMany({
+      where: { userId },
+    })
+
+    // Finally, delete the user account
+    await db.user.delete({
+      where: { id: userId },
+    })
+
+    cookiesStore.delete("token")
+
+    return {
+      success: true,
+      message: "User account and associated data deleted successfully",
+    }
+  } catch (error) {
+    console.error("Error deleting user account:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
