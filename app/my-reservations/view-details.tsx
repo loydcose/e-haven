@@ -91,6 +91,8 @@ export function ViewDetails({
             <p>{reservation.address}</p>
             <p>{reservation.user?.email}</p>
             <p>{new Date(reservation.birthday).toLocaleDateString()}</p>
+            <p>{reservation.gender}</p>
+            <p>{reservation.healthIssue}</p>
           </div>
 
           {/* Guest Information */}
@@ -102,6 +104,8 @@ export function ViewDetails({
                 <div key={index} className="mb-2 md:mb-4">
                   <p>{guest.name}</p>
                   <p>{new Date(guest.birthday).toLocaleDateString()}</p>
+                  <p>{guest.gender}</p>
+                  <p>{guest.healthIssue}</p>
                 </div>
               ))}
           </div>
