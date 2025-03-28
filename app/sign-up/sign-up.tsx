@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { addUser } from "../actions"
 import { useToast } from "@/hooks/use-toast"
+import Agreement from "./agreement"
 
 export default function SignUp() {
   const { toast } = useToast()
+  const [hasCheckAgreement, setHasCheckAgreement] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,8 +31,31 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const res = await addUser(formData)
-    if (!res) {
+
+    if (!hasCheckAgreement) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please check the agreement",
+      })
+      return
+    }
+
+    setLoading(true) // Start loading
+
+    try {
+      const res = await addUser(formData)
+
+      if (!res.success) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: res.message,
+        })
+        setLoading(false) // Stop loading
+        return
+      }
+
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -48,6 +74,7 @@ export default function SignUp() {
             title: "Error",
             description: data.message,
           })
+          setLoading(false) // Stop loading
           return
         }
 
@@ -57,7 +84,7 @@ export default function SignUp() {
           variant: "success",
         })
 
-        // add 2 seconds delay before redirecting to home page
+        // Add 2 seconds delay before redirecting to home page
         setTimeout(() => {
           window.location.href = "/"
         }, 2000)
@@ -68,15 +95,16 @@ export default function SignUp() {
           description: "Try again later",
         })
       }
-
-      return
+    } catch (error) {
+      console.error("Caught error + " + (error as { message: string }).message)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Server error, please try again later.",
+      })
+    } finally {
+      setLoading(false) // Stop loading
     }
-
-    toast({
-      variant: "destructive",
-      title: "Error",
-      description: res.message,
-    })
   }
 
   return (
@@ -154,13 +182,17 @@ export default function SignUp() {
           required
         />
       </div>
-
+      <Agreement
+        hasCheckAgreement={hasCheckAgreement}
+        setHasCheckAgreement={setHasCheckAgreement}
+      />
       <Button
         type="submit"
         size={"lg"}
         className="mb-8 w-full font-bold text-lg h-12"
+        disabled={loading} // Disable the button while loading
       >
-        Sign up
+        {loading ? "Signing up..." : "Sign up"}
       </Button>
     </form>
   )

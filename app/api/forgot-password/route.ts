@@ -74,7 +74,7 @@ export async function POST(req: Request) {
     const resetLink = `${process.env.PUBLIC_URL}/reset-password?token=${token}`
 
     const emailRes = await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "E-Haven <no-reply@e-haven.live>",
       to: email.trim(),
       subject: "Reset Your Password",
       react: EmailTemplate({

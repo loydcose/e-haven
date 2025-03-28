@@ -3,7 +3,8 @@
 import { z } from "zod"
 import db from "@/lib/db"
 import { cookies } from "next/headers"
-import { verifyToken } from "@/lib/utils"
+import { HealthLabel, verifyToken } from "@/lib/utils"
+import bcrypt from "bcryptjs" // Import bcrypt for password hashing
 
 const passwordSchema = z.object({
   password: z
@@ -99,6 +100,7 @@ const userUpdateSchema = z.object({
     .min(8, "Email must be at least 8 characters")
     .max(128, "Email must be at most 128 characters")
     .optional(),
+  hasShownCookieMsg: z.boolean().optional(),
 })
 
 export async function updateUser(userId: string, data: object) {
@@ -156,23 +158,45 @@ export async function addUser(formData: {
       where: { username: formData.username },
     })
     if (existingUser) {
-      return { message: "Username already exists" }
+      return { success: false, message: "Username already exists" }
     }
 
-    // @ts-expect-error email is not exist in type never
-    if (existingUser && existingUser.email === formData.email) {
-      return { message: "Email already exists" }
+    const existingEmail = await db.user.findUnique({
+      where: { email: formData.email },
+    })
+    if (existingEmail) {
+      return { success: false, message: "Email already exists" }
     }
 
-    await db.user.create({ data: rest })
-  } catch {
-    return { message: "Server error, please try again later." }
+    // Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(formData.password, 10)
+
+    // Store the user in the database with the hashed password
+    await db.user.create({
+      data: {
+        ...rest,
+        password: hashedPassword, // Use the hashed password
+      },
+    })
+
+    return { success: true, message: "User created successfully" }
+  } catch (error) {
+    console.error("Error creating user:", error)
+    return { success: false, message: "Server error, please try again later." }
   }
 }
 
 // get all accommodations
 export async function getAccommodations() {
   return await db.accommodation.findMany()
+}
+
+export async function getAccommodationsWithReservation() {
+  return await db.accommodation.findMany({
+    include: {
+      reservations: true,
+    },
+  })
 }
 
 // get single accommodation base on slug
@@ -203,6 +227,18 @@ const reservationSchema = z.object({
       message: "Customer birthday is required",
     }),
   contactNumber: z.string().nonempty("Contact number is required"),
+  gender: z
+    .string()
+    .nullable()
+    .refine((value) => value !== null && value.trim() !== "", {
+      message: "Gender is required in customer section",
+    }),
+  healthIssue: z
+    .string()
+    .nullable()
+    .refine((value) => value !== null && value.trim() !== "", {
+      message: "Health issue is required in customer section",
+    }),
   guests: z
     .array(
       z.object({
@@ -213,6 +249,18 @@ const reservationSchema = z.object({
           .nullable()
           .refine((date) => date !== null, {
             message: "Guest birthday is required",
+          }),
+        gender: z
+          .string()
+          .nullable()
+          .refine((value) => value !== null && value.trim() !== "", {
+            message: "Gender is required in guest section",
+          }),
+        healthIssue: z
+          .string()
+          .nullable()
+          .refine((value) => value !== null && value.trim() !== "", {
+            message: "Health issue is required in guest section",
           }),
       })
     )
@@ -229,7 +277,15 @@ export async function addReservation(reservationData: {
   address: string
   birthday: Date
   contactNumber: string
-  guests: { id: string; name: string; birthday: Date }[]
+  gender: "male" | "female"
+  healthIssue: HealthLabel
+  guests: {
+    id: string
+    name: string
+    birthday: Date
+    gender: "male" | "female"
+    healthIssue: HealthLabel
+  }[]
   totalPrice: number
 }) {
   console.log(reservationData)
@@ -296,13 +352,18 @@ export async function changePassword(
       return { success: false, message: "User not found" }
     }
 
-    if (currentPassword !== user.password) {
+    // Compare the current password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password)
+    if (!isPasswordValid) {
       return { success: false, message: "Current password is incorrect" }
     }
 
+    // Hash the new password before storing it in the database
+    const hashedPassword = await bcrypt.hash(password, 10)
+
     await db.user.update({
       where: { id: userId },
-      data: { password },
+      data: { password: hashedPassword },
     })
 
     return { success: true, message: "Password changed successfully" }
@@ -327,8 +388,7 @@ export async function getReservationsByUser(userId: string) {
     where: { userId },
     include: { accommodation: true, user: true },
   })
-} 
-
+}
 
 // delete reservation
 export async function deleteReservation(reservationId: string) {
@@ -349,4 +409,112 @@ export async function getUsers() {
 // get all reservations
 export async function getReservations() {
   return await db.reservation.findMany()
+}
+
+// add review
+export async function addReview(
+  userId: string,
+  data: {
+    rating: number
+    comment: string
+  },
+  overwrite: boolean = false
+) {
+  console.log(userId, data)
+
+  try {
+    // Check if the user already has a review
+    const existingReview = await db.review.findFirst({
+      where: { userId },
+    })
+
+    if (existingReview) {
+      if (overwrite) {
+        // Overwrite the existing review
+        const updatedReview = await db.review.update({
+          where: { id: existingReview.id },
+          data: {
+            rating: data.rating,
+            comment: data.comment,
+            updatedAt: new Date(), // Update the timestamp
+          },
+        })
+
+        return {
+          success: true,
+          message: "Review updated successfully.",
+          review: updatedReview,
+        }
+      } else {
+        // Return failure if overwrite is false
+        return {
+          success: false,
+          message: "You have already submitted a review.",
+        }
+      }
+    }
+
+    // Create a new review if no existing review is found
+    const review = await db.review.create({
+      data: {
+        ...data,
+        userId, // Associate the review with the user
+      },
+    })
+
+    return { success: true, message: "Review added successfully.", review }
+  } catch (error) {
+    console.error("Error adding review:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
+
+// get all reviews with pagination
+export async function getReviews(page: number = 1, limit: number = 10) {
+  const skip = (page - 1) * limit
+  return await db.review.findMany({
+    include: { user: true },
+    skip,
+    take: limit,
+  })
+}
+
+export async function deleteUserAccount(userId: string) {
+  const cookiesStore = await cookies()
+
+  try {
+    // Check if the user exists
+    const user = await db.user.findUnique({
+      where: { id: userId },
+    })
+
+    if (!user) {
+      return { success: false, message: "User not found" }
+    }
+
+    // Delete all reservations associated with the user
+    await db.reservation.deleteMany({
+      where: { userId },
+    })
+
+    // Delete all reviews associated with the user
+    await db.review.deleteMany({
+      where: { userId },
+    })
+
+    // Finally, delete the user account
+    await db.user.delete({
+      where: { id: userId },
+    })
+
+    cookiesStore.delete("token")
+
+    return {
+      success: true,
+      message: "User account and associated data deleted successfully",
+    }
+  } catch (error) {
+    console.error("Error deleting user account:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
 }

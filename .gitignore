@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 notes.txt
+
+# disable test routes
+/app/api/insert/route.ts
+app\api\insert\route.ts

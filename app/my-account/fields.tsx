@@ -11,6 +11,7 @@ import { updateUser } from "../actions"
 import Spinner from "@/components/icons/spinner"
 import { CheckEmailModal } from "./check-email-modal"
 import { VerifyEmailButton } from "./verify-email-button"
+import { DeleteAccount } from "./delete-account"
 
 export default function Fields({ user }: { user: User }) {
   const [checkEmailModalOpen, setCheckEmailModalOpen] = useState(false)
@@ -63,12 +64,17 @@ export default function Fields({ user }: { user: User }) {
       setEditMode((prev) => ({ ...prev, [field]: false }))
       return
     }
-
+  
     setLoading(true)
     try {
-      const updatedData = { [field]: data[field as keyof typeof data] }
+      // Prepare the updated data
+      const updatedData =
+        field === "email"
+          ? { email: data.email, isEmailVerified: false } // Update email and reset isEmailVerified
+          : { [field]: data[field as keyof typeof data] }
+  
       const response = await updateUser(user.id, updatedData)
-
+  
       if (response.success) {
         toast({
           variant: "success",
@@ -290,6 +296,9 @@ export default function Fields({ user }: { user: User }) {
           />
         </div>
         <EditPassword userId={user.id} />
+      </div>
+      <div className="mt-4 md:mt-8">
+        <DeleteAccount userId={user.id}/>
       </div>
     </>
   )

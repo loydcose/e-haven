@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { verifyToken } from "@/lib/utils"
 import { getUserById, updateUser } from "@/app/actions"
+import bcrypt from "bcryptjs"
 
 export async function POST(req: Request) {
   const { token, password: newPassword } = await req.json()
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
 
     // Update password & lastPasswordReset
     const res = await updateUser(user.id, {
-      password: newPassword,
+      password: await bcrypt.hash(newPassword, 10),
       lastPasswordReset: new Date(),
     })
     if (!res.success) {

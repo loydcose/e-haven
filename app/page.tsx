@@ -1,10 +1,13 @@
 import BestAccom from "@/components/best-accom"
 import ChatBot from "@/components/chat-bot"
+import CookieBanner from "@/components/cookie-banner"
 import Footer from "@/components/footer"
 import GuestReviews from "@/components/guest-reviews"
 import NavBar from "@/components/nav-bar"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -28,18 +31,24 @@ export default function Home() {
             Nature&apos;s Haven Resort
           </h1>
           <div className="flex flex-col md:flex-row items-center mx-auto justify-center gap-2 md:gap-4 flex-wrap mb-4">
-            <Button
-              type="button"
-              className="hover:bg-amber-200 transition-all bg-amber-100 text-black font-bold md:h-12 md:text-base w-full md:w-fit"
+            <Link
+              href="/virtual-tour"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "hover:bg-amber-200 transition-all bg-amber-100 text-black font-bold md:h-12 md:text-base w-full md:w-fit"
+              )}
             >
               Take a tour
-            </Button>
-            <Button
-              type="button"
-              className="hover:bg-amber-200 transition-all bg-amber-100 text-black font-bold md:h-12 md:text-base w-full md:w-fit"
+            </Link>
+            <Link
+              href="/navigation"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "hover:bg-amber-200 transition-all bg-amber-100 text-black font-bold md:h-12 md:text-base w-full md:w-fit"
+              )}
             >
               Where are we located?
-            </Button>
+            </Link>
           </div>
         </div>
         <div className="bg-black/50 mt-auto italic leading-5">
@@ -58,6 +67,7 @@ export default function Home() {
       <GuestReviews />
       <Footer />
       <ChatBot />
+      <CookieBanner />
     </>
   )
 }

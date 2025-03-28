@@ -82,7 +82,7 @@ export async function POST(req: Request) {
 
     // Send the verification email
     const emailRes = await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "E-Haven <no-reply@e-haven.live>",
       to: email.trim(),
       subject: "Verify Your Email Address",
       react: EmailTemplate({
@@ -90,6 +90,8 @@ export async function POST(req: Request) {
         tokenExpiration: tokenExpiration.label,
       }),
     })
+
+    console.log(emailRes)
 
     if (!emailRes.data) {
       throw new Error(emailRes?.error?.message || "Failed to send email")

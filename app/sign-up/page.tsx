@@ -2,6 +2,7 @@ import AuthCardLayout from "@/components/layouts/auth-card-layout"
 import Image from "next/image"
 import React from "react"
 import SignUp from "./sign-up"
+import Link from "next/link"
 
 export default function page() {
   return (
@@ -16,7 +17,7 @@ export default function page() {
         />
       </div>
 
-      <main className="mx-auto max-w-xl w-11/12 flex flex-col items-center gap-8">
+      <main className="mx-auto max-w-xl w-11/12 flex flex-col items-center gap-8 pb-20 md:pb-24">
         <div className="w-full mt-8">
           <Image
             width={642}
@@ -33,6 +34,12 @@ export default function page() {
           </h2>
 
           <SignUp />
+          <div className="flex items-center gap-2 justify-between">
+            <p>Already have an account?</p>
+            <Link href="/sign-in" className="hover:underline">
+              Sign in
+            </Link>
+          </div>
         </AuthCardLayout>
       </main>
     </>

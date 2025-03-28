@@ -25,3 +25,25 @@ export async function verifyToken(token: string) {
   }
 }
 
+export type HealthLabel =
+  | "None"
+  | "Hypertension"
+  | "Diabetes"
+  | "Migraine"
+  | "Skin Conditions"
+  | "Mental Health Disorders"
+  | "Heart Disease"
+  | "Tuberculosis"
+  | "Asthma"
+
+export const healthIssues = [
+  { label: "None", value: "none" },
+  { label: "Hypertension", value: "hypertension" },
+  { label: "Diabetes", value: "diabetes" },
+  { label: "Migraine", value: "migraine" },
+  { label: "Skin Conditions", value: "skin-conditions" },
+  { label: "Mental Health Disorders", value: "mental-health-disorders" },
+  { label: "Heart Disease", value: "heart-disease" },
+  { label: "Tuberculosis", value: "tuberculosis" },
+  { label: "Asthma", value: "asthma" },
+]

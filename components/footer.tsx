@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="mx-auto w-11/12 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
           <div className="size-full">
             <Image
-              src="/footer/footer-image.png"
+              src="/footer/background.jpg"
               alt="footer image"
               width={820}
               height={369}
@@ -29,9 +29,7 @@ export default function Footer() {
                   height={26}
                   className="shrink-0"
                 />
-                <p className="text-sm opacity-75">
-                  0908 - 798 - 9760 / 0930 558 8303
-                </p>
+                <p className="text-sm opacity-75">09087989760 / 09305588303</p>
               </div>
 
               <div className="flex items-center gap-2">
@@ -43,7 +41,7 @@ export default function Footer() {
                   className="shrink-0"
                 />
                 <p className="text-sm opacity-75">
-                  Monday to Friday from 8am to 5pm Weekends from 8am - 9pm
+                  Monday to Friday from 8am to 5pm | Weekends from 8am - 9pm
                 </p>
               </div>
 
@@ -77,12 +75,17 @@ export default function Footer() {
               <div>
                 <div className="flex items-center">
                   <p className="font-bold text-sm">FOLLOW US</p>
-                  <Image
-                    src="/footer/socials.png"
-                    alt="social icons"
-                    width={100}
-                    height={50}
-                  />
+                  <Link
+                    target="_blank"
+                    href="https://www.facebook.com/profile.php?id=61558015206603"
+                  >
+                    <Image
+                      src="/footer/socials.png"
+                      alt="social icons"
+                      width={100}
+                      height={50}
+                    />
+                  </Link>
                 </div>
                 <p className="text-sm opacity-75">Social Media Channels</p>
               </div>
@@ -108,7 +111,10 @@ export default function Footer() {
               >
                 Privacy Policy
               </Link>
-              <Link href="/book" className="text-sm opacity-75 hover:underline">
+              <Link
+                href="/accommodations"
+                className="text-sm opacity-75 hover:underline"
+              >
                 Book Now
               </Link>
             </div>
