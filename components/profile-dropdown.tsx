@@ -3,9 +3,9 @@
 import React from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Button, buttonVariants } from "./ui/button"
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Menu } from "lucide-react"
 
 export default function ProfileDropdown() {
   const router = useRouter()
@@ -20,18 +20,8 @@ export default function ProfileDropdown() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          type="button"
-          size={"icon"}
-          className="rounded-full overflow-hidden"
-        >
-          <Image
-            src="/avatar.png"
-            alt="avatar"
-            width={84}
-            height={84}
-            className="size-full object-cover"
-          />
+        <Button type="button" size={"icon"} className="overflow-hidden">
+          <Menu />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full md:w-fit" align="end">

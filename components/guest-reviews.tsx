@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Image from "next/image"
 import StarFilled from "./icons/star-filled"
 import { Button } from "./ui/button"
 import StarUnfilled from "./icons/star-unfilled"
@@ -57,15 +56,6 @@ export default function GuestReviews() {
               >
                 <div className="mb-3 flex items-center justify-between gap-3 border-b border-b-white/40 py-2">
                   <div className="flex items-center gap-2">
-                    <div className="size-[40px] rounded-full overflow-hidden">
-                      <Image
-                        src={"/avatar.png"} // Use user image or fallback
-                        alt={`${review.user.firstName}'s avatar`}
-                        width={40}
-                        height={40}
-                        className="size-full object-cover"
-                      />
-                    </div>
                     <div>
                       <h4>
                         {review.user.firstName} {review.user.lastName}
