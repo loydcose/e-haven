@@ -22,7 +22,6 @@ export default function SubmitButton({
   const { toast } = useToast()
   const [dpNoticeOpen, setDpNoticeOpen] = useState(false)
   const [confirmationOpen, setConfirmationOpen] = useState(false)
-  console.log({ accommodation, userId })
 
   const handleClick = async () => {
     const filteredStore = Object.fromEntries(
@@ -45,6 +44,8 @@ export default function SubmitButton({
     filteredStore.userId = userId
     // @ts-expect-error filtered store has no type
     filteredStore.totalPrice = filteredStore.totalPrice + accommodation.price
+
+    console.log({filteredStore})
 
     // @ts-expect-error `addReservation` expects a filtered store
     const response = await addReservation(filteredStore)

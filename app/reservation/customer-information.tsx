@@ -2,6 +2,8 @@
 
 import { Input } from "@/components/ui/input"
 import { useReservationStore } from "@/stores/reservation"
+import { GenderSelection } from "./gender-selection"
+import { HealthSelection } from "./health-selection"
 
 const inputFields = [
   {
@@ -38,7 +40,15 @@ const inputFields = [
 ]
 
 export default function CustomerInformation() {
-  const { setAddress, setBirthday, setContactNumber } = useReservationStore()
+  const {
+    setAddress,
+    setBirthday,
+    setContactNumber,
+    gender,
+    setGender,
+    healthIssue,
+    setHealthIssue,
+  } = useReservationStore()
 
   const handleInputChange = (id: string, value: string) => {
     if (id === "address") {
@@ -75,6 +85,14 @@ export default function CustomerInformation() {
             />
           </div>
         ))}
+        <GenderSelection
+          setSelectedGender={setGender}
+          selectedGender={gender}
+        />
+        <HealthSelection
+          selectedHealthIssue={healthIssue}
+          setSelectedHealthIssue={setHealthIssue}
+        />
       </div>
     </div>
   )

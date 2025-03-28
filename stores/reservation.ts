@@ -1,10 +1,15 @@
+import { HealthLabel } from "@/lib/utils"
 import { create } from "zustand"
 
 type Guest = {
   id: string
   name: string
   birthday: Date | null
+  gender: Gender
+  healthIssue: HealthLabel | null
 }
+
+type Gender = "male" | "female" | null
 
 type ReservationStore = {
   accommodationId: string
@@ -17,6 +22,8 @@ type ReservationStore = {
   guests: Guest[]
   totalPrice: number
   hasCheckAgreement: boolean
+  gender: Gender
+  healthIssue: HealthLabel | null
   setAccommodationId: (accommodationId: string) => void
   setUserId: (userId: string) => void
   setCheckIn: (checkIn: Date) => void
@@ -29,6 +36,8 @@ type ReservationStore = {
   updateGuest: (index: number, updatedGuest: Guest) => void // Added type for updateGuest
   setTotalPrice: (totalPrice: number) => void
   setHasCheckAgreement: (hasCheckAgreement: boolean) => void
+  setGender: (gender: Gender) => void
+  setHealthIssue: (healthIssue: HealthLabel) => void
 }
 
 export const useReservationStore = create<ReservationStore>()((set) => ({
@@ -42,6 +51,8 @@ export const useReservationStore = create<ReservationStore>()((set) => ({
   guests: [],
   totalPrice: 0,
   hasCheckAgreement: false,
+  gender: null,
+  healthIssue: null,
   setAccommodationId: (accommodationId) => set(() => ({ accommodationId })),
   setUserId: (userId) => set(() => ({ userId })),
   setCheckIn: (checkIn) => set(() => ({ checkIn })),
@@ -64,4 +75,6 @@ export const useReservationStore = create<ReservationStore>()((set) => ({
   setTotalPrice: (totalPrice) => set(() => ({ totalPrice })),
   setHasCheckAgreement: (hasCheckAgreement) =>
     set(() => ({ hasCheckAgreement })),
+  setGender: (gender) => set(() => ({ gender })),
+  setHealthIssue: (healthIssue) => set(() => ({ healthIssue })),
 }))

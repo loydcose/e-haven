@@ -3,7 +3,7 @@
 import { z } from "zod"
 import db from "@/lib/db"
 import { cookies } from "next/headers"
-import { verifyToken } from "@/lib/utils"
+import { HealthLabel, verifyToken } from "@/lib/utils"
 
 const passwordSchema = z.object({
   password: z
@@ -212,6 +212,18 @@ const reservationSchema = z.object({
       message: "Customer birthday is required",
     }),
   contactNumber: z.string().nonempty("Contact number is required"),
+  gender: z
+    .string()
+    .nullable()
+    .refine((value) => value !== null && value.trim() !== "", {
+      message: "Gender is required in customer section",
+    }),
+  healthIssue: z
+    .string()
+    .nullable()
+    .refine((value) => value !== null && value.trim() !== "", {
+      message: "Health issue is required in customer section",
+    }),
   guests: z
     .array(
       z.object({
@@ -222,6 +234,18 @@ const reservationSchema = z.object({
           .nullable()
           .refine((date) => date !== null, {
             message: "Guest birthday is required",
+          }),
+        gender: z
+          .string()
+          .nullable()
+          .refine((value) => value !== null && value.trim() !== "", {
+            message: "Gender is required in guest section",
+          }),
+        healthIssue: z
+          .string()
+          .nullable()
+          .refine((value) => value !== null && value.trim() !== "", {
+            message: "Health issue is required in guest section",
           }),
       })
     )
@@ -238,7 +262,15 @@ export async function addReservation(reservationData: {
   address: string
   birthday: Date
   contactNumber: string
-  guests: { id: string; name: string; birthday: Date }[]
+  gender: "male" | "female"
+  healthIssue: HealthLabel
+  guests: {
+    id: string
+    name: string
+    birthday: Date
+    gender: "male" | "female"
+    healthIssue: HealthLabel
+  }[]
   totalPrice: number
 }) {
   console.log(reservationData)

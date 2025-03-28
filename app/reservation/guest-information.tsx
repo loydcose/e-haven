@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { CirclePlus, X } from "lucide-react"
 import { useReservationStore } from "@/stores/reservation"
 import { useEffect } from "react"
+import { GenderSelection } from "./gender-selection"
+import { HealthSelection } from "./health-selection"
 
 export default function GuestInformation() {
   const {
@@ -19,7 +21,13 @@ export default function GuestInformation() {
   // Ensure there is always at least one guest
   useEffect(() => {
     if (guests.length === 0) {
-      addGuest({ id: generateId(), name: "", birthday: null }) // Initialize birthday as null
+      addGuest({
+        id: generateId(),
+        name: "",
+        birthday: null,
+        gender: null,
+        healthIssue: null,
+      })
       setTotalPrice(100) // Initialize total price for the first guest
     }
   }, [guests, addGuest, setTotalPrice])
@@ -28,7 +36,13 @@ export default function GuestInformation() {
     `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
   const handleAddGuest = () => {
-    addGuest({ id: generateId(), name: "", birthday: null }) // Initialize birthday as null
+    addGuest({
+      id: generateId(),
+      name: "",
+      birthday: null,
+      gender: null,
+      healthIssue: null,
+    })
     setTotalPrice(totalPrice + 100) // Increment total price by 100
   }
 
@@ -41,12 +55,12 @@ export default function GuestInformation() {
 
   const handleGuestChange = (
     index: number,
-    field: "name" | "birthday",
-    value: string
+    field: "name" | "birthday" | "gender" | "healthIssue",
+    value: string | Date | null
   ) => {
     const updatedGuest = {
       ...guests[index],
-      [field]: field === "birthday" ? new Date(value) : value, // Convert birthday to a Date object
+      [field]: field === "birthday" ? new Date(value as string) : value,
     }
     updateGuest(index, updatedGuest)
   }
@@ -105,9 +119,25 @@ export default function GuestInformation() {
                   guest.birthday
                     ? new Date(guest.birthday).toISOString().split("T")[0]
                     : ""
-                } 
+                }
                 onChange={(e) =>
                   handleGuestChange(index, "birthday", e.target.value)
+                }
+              />
+            </div>
+            <div>
+              <GenderSelection
+                selectedGender={guest.gender}
+                setSelectedGender={(gender) =>
+                  handleGuestChange(index, "gender", gender)
+                }
+              />
+            </div>
+            <div>
+              <HealthSelection
+                selectedHealthIssue={guest.healthIssue}
+                setSelectedHealthIssue={(healthIssue) =>
+                  handleGuestChange(index, "healthIssue", healthIssue)
                 }
               />
             </div>

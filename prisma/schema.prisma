@@ -42,18 +42,28 @@ model Accommodation {
   reservations Reservation[]
 }
 
+enum Gender {
+  male
+  female
+}
+
 model Reservation {
-  id              String            @id @default(uuid()) @map("_id")
+  id              String   @id @default(uuid()) @map("_id")
   accommodationId String
   userId          String
   checkIn         DateTime
   checkOut        DateTime
-  address         String
-  birthday        DateTime
-  contactNumber   String
-  guests          Json
-  totalPrice      Float
-  status          ReservationStatus @default(pending)
+
+  address       String
+  birthday      DateTime
+  contactNumber String
+  gender        Gender
+  healthIssue  String
+
+  guests Json
+
+  totalPrice Float
+  status     ReservationStatus @default(pending)
 
   user          User          @relation(fields: [userId], references: [id])
   accommodation Accommodation @relation(fields: [accommodationId], references: [id])
