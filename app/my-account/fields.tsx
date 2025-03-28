@@ -64,12 +64,17 @@ export default function Fields({ user }: { user: User }) {
       setEditMode((prev) => ({ ...prev, [field]: false }))
       return
     }
-
+  
     setLoading(true)
     try {
-      const updatedData = { [field]: data[field as keyof typeof data] }
+      // Prepare the updated data
+      const updatedData =
+        field === "email"
+          ? { email: data.email, isEmailVerified: false } // Update email and reset isEmailVerified
+          : { [field]: data[field as keyof typeof data] }
+  
       const response = await updateUser(user.id, updatedData)
-
+  
       if (response.success) {
         toast({
           variant: "success",
