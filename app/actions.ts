@@ -158,14 +158,14 @@ export async function addUser(formData: {
       where: { username: formData.username },
     })
     if (existingUser) {
-      return { message: "Username already exists" }
+      return { success: false, message: "Username already exists" }
     }
 
     const existingEmail = await db.user.findUnique({
       where: { email: formData.email },
     })
     if (existingEmail) {
-      return { message: "Email already exists" }
+      return { success: false, message: "Email already exists" }
     }
 
     // Hash the password using bcrypt
@@ -179,10 +179,10 @@ export async function addUser(formData: {
       },
     })
 
-    return { message: "User created successfully" }
+    return { success: true, message: "User created successfully" }
   } catch (error) {
     console.error("Error creating user:", error)
-    return { message: "Server error, please try again later." }
+    return { success: false, message: "Server error, please try again later." }
   }
 }
 
