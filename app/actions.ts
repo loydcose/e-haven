@@ -4,6 +4,7 @@ import { z } from "zod"
 import db from "@/lib/db"
 import { cookies } from "next/headers"
 import { HealthLabel, verifyToken } from "@/lib/utils"
+import bcrypt from "bcryptjs" // Import bcrypt for password hashing
 
 const passwordSchema = z.object({
   password: z
@@ -160,13 +161,27 @@ export async function addUser(formData: {
       return { message: "Username already exists" }
     }
 
-    // @ts-expect-error email is not exist in type never
-    if (existingUser && existingUser.email === formData.email) {
+    const existingEmail = await db.user.findUnique({
+      where: { email: formData.email },
+    })
+    if (existingEmail) {
       return { message: "Email already exists" }
     }
 
-    await db.user.create({ data: rest })
-  } catch {
+    // Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(formData.password, 10)
+
+    // Store the user in the database with the hashed password
+    await db.user.create({
+      data: {
+        ...rest,
+        password: hashedPassword, // Use the hashed password
+      },
+    })
+
+    return { message: "User created successfully" }
+  } catch (error) {
+    console.error("Error creating user:", error)
     return { message: "Server error, please try again later." }
   }
 }
@@ -337,13 +352,18 @@ export async function changePassword(
       return { success: false, message: "User not found" }
     }
 
-    if (currentPassword !== user.password) {
+    // Compare the current password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password)
+    if (!isPasswordValid) {
       return { success: false, message: "Current password is incorrect" }
     }
 
+    // Hash the new password before storing it in the database
+    const hashedPassword = await bcrypt.hash(password, 10)
+
     await db.user.update({
       where: { id: userId },
-      data: { password },
+      data: { password: hashedPassword },
     })
 
     return { success: true, message: "Password changed successfully" }

@@ -1,5 +1,6 @@
 import { SignJWT } from "jose"
 import { serialize } from "cookie"
+import bcrypt from "bcryptjs" // Import bcrypt for password comparison
 import db from "@/lib/db"
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
@@ -22,7 +23,9 @@ export async function POST(request: Request) {
       )
     }
 
-    if (password !== user.password) {
+    // Compare the provided password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if (!isPasswordValid) {
       return new Response(
         JSON.stringify({ message: "Password incorrect", success: false }),
         {
@@ -54,7 +57,8 @@ export async function POST(request: Request) {
         headers: { "Set-Cookie": cookie },
       }
     )
-  } catch {
+  } catch (error) {
+    console.error("Error during login:", error)
     return new Response(
       JSON.stringify({ message: "Server error", success: false }),
       {
