@@ -25,7 +25,7 @@ function RoomScene({ room }: { room: string }) {
 
   const handleClick = (target: string) => {
     document.body.style.cursor = "default" // Reset cursor to default on click
-    router.push(`/virtual-tour/test?room=${target}`)
+    router.push(`/virtual-tour/view?room=${target}`)
   }
 
   return (

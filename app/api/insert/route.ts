@@ -104,9 +104,9 @@ export async function GET() {
     // }
 
     // Update all users to have the `hasShownCookieMsg` property set to false
-    await db.user.updateMany({
+    await db.accommodation.updateMany({
       data: {
-        hasShownCookieMsg: false,
+        virtualPath: "entrance",
       },
     })
 
