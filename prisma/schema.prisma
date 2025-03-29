@@ -36,6 +36,7 @@ model Accommodation {
   image       String
   price       Float
   amenities   String[]
+  virtualPath String
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt

@@ -74,7 +74,7 @@ export default async function Page() {
                 <div className="flex items-center gap-2 justify-between">
                   <p className="font-medium">{accom.title}</p>
                   <Link
-                    href={`/virtual-tour/view?room=${accom.slug}`}
+                    href={`/virtual-tour/view?room=${accom.virtualPath}`}
                     className={cn(
                       buttonVariants({
                         variant: "default",
