@@ -1,10 +1,16 @@
-import React from 'react'
-import Test from './test'
+import React from "react"
+import SceneViewer from "./scene-viewer"
 
-export default function page() {
+export default async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const room = (await searchParams)?.room
+
   return (
-    <div>
-      <Test/>
-    </div>
+    <main className="size-full">
+      <SceneViewer room={room as string} />
+    </main>
   )
 }

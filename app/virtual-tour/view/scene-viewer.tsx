@@ -1,3 +1,5 @@
+"use client"
+
 import { Canvas, useLoader } from "@react-three/fiber"
 import { BackSide, TextureLoader } from "three"
 import { Html, OrbitControls, Text } from "@react-three/drei"
@@ -69,6 +71,7 @@ function RoomScene({ room }: { room: string }) {
     </>
   )
 }
+
 export default function SceneViewer({ room }: { room: string }) {
   return (
     <div className="relative h-full w-full">

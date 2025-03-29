@@ -1,4 +1,4 @@
-import db from "@/lib/db"
+// import db from "@/lib/db"
 import { NextResponse } from "next/server"
 
 // const data = [
@@ -104,11 +104,11 @@ export async function GET() {
     // }
 
     // Update all users to have the `hasShownCookieMsg` property set to false
-    await db.accommodation.updateMany({
-      data: {
-        virtualPath: "entrance",
-      },
-    })
+    // await db.accommodation.updateMany({
+    //   data: {
+    //     virtualPath: "entrance",
+    //   },
+    // })
 
     return NextResponse.json(
       { message: "Data inserted and users updated successfully" },
