@@ -6,7 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useAdminFilterStore } from "@/stores/admin-filter"
 import type { Accommodation } from "@prisma/client"
+import { useEffect, useState } from "react"
 
 // Accommodations Table Component
 export default function AccommodationsTable({
@@ -14,6 +16,39 @@ export default function AccommodationsTable({
 }: {
   accommodations: Accommodation[]
 }) {
+  const [filteredAccommodations, setFilteredAccommodations] =
+    useState<Accommodation[]>(accommodations)
+  const { search, sort, activeSection } = useAdminFilterStore()
+
+  useEffect(() => {
+    if (activeSection !== "accommodations") return
+
+    let updatedAccommodations = [...accommodations]
+
+    // Filter by search
+    if (search) {
+      updatedAccommodations = updatedAccommodations.filter(
+        (accommodation) =>
+          accommodation.title.toLowerCase().includes(search.toLowerCase()) ||
+          accommodation.description
+            ?.toLowerCase()
+            .includes(search.toLowerCase()) ||
+          accommodation.amenities.some((amenity) =>
+            amenity.toLowerCase().includes(search.toLowerCase())
+          )
+      )
+    }
+
+    // Sort by Title (or any other field)
+    if (sort === "asc") {
+      updatedAccommodations.sort((a, b) => a.title.localeCompare(b.title))
+    } else if (sort === "desc") {
+      updatedAccommodations.sort((a, b) => b.title.localeCompare(a.title))
+    }
+
+    setFilteredAccommodations(updatedAccommodations)
+  }, [activeSection, search, sort, accommodations])
+
   return (
     <Table className="overflow-x-auto">
       <TableHeader>
@@ -28,7 +63,7 @@ export default function AccommodationsTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {accommodations.map((accommodation) => (
+        {filteredAccommodations.map((accommodation) => (
           <TableRow key={accommodation.id}>
             <TableCell>{accommodation.id}</TableCell>
             <TableCell>{accommodation.title}</TableCell>

@@ -6,10 +6,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useAdminFilterStore } from "@/stores/admin-filter"
 import type { User } from "@prisma/client"
+import { useEffect, useState } from "react"
 
 // Users Table Component
 export default function UsersTable({ users }: { users: User[] }) {
+  const [filteredUsers, setFilteredUsers] = useState<User[]>(users)
+  const { search, sort, activeSection } = useAdminFilterStore()
+
+  useEffect(() => {
+    if (activeSection !== "users") return
+
+    let updatedUsers = [...users]
+
+    // Filter by search
+    if (search) {
+      updatedUsers = updatedUsers.filter(
+        (user) =>
+          `${user.firstName} ${user.lastName}`
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          user.username.toLowerCase().includes(search.toLowerCase()) ||
+          user.email.toLowerCase().includes(search.toLowerCase())
+      )
+    }
+
+    // Sort by ID (or any other field)
+    if (sort === "asc") {
+      updatedUsers.sort((a, b) => a.firstName.localeCompare(b.firstName))
+    } else if (sort === "desc") {
+      updatedUsers.sort((a, b) => b.firstName.localeCompare(a.firstName))
+    }
+
+    setFilteredUsers(updatedUsers)
+  }, [activeSection, search, sort, users])
+
   return (
     <Table className="overflow-x-auto">
       <TableHeader>
@@ -25,7 +57,7 @@ export default function UsersTable({ users }: { users: User[] }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
+        {filteredUsers.map((user) => (
           <TableRow key={user.id}>
             <TableCell>{user.id}</TableCell>
             <TableCell>

@@ -11,8 +11,9 @@ import { cn } from "@/lib/utils"
 import UsersTable from "./tables/users"
 import AccommodationsTable from "./tables/accommodations"
 import ReservationsTable from "./tables/reservations"
-import { ArrowDownAZ, Search } from "lucide-react"
+import { ArrowDownAZ, ArrowDownZA, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { useAdminFilterStore } from "@/stores/admin-filter"
 
 // Define a discriminated union type for the data state
 type AdminData =
@@ -21,9 +22,8 @@ type AdminData =
   | { type: "reservations"; data: Reservation[] }
 
 export function Admin() {
-  const [activeSection, setActiveSection] = useState<
-    "users" | "accommodations" | "reservations"
-  >("users")
+  const { activeSection, setActiveSection, setSort, sort, search, setSearch } =
+    useAdminFilterStore()
   const [data, setData] = useState<AdminData>({ type: "users", data: [] })
   const [loading, setLoading] = useState(true)
 
@@ -102,15 +102,18 @@ export function Admin() {
           <Button
             type="button"
             className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white"
+            onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
           >
-            Sort <ArrowDownAZ />
+            Sort {sort === "asc" ? <ArrowDownZA /> : <ArrowDownAZ />}
           </Button>
-          <div className="flex items-center gap-2 bg-white rounded-md pl-3 focus-within:ring-gray-400 focus-within:ring-2">
+          <div className="flex items-center  bg-white rounded-md pl-3 focus-within:ring-gray-400 focus-within:ring-2 w-[700px]">
             <Search className="text-black/50" />
             <Input
               type="text"
-              placeholder="Search user"
-              className="text-black border-none focus-visible:ring-0"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={`Search ${activeSection}`}
+              className="text-black border-none focus-visible:ring-0 min-w-0 w-full"
             />
           </div>
         </div>

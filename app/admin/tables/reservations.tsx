@@ -6,11 +6,57 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useAdminFilterStore } from "@/stores/admin-filter"
 import type { Reservation } from "@prisma/client"
 import type { JsonArray, JsonObject } from "@prisma/client/runtime/library"
+import { useEffect, useState } from "react"
 
 // Reservations Table Component
-export default function ReservationsTable({ reservations }: { reservations: Reservation[] }) {
+export default function ReservationsTable({
+  reservations,
+}: {
+  reservations: Reservation[]
+}) {
+  const [filteredReservations, setFilteredReservations] =
+    useState<Reservation[]>(reservations)
+  const { search, sort, activeSection } = useAdminFilterStore()
+
+  useEffect(() => {
+    if (activeSection !== "reservations") return
+
+    let updatedReservations = [...reservations]
+
+    // Filter by search
+    if (search) {
+      updatedReservations = updatedReservations.filter(
+        (reservation) =>
+          reservation.address.toLowerCase().includes(search.toLowerCase()) ||
+          reservation.contactNumber
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          (reservation.guests &&
+            (reservation.guests as JsonArray).some((guest) =>
+              (((guest as JsonObject).name || "") as string)
+                .toLowerCase()
+                .includes(search.toLowerCase())
+            ))
+      )
+    }
+
+    // Sort by Check-In Date (or any other field)
+    if (sort === "asc") {
+      updatedReservations.sort(
+        (a, b) => new Date(a.checkIn).getTime() - new Date(b.checkIn).getTime()
+      )
+    } else if (sort === "desc") {
+      updatedReservations.sort(
+        (a, b) => new Date(b.checkIn).getTime() - new Date(a.checkIn).getTime()
+      )
+    }
+
+    setFilteredReservations(updatedReservations)
+  }, [activeSection, search, sort, reservations])
+
   return (
     <Table className="overflow-x-auto">
       <TableHeader>
@@ -27,7 +73,7 @@ export default function ReservationsTable({ reservations }: { reservations: Rese
         </TableRow>
       </TableHeader>
       <TableBody>
-        {reservations.map((reservation) => (
+        {filteredReservations.map((reservation) => (
           <TableRow key={reservation.id}>
             <TableCell>{reservation.id}</TableCell>
             <TableCell>
