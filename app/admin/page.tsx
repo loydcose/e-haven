@@ -19,10 +19,10 @@ export default function page() {
       </div>
       <section className="mx-auto w-11/12 z-10">
         <AdminNavbar />
-        <h1 className="font-extrabold tracking-tight text-center text-3xl md:text-4xl text-white mb-6 md:mb-12">
+        <h1 className="text-white font-extrabold tracking-tight text-center text-3xl md:text-4xl mb-6 md:mb-12">
           ADMIN DASHBOARD
         </h1>
-        <div className="mb-16 bg-amber-900 p-6 md:p-16 text-white max-w-[1150px] mx-auto rounded-xl flex flex-col">
+        <div className="mb-16 text-white mx-auto rounded-xl flex flex-col">
           <Admin />
         </div>
       </section>

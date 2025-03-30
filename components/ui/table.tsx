@@ -66,6 +66,8 @@ const TableRow = React.forwardRef<
 ))
 TableRow.displayName = "TableRow"
 
+const rowClass = "overflow-x-auto whitespace-nowrap max-w-[200px] no-scrollbar"
+
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
   React.ThHTMLAttributes<HTMLTableCellElement>
@@ -73,8 +75,8 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "truncate text-white h-10 px-2 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-      className
+      "text-white h-10 px-2 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] border",
+      className, rowClass
     )}
     {...props}
   />
@@ -88,8 +90,8 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={cn(
-      "truncate p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-      className
+      "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] border",
+      className, rowClass
     )}
     {...props}
   />
