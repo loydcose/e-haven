@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils"
 import UsersTable from "./tables/users"
 import AccommodationsTable from "./tables/accommodations"
 import ReservationsTable from "./tables/reservations"
+import { ArrowDownAZ, Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 // Define a discriminated union type for the data state
 type AdminData =
@@ -52,45 +54,66 @@ export function Admin() {
   return (
     <div>
       {/* Section Buttons */}
-      <div className="flex items-center">
-        <Button
-          type="button"
-          variant={activeSection === "users" ? "secondary" : "default"}
-          onClick={() => setActiveSection("users")}
-          className={cn(
-            "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-br-none rounded-bl-none rounded-tr-none bg-white",
-            activeSection !== "users" && "bg-amber-900 hover:bg-amber-950",
-            activeSection === "users" && "hover:bg-white"
-          )}
-        >
-          Users
-        </Button>
-        <Button
-          type="button"
-          variant={activeSection === "accommodations" ? "secondary" : "default"}
-          onClick={() => setActiveSection("accommodations")}
-          className={cn(
-            "h-8 px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-none bg-white",
-            activeSection !== "accommodations" &&
-              "bg-amber-900 hover:bg-amber-950",
-            activeSection === "accommodations" && "hover:bg-white"
-          )}
-        >
-          Accommodations
-        </Button>
-        <Button
-          type="button"
-          variant={activeSection === "reservations" ? "secondary" : "default"}
-          onClick={() => setActiveSection("reservations")}
-          className={cn(
-            "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-tl-none rounded-bl-none rounded-br-none bg-white",
-            activeSection !== "reservations" &&
-              "bg-amber-900 hover:bg-amber-950",
-            activeSection === "reservations" && "hover:bg-white"
-          )}
-        >
-          Reservations
-        </Button>
+      <div className="flex gap-2 justify-between">
+        <div className="flex items-center">
+          <Button
+            type="button"
+            variant={activeSection === "users" ? "secondary" : "default"}
+            onClick={() => setActiveSection("users")}
+            className={cn(
+              "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-br-none rounded-bl-none rounded-tr-none bg-white",
+              activeSection !== "users" && "bg-amber-900 hover:bg-amber-950",
+              activeSection === "users" && "hover:bg-white"
+            )}
+          >
+            Users
+          </Button>
+          <Button
+            type="button"
+            variant={
+              activeSection === "accommodations" ? "secondary" : "default"
+            }
+            onClick={() => setActiveSection("accommodations")}
+            className={cn(
+              "h-8 px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-none bg-white",
+              activeSection !== "accommodations" &&
+                "bg-amber-900 hover:bg-amber-950",
+              activeSection === "accommodations" && "hover:bg-white"
+            )}
+          >
+            Accommodations
+          </Button>
+          <Button
+            type="button"
+            variant={activeSection === "reservations" ? "secondary" : "default"}
+            onClick={() => setActiveSection("reservations")}
+            className={cn(
+              "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-tl-none rounded-bl-none rounded-br-none bg-white",
+              activeSection !== "reservations" &&
+                "bg-amber-900 hover:bg-amber-950",
+              activeSection === "reservations" && "hover:bg-white"
+            )}
+          >
+            Reservations
+          </Button>
+        </div>
+
+        <div className="-translate-y-3 flex items-center gap-2">
+          <Button
+            type="button"
+            className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white"
+          >
+            Sort <ArrowDownAZ />
+          </Button>
+          <div className="flex items-center gap-2 bg-white rounded-md pl-3 focus-within:ring-gray-400 focus-within:ring-2">
+            <Search className="text-black/50" />
+            <Input
+              type="text"
+              placeholder="Search user"
+              className="text-black border-none focus-visible:ring-0"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="bg-white text-black rounded-xl rounded-tl-none p-3 md:p-4">
