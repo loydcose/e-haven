@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from "react"
 
-import { getUsers, getAccommodations, getReservations } from "../actions"
+import {
+  getUsers,
+  getAccommodations,
+  getReservationsWithUserAndAccommodation,
+} from "../actions"
 import { Button } from "@/components/ui/button"
 import { Accommodation, Reservation, User } from "@prisma/client"
 import LoadingSkeleton from "./loading-skeleton"
@@ -15,11 +19,16 @@ import { ArrowDownAZ, ArrowDownZA, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useAdminFilterStore } from "@/stores/admin-filter"
 
+export type ReservationTable = Reservation & {
+  user: User
+  accommodation: Accommodation
+}
+
 // Define a discriminated union type for the data state
 type AdminData =
   | { type: "users"; data: User[] }
   | { type: "accommodations"; data: Accommodation[] }
-  | { type: "reservations"; data: Reservation[] }
+  | { type: "reservations"; data: ReservationTable[] }
 
 export function Admin() {
   const { activeSection, setActiveSection, setSort, sort, search, setSearch } =
@@ -38,7 +47,7 @@ export function Admin() {
           const accommodations = await getAccommodations()
           setData({ type: "accommodations", data: accommodations })
         } else if (activeSection === "reservations") {
-          const reservations = await getReservations()
+          const reservations = await getReservationsWithUserAndAccommodation()
           setData({ type: "reservations", data: reservations })
         }
       } catch (error) {

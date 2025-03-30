@@ -419,6 +419,16 @@ export async function getReservations() {
   return await db.reservation.findMany()
 }
 
+// get all reservations
+export async function getReservationsWithUserAndAccommodation() {
+  return await db.reservation.findMany({
+    include: {
+      user: true,
+      accommodation: true,
+    },
+  })
+}
+
 // add review
 export async function addReview(
   userId: string,

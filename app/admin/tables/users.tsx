@@ -50,9 +50,7 @@ export default function UsersTable({ users }: { users: User[] }) {
           <TableHead className="text-black">Full Name</TableHead>
           <TableHead className="text-black">Username</TableHead>
           <TableHead className="text-black">Email</TableHead>
-          <TableHead className="text-black">Verified</TableHead>
-          <TableHead className="text-black">Password Reset</TableHead>
-          <TableHead className="text-black">Last Updated</TableHead>
+          <TableHead className="text-black">Verified verified</TableHead>
           <TableHead className="text-black">Created At</TableHead>
         </TableRow>
       </TableHeader>
@@ -66,12 +64,6 @@ export default function UsersTable({ users }: { users: User[] }) {
             <TableCell>{user.username}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>{user.isEmailVerified ? "Yes" : "No"}</TableCell>
-            <TableCell>
-              {new Date(user.lastPasswordReset).toLocaleDateString()}
-            </TableCell>
-            <TableCell>
-              {new Date(user.updatedAt).toLocaleDateString()}
-            </TableCell>
             <TableCell>
               {new Date(user.createdAt).toLocaleDateString()}
             </TableCell>

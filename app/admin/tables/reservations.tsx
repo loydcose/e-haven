@@ -6,19 +6,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import { useAdminFilterStore } from "@/stores/admin-filter"
-import type { Reservation } from "@prisma/client"
 import type { JsonArray, JsonObject } from "@prisma/client/runtime/library"
 import { useEffect, useState } from "react"
+import { ReservationAction } from "./reservations-action"
+import { ReservationTable } from "../admin"
 
 // Reservations Table Component
 export default function ReservationsTable({
   reservations,
 }: {
-  reservations: Reservation[]
+  reservations: ReservationTable[]
 }) {
   const [filteredReservations, setFilteredReservations] =
-    useState<Reservation[]>(reservations)
+    useState<ReservationTable[]>(reservations)
   const { search, sort, activeSection } = useAdminFilterStore()
 
   useEffect(() => {
@@ -62,14 +64,21 @@ export default function ReservationsTable({
       <TableHeader>
         <TableRow>
           <TableHead className="text-black">ID</TableHead>
+          <TableHead className="text-black">Booked by</TableHead>
           <TableHead className="text-black">Check In</TableHead>
           <TableHead className="text-black">Check Out</TableHead>
+
+          <TableHead className="text-black">Birthday</TableHead>
+          <TableHead className="text-black">Gender</TableHead>
+          <TableHead className="text-black">Health issue</TableHead>
+
           <TableHead className="text-black">Address</TableHead>
           <TableHead className="text-black">Contact Number</TableHead>
           <TableHead className="text-black">Guests</TableHead>
           <TableHead className="text-black">Total Price</TableHead>
-          <TableHead className="text-black">Status</TableHead>
           <TableHead className="text-black">Created At</TableHead>
+          <TableHead className="text-black">Status</TableHead>
+          <TableHead className="text-black">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -77,11 +86,21 @@ export default function ReservationsTable({
           <TableRow key={reservation.id}>
             <TableCell>{reservation.id}</TableCell>
             <TableCell>
+              {reservation.user.firstName} {reservation.user.lastName}
+            </TableCell>
+            <TableCell>
               {new Date(reservation.checkIn).toLocaleDateString()}
             </TableCell>
             <TableCell>
               {new Date(reservation.checkOut).toLocaleDateString()}
             </TableCell>
+
+            <TableCell>
+              {new Date(reservation.birthday).toLocaleDateString()}
+            </TableCell>
+            <TableCell>{reservation.gender}</TableCell>
+            <TableCell>{reservation.healthIssue}</TableCell>
+
             <TableCell>{reservation.address}</TableCell>
             <TableCell>{reservation.contactNumber}</TableCell>
             <TableCell>
@@ -93,9 +112,24 @@ export default function ReservationsTable({
                 : "No Guests"}
             </TableCell>
             <TableCell>{reservation.totalPrice} Php</TableCell>
-            <TableCell>{reservation.status}</TableCell>
             <TableCell>
               {new Date(reservation.createdAt).toLocaleDateString()}
+            </TableCell>
+            <TableCell>
+              <p
+                className={cn(
+                  "rounded-full py-1 px-3 font-medium",
+                  reservation.status === "pending" &&
+                    "bg-orange-600 text-white",
+                  reservation.status === "paid" && "bg-gray-400 text-white",
+                  reservation.status === "accepted" && "bg-green-600 text-white"
+                )}
+              >
+                {reservation.status}
+              </p>
+            </TableCell>
+            <TableCell>
+              <ReservationAction reservation={reservation} />
             </TableCell>
           </TableRow>
         ))}
