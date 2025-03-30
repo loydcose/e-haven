@@ -54,8 +54,8 @@ export function Admin() {
   return (
     <div>
       {/* Section Buttons */}
-      <div className="flex gap-2 justify-between">
-        <div className="flex items-center">
+      <div className="flex gap-2 justify-between flex-col md:flex-row">
+        <div className="flex items-center order-2 md:order-1">
           <Button
             type="button"
             variant={activeSection === "users" ? "secondary" : "default"}
@@ -98,7 +98,7 @@ export function Admin() {
           </Button>
         </div>
 
-        <div className="-translate-y-3 flex items-center gap-2">
+        <div className="-translate-y-3 flex items-center gap-2 w-full max-w-[700px] order-1 md:order-2">
           <Button
             type="button"
             className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white"
@@ -106,7 +106,7 @@ export function Admin() {
           >
             Sort {sort === "asc" ? <ArrowDownZA /> : <ArrowDownAZ />}
           </Button>
-          <div className="flex items-center  bg-white rounded-md pl-3 focus-within:ring-gray-400 focus-within:ring-2 w-[700px]">
+          <div className="flex items-center  bg-white rounded-md pl-3 focus-within:ring-gray-400 focus-within:ring-2 w-full">
             <Search className="text-black/50" />
             <Input
               type="text"
