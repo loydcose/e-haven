@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ReservationTable } from "../admin"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { userReservationStatusStore } from "@/stores/reservation-status"
 type SelectedStatus = "pending" | "paid" | "accepted"
 
 export default function StatusSelection({
@@ -11,9 +12,16 @@ export default function StatusSelection({
 }: {
   reservation: ReservationTable
 }) {
+  const { setStatus, paymentMethod, setPaymentMethod } =
+    userReservationStatusStore()
   const [selectedStatus, setSelectedStatus] = useState<SelectedStatus>(
     reservation.status
   )
+
+  useEffect(() => {
+    setStatus(selectedStatus)
+    setPaymentMethod(reservation.paymentMethod)
+  }, [selectedStatus, reservation.paymentMethod])
 
   const handleStatusChange = (status: SelectedStatus) => {
     setSelectedStatus(status)
@@ -57,7 +65,12 @@ export default function StatusSelection({
       {selectedStatus !== "pending" && (
         <div>
           <Label htmlFor="paymentMethod">Payment Method</Label>
-          <Input type="text" placeholder="ex. G-cash, Credit-card, Cash" />
+          <Input
+            type="text"
+            placeholder="ex. G-cash, Credit-card, Cash"
+            value={paymentMethod || ""}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          />
         </div>
       )}
     </>

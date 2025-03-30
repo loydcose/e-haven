@@ -59,12 +59,14 @@ model Reservation {
   birthday      DateTime
   contactNumber String
   gender        Gender
-  healthIssue  String
+  healthIssue   String
 
   guests Json
 
-  totalPrice Float
-  status     ReservationStatus @default(pending)
+  totalPrice    Float
+  status        ReservationStatus @default(pending)
+  paymentMethod String?
+  paymentDate   DateTime?
 
   user          User          @relation(fields: [userId], references: [id])
   accommodation Accommodation @relation(fields: [accommodationId], references: [id])

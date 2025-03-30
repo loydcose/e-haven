@@ -538,3 +538,46 @@ export async function deleteUserAccount(userId: string) {
     return { success: false, message: "Server error, please try again later." }
   }
 }
+export default async function updateReservation(
+  reservationId: string,
+  data: {
+    status: "pending" | "accepted" | "paid"
+    paymentMethod: string | null
+    paymentDate: Date | null
+  }
+) {
+  try {
+    // Validation logic
+    if (
+      (data.status === "accepted" || data.status === "paid") &&
+      (!data.paymentMethod?.trim() || !data.paymentDate)
+    ) {
+      return {
+        success: false,
+        message:
+          "Payment method is required for accepted or paid status.",
+      }
+    }
+
+    if (data.status === "pending") {
+      data.paymentMethod = null
+      data.paymentDate = null
+    }
+
+    // Update the reservation in the database
+    await db.reservation.update({
+      where: { id: reservationId },
+      data: {
+        status: data.status,
+        paymentMethod: data.paymentMethod,
+        paymentDate: data.paymentDate,
+      },
+    })
+
+    return { success: true, message: "Reservation updated successfully" }
+  } catch (error) {
+    Sentry.captureException(error)
+    console.error("Error updating reservation:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
