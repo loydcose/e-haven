@@ -4,6 +4,7 @@ import { Resend } from "resend"
 import { EmailTemplate } from "@/app/forgot-password/email-template"
 import { getUserByEmail, updateUser } from "@/app/actions"
 import { Redis } from "@upstash/redis"
+import * as Sentry from "@sentry/nextjs"
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -96,6 +97,7 @@ export async function POST(req: Request) {
       { status: 200 }
     )
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error in forgot-password route:", error)
     return NextResponse.json(
       { success: false, message: "Server error. Please try again later." },

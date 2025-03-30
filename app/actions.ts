@@ -5,6 +5,7 @@ import db from "@/lib/db"
 import { cookies } from "next/headers"
 import { HealthLabel, verifyToken } from "@/lib/utils"
 import bcrypt from "bcryptjs" // Import bcrypt for password hashing
+import * as Sentry from "@sentry/nextjs"
 
 const passwordSchema = z.object({
   password: z
@@ -57,6 +58,7 @@ export async function getUserByEmail(email: string) {
     })
     return user
   } catch (error) {
+    Sentry.captureException(error)
     if (error instanceof Error) {
       console.error("Error fetching user by email:", error.message)
     } else {
@@ -73,6 +75,7 @@ export async function getUserById(userId: string) {
     })
     return user || null
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error fetching user by ID:", error)
     return null
   }
@@ -129,6 +132,7 @@ export async function updateUser(userId: string, data: object) {
 
     return { success: true, message: "User updated successfully" }
   } catch (error) {
+    Sentry.captureException(error)
     if (error instanceof Error) {
       console.error("Error updating user:", error.message)
     } else {
@@ -181,6 +185,7 @@ export async function addUser(formData: {
 
     return { success: true, message: "User created successfully" }
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error creating user:", error)
     return { success: false, message: "Server error, please try again later." }
   }
@@ -318,6 +323,7 @@ export async function addReservation(reservationData: {
     })
     return { success: true, message: "Reservation added successfully" }
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error adding reservation:", error)
     return { success: false, message: "Server error, please try again later." }
   }
@@ -368,6 +374,7 @@ export async function changePassword(
 
     return { success: true, message: "Password changed successfully" }
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error changing password:", error)
     return { success: false, message: "Server error, please try again later." }
   }
@@ -396,6 +403,7 @@ export async function deleteReservation(reservationId: string) {
     await db.reservation.delete({ where: { id: reservationId } })
     return { success: true, message: "Reservation deleted successfully" }
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error deleting reservation:", error)
     return { success: false, message: "Server error, please try again later." }
   }
@@ -464,6 +472,7 @@ export async function addReview(
 
     return { success: true, message: "Review added successfully.", review }
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error adding review:", error)
     return { success: false, message: "Server error, please try again later." }
   }
@@ -514,6 +523,7 @@ export async function deleteUserAccount(userId: string) {
       message: "User account and associated data deleted successfully",
     }
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error deleting user account:", error)
     return { success: false, message: "Server error, please try again later." }
   }

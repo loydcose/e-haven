@@ -45,3 +45,6 @@ notes.txt
 # disable test routes
 /app/api/insert/route.ts
 app\api\insert\route.ts
+
+# Sentry Config File
+.env.sentry-build-plugin

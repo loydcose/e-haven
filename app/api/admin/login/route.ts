@@ -1,5 +1,7 @@
 import { SignJWT } from "jose"
 import { serialize } from "cookie"
+import * as Sentry from "@sentry/nextjs";
+
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 const adminUsername = process.env.ADMIN_USERNAME
@@ -47,7 +49,8 @@ export async function POST(request: Request) {
         headers: { "Set-Cookie": cookie },
       }
     )
-  } catch {
+  } catch(error) {
+    Sentry.captureException(error)
     return new Response(
       JSON.stringify({ message: "Server error", success: false }),
       {

@@ -1,5 +1,6 @@
 // import db from "@/lib/db"
 import { NextResponse } from "next/server"
+import * as Sentry from "@sentry/nextjs";
 
 // const data = [
 //   {
@@ -89,6 +90,7 @@ import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
+    throw new Error ("Sample error on insert")
     // Insert accommodations into the database
     // for (const item of data) {
     //   await db.accommodation.create({
@@ -116,6 +118,7 @@ export async function GET() {
     )
   } catch (error) {
     console.error("Error inserting data or updating users:", error)
+    Sentry.captureException(error);
     return NextResponse.json(
       {
         message: "Error inserting data or updating users",

@@ -4,6 +4,7 @@ import { Resend } from "resend"
 import { getUserByEmail } from "@/app/actions"
 import { EmailTemplate } from "@/app/my-account/email-template"
 import { Redis } from "@upstash/redis"
+import * as Sentry from "@sentry/nextjs"
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
       return NextResponse.json({
         success: false,
         message: "Email is already verified!",
-        status: 200,  
+        status: 200,
       })
     }
     console.log("went here 3")
@@ -103,6 +104,7 @@ export async function POST(req: Request) {
     )
   } catch (error) {
     console.error("Error in verify-email route:", error)
+    Sentry.captureException(error)
     return NextResponse.json(
       { success: false, message: "Server error. Please try again later." },
       { status: 500 }

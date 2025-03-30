@@ -2,6 +2,7 @@ import { SignJWT } from "jose"
 import { serialize } from "cookie"
 import bcrypt from "bcryptjs" // Import bcrypt for password comparison
 import db from "@/lib/db"
+import * as Sentry from "@sentry/nextjs"
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET)
 
@@ -58,6 +59,7 @@ export async function POST(request: Request) {
       }
     )
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error during login:", error)
     return new Response(
       JSON.stringify({ message: "Server error", success: false }),

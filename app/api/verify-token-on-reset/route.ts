@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { verifyToken } from "@/lib/utils"
 import { getUserById } from "@/app/actions"
+import * as Sentry from "@sentry/nextjs"
 
 export async function POST(req: Request) {
   const { token } = await req.json()
@@ -37,7 +38,8 @@ export async function POST(req: Request) {
       success: true,
       message: "Password changed successfully!",
     })
-  } catch {
+  } catch(error) {
+    Sentry.captureException(error)
     return NextResponse.json(
       { success: false, message: "Invalid or expired token" },
       { status: 400 }

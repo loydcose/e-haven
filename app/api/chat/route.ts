@@ -1,6 +1,7 @@
 import { getAccommodations } from "@/app/actions"
 import { NextResponse } from "next/server"
 import Together from "together-ai"
+import * as Sentry from "@sentry/nextjs"
 
 const together = new Together()
 together.apiKey = process.env.TOGETHER_API_KEY || ""
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ messages: updatedMessages }, { status: 200 })
   } catch (error) {
+    Sentry.captureException(error)
     console.error("Error handling chatbot request:", error)
     return NextResponse.json(
       { error: "Something went wrong. Please try again later." },
