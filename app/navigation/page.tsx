@@ -20,7 +20,7 @@ export default function page() {
         <div className="text-white mx-auto w-11/12 z-10 flex flex-col h-full">
           <NavBar />
           <h1 className="mb-12 md:mb-16 font-bold text-3xl md:text-5xl text-center">
-            When are we located?
+            Where are we located?
           </h1>
           <div className="flex flex-col lg:flex-row gap-6 md:gap-8 items-start mb-16 md:mb-20">
             <div className="w-full lg:max-w-[500px] grow shrink-0">
