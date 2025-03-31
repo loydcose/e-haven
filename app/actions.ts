@@ -399,8 +399,6 @@ export async function getReservationsByUser(userId: string) {
 
 // delete reservation
 export async function deleteReservation(reservationId: string) {
-  return { success: false, message: "Reservation deleted successfully" }
-
   try {
     await db.reservation.delete({ where: { id: reservationId } })
     return { success: true, message: "Reservation deleted successfully" }
