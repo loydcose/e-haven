@@ -3,6 +3,7 @@ import ChatBot from "@/components/chat-bot"
 import CookieBanner from "@/components/cookie-banner"
 import Footer from "@/components/footer"
 import GuestReviews from "@/components/guest-reviews"
+import HowToBook from "@/components/how-to-book"
 import NavBar from "@/components/nav-bar"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -65,6 +66,7 @@ export default function Home() {
       </div>
       <BestAccom />
       <GuestReviews />
+      <HowToBook />
       <Footer />
       <ChatBot />
       <CookieBanner />
