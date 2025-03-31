@@ -399,6 +399,8 @@ export async function getReservationsByUser(userId: string) {
 
 // delete reservation
 export async function deleteReservation(reservationId: string) {
+  return { success: false, message: "Reservation deleted successfully" }
+
   try {
     await db.reservation.delete({ where: { id: reservationId } })
     return { success: true, message: "Reservation deleted successfully" }
@@ -554,8 +556,7 @@ export default async function updateReservation(
     ) {
       return {
         success: false,
-        message:
-          "Payment method is required for accepted or paid status.",
+        message: "Payment method is required for accepted or paid status.",
       }
     }
 

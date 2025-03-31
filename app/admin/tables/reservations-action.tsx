@@ -8,12 +8,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Pencil } from "lucide-react"
 import { ReservationTable } from "../admin"
 import Image from "next/image"
 import StatusSelection from "./status-selection"
 import { userReservationStatusStore } from "@/stores/reservation-status"
-import updateReservation from "@/app/actions"
+import updateReservation, { deleteReservation } from "@/app/actions"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import Spinner from "@/components/icons/spinner"
@@ -27,6 +37,7 @@ export function ReservationAction({
   const accommodation = reservation.accommodation
   const { status, paymentMethod } = userReservationStatusStore()
   const [isLoading, setIsLoading] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const { toast } = useToast()
 
   const handleSave = async () => {
@@ -44,7 +55,7 @@ export function ReservationAction({
           description: "Reservation updated successfully.",
           variant: "success",
         })
-        window.location.href = "/admin"
+        window.location.href = window.location.href
       } else {
         toast({
           title: "Error",
@@ -60,6 +71,36 @@ export function ReservationAction({
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      const result = await deleteReservation(reservation.id)
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Reservation deleted successfully.",
+          variant: "success",
+        })
+        window.location.href = window.location.href
+      } else {
+        toast({
+          title: "Error",
+          description: result.message || "Failed to delete reservation.",
+          variant: "destructive",
+        })
+      }
+    } catch {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -107,9 +148,41 @@ export function ReservationAction({
           <StatusSelection reservation={reservation} />
         </div>
         <DialogFooter className="flex flex-col gap-2 md:flex-row">
-          <Button type="submit" variant={"destructive"}>
-            Delete reservation
-          </Button>
+          {/* delete section */}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                type="submit"
+                variant={"destructive"}
+                disabled={isDeleting}
+              >
+                {isDeleting ? <Spinner /> : "Delete reservation"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Delete {user.firstName} {user.lastName}&apos;s reservation?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-gray-600">
+                  Are you sure you want to delete this reservation? This action
+                  cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button
+                  type="button"
+                  variant={"destructive"}
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? <Spinner /> : "Delete"}
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           <Button type="submit" onClick={handleSave} disabled={isLoading}>
             {isLoading ? <Spinner /> : "Save changes"}
           </Button>
