@@ -9,7 +9,7 @@ type AccommodationFilterStore = {
   noOfBed: number | null
   amenities: string[]
   dateRange: DateRange
-  setNoOfBed: (noOfBed: number) => void
+  setNoOfBed: (noOfBed: number | null) => void
   setAmenities: (amenities: string[]) => void
   setDateRange: (dateRange: DateRange) => void
 }

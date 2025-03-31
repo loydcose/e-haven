@@ -33,7 +33,7 @@ export default function Accommodations({
 
   // Reset filters to their default values
   const handleReset = () => {
-    setNoOfBed(0)
+    setNoOfBed(null)
     setAmenities([])
     setDateRange({ from: undefined, to: undefined })
   }

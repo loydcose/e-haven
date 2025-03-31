@@ -17,7 +17,6 @@ export function BedsSelection() {
 
   const handleValueChange = (value: string) => {
     setNoOfBed(Number(value))
-    console.log("Selected bed:", value)
   }
 
   return (
