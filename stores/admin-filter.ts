@@ -14,15 +14,14 @@ type AdminFilterStore = {
   setActiveSection: (section: Tab) => void
 }
 
-export const useAdminFilterStore = (initActiveSelection: Tab) =>
-  create<AdminFilterStore>()((set) => ({
-    sort: null,
-    setSort: (sort) => set(() => ({ sort })),
+export const useAdminFilterStore = create<AdminFilterStore>()((set) => ({
+  sort: null,
+  setSort: (sort) => set(() => ({ sort })),
 
-    search: "",
-    setSearch: (search) => set(() => ({ search })),
+  search: "",
+  setSearch: (search) => set(() => ({ search })),
 
-    activeSection: initActiveSelection,
-    setActiveSection: (section) =>
-      set(() => ({ activeSection: section, sort: null, search: "" })),
-  }))
+  activeSection: "users",
+  setActiveSection: (section) =>
+    set(() => ({ activeSection: section, sort: null, search: "" })),
+}))

@@ -33,13 +33,16 @@ type AdminData =
   | { type: "reservations"; data: ReservationTable[] }
 
 export function Admin({ tab }: { tab: Tab }) {
-  const useStore = useAdminFilterStore(tab)
-  const { activeSection, setSort, sort, search, setSearch } =
-    useStore()
+  const { activeSection, setSort, sort, search, setSearch, setActiveSection } =
+    useAdminFilterStore()
   const router = useRouter()
 
   const [data, setData] = useState<AdminData>({ type: tab, data: [] })
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setActiveSection(tab)
+  }, [tab])
 
   useEffect(() => {
     const fetchData = async () => {
