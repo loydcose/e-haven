@@ -6,7 +6,7 @@ type DateRange = {
 }
 
 type AccommodationFilterStore = {
-  noOfBed: number
+  noOfBed: number | null
   amenities: string[]
   dateRange: DateRange
   setNoOfBed: (noOfBed: number) => void
@@ -16,7 +16,7 @@ type AccommodationFilterStore = {
 
 export const useAccommodationFilterStore = create<AccommodationFilterStore>()(
   (set) => ({
-    noOfBed: 0,
+    noOfBed: null,
     amenities: [],
     dateRange: { from: undefined, to: undefined },
 

@@ -14,9 +14,8 @@ import { useAccommodationFilterStore } from "@/stores/accommodation-filter" // I
 const amenities = [
   "Karaoke",
   "Billiards",
-  "Free parking",
-  "Basic kitchenwares",
-  "Air conditioning",
+  "Parking",
+  "Cookstove",
   "Blanket and pillow",
 ]
 

@@ -31,10 +31,11 @@ export function BedsSelection() {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>No. of beds</SelectLabel>
-          {[1, 2, 3, 4, 5, 6].map((item) => (
+          {[0, 1, 2, 3, 4, 5, 6].map((item) => (
             <SelectItem key={item} value={String(item)}>
               <div className="flex items-center gap-2">
-                <Bed size={18} /> <p>{item}x bed</p>
+                <Bed size={18} />{" "}
+                <p>{item === 0 ? "No bed" : `${item}x bed`}</p>
               </div>
             </SelectItem>
           ))}

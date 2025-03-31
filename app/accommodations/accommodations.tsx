@@ -41,19 +41,22 @@ export default function Accommodations({
   useEffect(() => {
     // Perform filtering based on the filters in the store
     const filtered = accommodations.filter((accom) => {
-      // Filter by number of beds (if noOfBed > 0)
+      // Filter by number of beds
       const matchesBeds =
-        noOfBed === 0 ||
-        accom.amenities.some((amenity) => {
-          const bedMatch = amenity.match(/^(\d+)x bed$/) // Match strings like "2x bed"
-          return bedMatch ? parseInt(bedMatch[1], 10) >= noOfBed : false
-        })
-
+        noOfBed === null
+          ? true // Display all accommodations when noOfBed is null
+          : noOfBed === 0
+          ? !accom.amenities.some((amenity) => /^(\d+)x bed$/.test(amenity)) // No bed label
+          : accom.amenities.some((amenity) => {
+              const bedMatch = amenity.match(/^(\d+)x bed$/) // Match strings like "2x bed"
+              return bedMatch ? parseInt(bedMatch[1], 10) >= noOfBed : false
+            })
+  
       // Filter by amenities (if amenities array is not empty)
       const matchesAmenities =
         amenities.length === 0 ||
         amenities.every((amenity) => accom.amenities.includes(amenity))
-
+  
       // Filter by date range (if both from and to dates are defined)
       const matchesDateRange =
         !dateRange.from ||
@@ -63,13 +66,12 @@ export default function Accommodations({
             (dateRange.from && reservation.checkOut < dateRange.from) || // Reservation ends before the selected range starts
             (dateRange.to && reservation.checkIn > dateRange.to) // Reservation starts after the selected range ends
         )
-
+  
       return matchesBeds && matchesAmenities && matchesDateRange
     })
-
+  
     setFilteredAccommodations(filtered)
   }, [accommodations, noOfBed, amenities, dateRange])
-
   return (
     <>
       <div className="flex items-center gap-2 mb-6 md:mb-8 flex-wrap">
