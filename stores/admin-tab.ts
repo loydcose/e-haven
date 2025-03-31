@@ -1,6 +1,6 @@
 import { Tab } from "@/app/admin/page"
 import { create } from "zustand"
-import { useFilterStore } from "./admin-filter"
+import { useAdminFilterStore } from "./admin-filter"
 
 type AdminTab = {
   activeSection: Tab
@@ -8,7 +8,7 @@ type AdminTab = {
 }
 
 export const useAdminTabStore = (initActiveSelection: Tab) => {
-  const { setSort, setSearch } = useFilterStore()
+  const { setSort, setSearch } = useAdminFilterStore()
 
   return create<AdminTab>()((set) => ({
     activeSection: initActiveSelection,
