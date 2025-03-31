@@ -18,6 +18,8 @@ import ReservationsTable from "./tables/reservations"
 import { ArrowDownAZ, ArrowDownZA, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useAdminFilterStore } from "@/stores/admin-filter"
+import { Tab } from "./page"
+import { useRouter } from "next/navigation"
 
 export type ReservationTable = Reservation & {
   user: User
@@ -30,10 +32,13 @@ type AdminData =
   | { type: "accommodations"; data: Accommodation[] }
   | { type: "reservations"; data: ReservationTable[] }
 
-export function Admin() {
-  const { activeSection, setActiveSection, setSort, sort, search, setSearch } =
-    useAdminFilterStore()
-  const [data, setData] = useState<AdminData>({ type: "users", data: [] })
+export function Admin({ tab }: { tab: Tab }) {
+  const useStore = useAdminFilterStore(tab)
+  const { activeSection, setSort, sort, search, setSearch } =
+    useStore()
+  const router = useRouter()
+
+  const [data, setData] = useState<AdminData>({ type: tab, data: [] })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -68,7 +73,7 @@ export function Admin() {
           <Button
             type="button"
             variant={activeSection === "users" ? "secondary" : "default"}
-            onClick={() => setActiveSection("users")}
+            onClick={() => router.push("/admin?tab=users")}
             className={cn(
               "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-br-none rounded-bl-none rounded-tr-none bg-white",
               activeSection !== "users" && "bg-amber-900 hover:bg-amber-950",
@@ -82,7 +87,7 @@ export function Admin() {
             variant={
               activeSection === "accommodations" ? "secondary" : "default"
             }
-            onClick={() => setActiveSection("accommodations")}
+            onClick={() => router.push("/admin?tab=accommodations")}
             className={cn(
               "h-8 px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-none bg-white",
               activeSection !== "accommodations" &&
@@ -95,7 +100,7 @@ export function Admin() {
           <Button
             type="button"
             variant={activeSection === "reservations" ? "secondary" : "default"}
-            onClick={() => setActiveSection("reservations")}
+            onClick={() => router.push("/admin?tab=reservations")}
             className={cn(
               "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-tl-none rounded-bl-none rounded-br-none bg-white",
               activeSection !== "reservations" &&

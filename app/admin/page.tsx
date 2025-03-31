@@ -4,7 +4,16 @@ import Footer from "@/components/footer"
 import AdminNavbar from "@/components/admin-nav-bar"
 import { Admin } from "./admin"
 
-export default function page() {
+
+export type Tab = "users" | "accommodations" | "reservations"
+
+export default async function page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const tab = (await searchParams)?.tab || "users"
+
   return (
     <main className="relative">
       <div className="bg-black/20 absolute inset-0 -z-10"></div>
@@ -23,7 +32,7 @@ export default function page() {
           ADMIN DASHBOARD
         </h1>
         <div className="mb-16 text-white mx-auto rounded-xl flex flex-col">
-          <Admin />
+          <Admin tab={tab as Tab}/>
         </div>
       </section>
       <Footer />
