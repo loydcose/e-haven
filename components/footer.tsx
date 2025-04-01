@@ -100,6 +100,18 @@ export default function Footer() {
                 Accommodations
               </Link>
               <Link
+                href="/navigation"
+                className="text-sm opacity-75 hover:underline"
+              >
+                Navigation
+              </Link>
+              <Link
+                href="/virtual-tour"
+                className="text-sm opacity-75 hover:underline"
+              >
+                Virtual Tour
+              </Link>
+              <Link
                 href="/terms-condition"
                 className="text-sm opacity-75 hover:underline"
               >
