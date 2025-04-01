@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"
 import UsersTable from "./tables/users"
 import AccommodationsTable from "./tables/accommodations"
 import ReservationsTable from "./tables/reservations"
-import { ArrowDownAZ, ArrowDownZA, Search } from "lucide-react"
+import { ArrowDownAZ, ArrowDownZA, Plus, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useAdminFilterStore } from "@/stores/admin-filter"
 import { Tab } from "./page"
@@ -156,6 +156,14 @@ export function Admin({ tab }: { tab: Tab }) {
             )}
           </div>
         </ScrollArea>
+        {activeSection === "accommodations" && (
+          <Button
+            type="button"
+            className="mt-4 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+          >
+            <Plus /> Add accommodation
+          </Button>
+        )}
       </div>
     </div>
   )

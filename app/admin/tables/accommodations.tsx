@@ -9,6 +9,7 @@ import {
 import { useAdminFilterStore } from "@/stores/admin-filter"
 import type { Accommodation } from "@prisma/client"
 import { useEffect, useState } from "react"
+import { AccommodationsAction } from "./accommodations-action"
 
 // Accommodations Table Component
 export default function AccommodationsTable({
@@ -60,6 +61,7 @@ export default function AccommodationsTable({
           <TableHead className="text-black">Amenities</TableHead>
           <TableHead className="text-black">Created At</TableHead>
           <TableHead className="text-black">Last Updated</TableHead>
+          <TableHead className="text-black">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -77,6 +79,9 @@ export default function AccommodationsTable({
             </TableCell>
             <TableCell>
               {new Date(accommodation.updatedAt).toLocaleDateString()}
+            </TableCell>
+            <TableCell>
+              <AccommodationsAction accommodation={accommodation} />
             </TableCell>
           </TableRow>
         ))}
