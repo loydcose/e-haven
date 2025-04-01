@@ -6,6 +6,7 @@ import { cookies } from "next/headers"
 import { HealthLabel, verifyToken } from "@/lib/utils"
 import bcrypt from "bcryptjs" // Import bcrypt for password hashing
 import * as Sentry from "@sentry/nextjs"
+import { Fields } from "./admin/tables/accommodations/accommodations-action"
 
 const passwordSchema = z.object({
   password: z
@@ -244,31 +245,30 @@ const reservationSchema = z.object({
     .refine((value) => value !== null && value.trim() !== "", {
       message: "Health issue is required in customer section",
     }),
-  guests: z
-    .array(
-      z.object({
-        id: z.string().nonempty("Guest ID is required"),
-        name: z.string().nonempty("Guest name is required"),
-        birthday: z
-          .date()
-          .nullable()
-          .refine((date) => date !== null, {
-            message: "Guest birthday is required",
-          }),
-        gender: z
-          .string()
-          .nullable()
-          .refine((value) => value !== null && value.trim() !== "", {
-            message: "Gender is required in guest section",
-          }),
-        healthIssue: z
-          .string()
-          .nullable()
-          .refine((value) => value !== null && value.trim() !== "", {
-            message: "Health issue is required in guest section",
-          }),
-      })
-    ),
+  guests: z.array(
+    z.object({
+      id: z.string().nonempty("Guest ID is required"),
+      name: z.string().nonempty("Guest name is required"),
+      birthday: z
+        .date()
+        .nullable()
+        .refine((date) => date !== null, {
+          message: "Guest birthday is required",
+        }),
+      gender: z
+        .string()
+        .nullable()
+        .refine((value) => value !== null && value.trim() !== "", {
+          message: "Gender is required in guest section",
+        }),
+      healthIssue: z
+        .string()
+        .nullable()
+        .refine((value) => value !== null && value.trim() !== "", {
+          message: "Health issue is required in guest section",
+        }),
+    })
+  ),
   totalPrice: z.number().positive("Total price must be greater than zero"),
 })
 
@@ -576,6 +576,82 @@ export default async function updateReservation(
   } catch (error) {
     Sentry.captureException(error)
     console.error("Error updating reservation:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
+
+// Define the Zod schema for validation
+const accommodationSchema = z.object({
+  image: z
+    .string()
+    .url("Please upload an image")
+    .nullable()
+    .refine((value) => value !== null && value.trim() !== "", {
+      message: "Please upload an image",
+    }),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  description: z.string().optional(),
+  slug: z.string().min(2, "Slug must be at least 2 characters"),
+  amenities: z.array(z.string()).nonempty("Amenities must not be empty"),
+  numberOfBeds: z.number().min(0, "Number of beds must be at least 0"), // Allow 0 as a valid value
+  price: z.number().min(0, "Price must be a positive number"),
+  virtualPath: z.string().optional(),
+})
+
+export async function updateAccommodation(
+  accommodationId: string,
+  data: Fields
+) {
+  try {
+    // Validate the input data using Zod
+    const validationResult = accommodationSchema.safeParse(data)
+    if (!validationResult.success) {
+      return {
+        success: false,
+        message: validationResult.error.errors[0].message, // Return the first validation error
+      }
+    }
+
+    const validatedData = validationResult.data
+
+    if (validatedData.image?.startsWith("data:")) {
+      // upload to upload thing
+      console.log("Uploadthing")
+    }
+
+    // Handle amenities based on the number of beds
+    const bedKeywordRegex = /\d+x bed/
+    if (validatedData.numberOfBeds === 0) {
+      // Remove any "[n]x bed" keywords from amenities
+      // @ts-expect-error any
+      validatedData.amenities = validatedData.amenities.filter(
+        (amenity) => !bedKeywordRegex.test(amenity)
+      )
+    } else {
+      // Add or update the "[n]x bed" keyword in amenities
+      const bedKeyword = `${validatedData.numberOfBeds}x bed`
+      // @ts-expect-error any
+      validatedData.amenities = [
+        ...validatedData.amenities.filter(
+          (amenity) => !bedKeywordRegex.test(amenity)
+        ),
+        bedKeyword,
+      ]
+    }
+    const { numberOfBeds, ...reset } = validatedData
+    console.log(numberOfBeds)
+    console.log(reset)
+
+    // Update the accommodation in the database
+    // await db.accommodation.update({
+    //   where: { id: accommodationId },
+    //   data: reset, // Use the validated data
+    // })
+
+    return { success: true, message: "Accommodation updated successfully" }
+  } catch (error) {
+    Sentry.captureException(error)
+    console.error("Error updating accommodation:", error)
     return { success: false, message: "Server error, please try again later." }
   }
 }

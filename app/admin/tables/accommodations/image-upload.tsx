@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useToast } from "@/hooks/use-toast"
 import { X } from "lucide-react"
 import Image from "next/image"
 import React, { useEffect, useRef, useState } from "react"
@@ -12,10 +13,14 @@ export default function ImageUpload({
   handleFieldChange,
 }: {
   image: string
-  handleFieldChange: (field: string, value: string | number | string[] | null) => void
+  handleFieldChange: (
+    field: string,
+    value: string | number | string[] | null
+  ) => void
 }) {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null) // Reference to the file input
+  const { toast } = useToast()
 
   useEffect(() => {
     if (image) {
@@ -30,6 +35,26 @@ export default function ImageUpload({
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
+      // Validate file type
+      const validImageTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ]
+      if (!validImageTypes.includes(file.type)) {
+        toast({
+          title: "Error",
+          description:
+            "Invalid file type. Please upload a valid image (JPEG, PNG, GIF, or WEBP).",
+          variant: "destructive",
+        })
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "" // Reset the file input value
+        }
+        return
+      }
+
       const reader = new FileReader()
       reader.onload = () => {
         setImagePreview(reader.result as string)

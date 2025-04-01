@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import AmenitiesSelection from "./amenities-selection"
 import ImageUpload from "./image-upload"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import SubmitButton from "./submit-button"
 
 export type Fields = {
@@ -44,6 +44,18 @@ export function AccommodationsAction({
 }: {
   accommodation: Accommodation
 }) {
+  const initialFields: Fields = {
+    image: accommodation.image,
+    title: accommodation.title,
+    description: accommodation.description || "",
+    slug: accommodation.slug,
+    amenities: accommodation.amenities,
+    numberOfBeds: extractNumberOfBeds(accommodation.amenities),
+    price: accommodation.price,
+    virtualPath: accommodation.virtualPath,
+  }
+
+  const [hasChange, setHasChange] = useState(false)
   const [fields, setFields] = useState<Fields>({
     image: accommodation.image,
     title: accommodation.title,
@@ -65,8 +77,12 @@ export function AccommodationsAction({
     }))
   }
 
+  useEffect(() => {
+    setHasChange(JSON.stringify(fields) !== JSON.stringify(initialFields))
+  }, [fields, accommodation])
+
   return (
-    <Dialog>
+    <Dialog onOpenChange={v => !v && setFields(initialFields)}>
       <DialogTrigger asChild>
         <Button
           type="button"
@@ -162,7 +178,11 @@ export function AccommodationsAction({
             {"Delete accommodation"}
           </Button>
 
-          <SubmitButton fields={fields} accommodationId={accommodation.id} />
+          <SubmitButton
+            hasChange={hasChange}
+            fields={fields}
+            accommodationId={accommodation.id}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>
