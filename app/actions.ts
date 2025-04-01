@@ -598,37 +598,76 @@ const accommodationSchema = z.object({
   virtualPath: z.string().optional(),
 })
 
+import { UTApi, UTFile } from "uploadthing/server"
+const utapi = new UTApi()
+
 export async function updateAccommodation(
   accommodationId: string,
   data: Fields
 ) {
   try {
-    // Validate the input data using Zod
     const validationResult = accommodationSchema.safeParse(data)
     if (!validationResult.success) {
       return {
         success: false,
-        message: validationResult.error.errors[0].message, // Return the first validation error
+        message: validationResult.error.errors[0].message,
       }
     }
 
     const validatedData = validationResult.data
 
-    if (validatedData.image?.startsWith("data:")) {
-      // upload to upload thing
-      console.log("Uploadthing")
+    if (validatedData.image?.startsWith("data:image")) {
+      try {
+        // Extract the MIME type from the base64 string
+        const mimeTypeMatch = validatedData.image.match(
+          /data:(image\/[a-zA-Z]+);base64,/
+        )
+        if (!mimeTypeMatch) {
+          return { success: false, message: "Invalid image format." }
+        }
+
+        const mimeType = mimeTypeMatch[1] // e.g., "image/png", "image/jpeg"
+        const fileExtension = mimeType.split("/")[1] // e.g., "png", "jpeg"
+
+        const base64Image = validatedData.image.split(",")[1]
+        const buffer = Buffer.from(base64Image, "base64")
+
+        // Generate a unique name and custom ID based on the file type
+        const timestamp = Date.now()
+        const name = `image-${timestamp}.${fileExtension}` // e.g., "image-123456789.png"
+        const customId = `custom-${timestamp}`
+
+        const file = new UTFile([buffer], name, {
+          customId,
+        })
+
+        const uploadResponse = await utapi.uploadFiles([file])
+
+        if (uploadResponse[0].error) {
+          return { success: false, message: "Image upload failed." }
+        } else {
+          // Log the uploaded file URL
+          console.log("Uploaded file URL:", uploadResponse[0].data.ufsUrl)
+
+          // Update the validatedData.image with the uploaded file URL
+          validatedData.image = uploadResponse[0].data.ufsUrl
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        return {
+          success: false,
+          message: "Failed to upload the image. Please try again.",
+        }
+      }
     }
 
-    // Handle amenities based on the number of beds
     const bedKeywordRegex = /\d+x bed/
     if (validatedData.numberOfBeds === 0) {
-      // Remove any "[n]x bed" keywords from amenities
       // @ts-expect-error any
       validatedData.amenities = validatedData.amenities.filter(
         (amenity) => !bedKeywordRegex.test(amenity)
       )
     } else {
-      // Add or update the "[n]x bed" keyword in amenities
       const bedKeyword = `${validatedData.numberOfBeds}x bed`
       // @ts-expect-error any
       validatedData.amenities = [
@@ -638,15 +677,15 @@ export async function updateAccommodation(
         bedKeyword,
       ]
     }
-    const { numberOfBeds, ...reset } = validatedData
+    const { numberOfBeds, ...rest } = validatedData
     console.log(numberOfBeds)
-    console.log(reset)
 
-    // Update the accommodation in the database
-    // await db.accommodation.update({
-    //   where: { id: accommodationId },
-    //   data: reset, // Use the validated data
-    // })
+    // don't remove this code
+    await db.accommodation.update({
+      where: { id: accommodationId },
+      // @ts-expect-error some values are null
+      data: rest,
+    })
 
     return { success: true, message: "Accommodation updated successfully" }
   } catch (error) {
