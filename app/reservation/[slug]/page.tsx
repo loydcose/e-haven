@@ -5,19 +5,14 @@ import { CircleCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Footer from "@/components/footer"
 import GuestInformation from "../guest-information"
-import { getAccommodation, getUserFromToken } from "@/app/actions"
+import { getAccommodation, getUserById, getUserFromToken } from "@/app/actions"
 import { CalendarSelection } from "../calendar-selection"
 import CustomerInformation from "../customer-information"
 import SubmitButton from "../submit-btn"
 import AgreementCheck from "../agreement-check"
+import { JwtPayload } from "jsonwebtoken"
 
 // TODO: add skeleton laoder using nextjs streaming
-
-type UserType = {
-  id: string
-  exp: number
-  username: string
-}
 
 export default async function page({
   params,
@@ -26,13 +21,12 @@ export default async function page({
 }) {
   const slug = (await params).slug
   const accommodation = await getAccommodation(slug)
-  // @ts-expect-error no error here
-  const user: UserType | null = await getUserFromToken()
-  console.log(user)
 
-  if (!user) {
-    return <h1>Unauthorized</h1>
-  }
+  const payload: JwtPayload | null = await getUserFromToken()
+  if (!payload || !payload.id) throw new Error("Unauthorized!")
+  const user = await getUserById(payload.id)
+
+  if (!user) throw new Error("Unauthorized!")
 
   return (
     <main className="relative">
@@ -95,7 +89,7 @@ export default async function page({
                 </ul>
               </div>
 
-              <CustomerInformation />
+              <CustomerInformation user={user}/>
 
               <GuestInformation />
 

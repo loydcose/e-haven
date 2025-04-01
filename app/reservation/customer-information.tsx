@@ -4,42 +4,9 @@ import { Input } from "@/components/ui/input"
 import { useReservationStore } from "@/stores/reservation"
 import { GenderSelection } from "./gender-selection"
 import { HealthSelection } from "./health-selection"
+import type { User } from "@prisma/client"
 
-const inputFields = [
-  {
-    id: "firstName",
-    label: "First name",
-    type: "text",
-    defaultValue: "Loyd",
-    required: true,
-  },
-  {
-    id: "lastName",
-    label: "Last name",
-    type: "text",
-    defaultValue: "Cose",
-    required: true,
-  },
-  {
-    id: "address",
-    label: "Address",
-    type: "text",
-    required: true,
-    colSpan: true,
-  },
-  {
-    id: "email",
-    label: "Email",
-    type: "email",
-    defaultValue: "loydcose@gmail.com",
-    colSpan: true,
-    required: true,
-  },
-  { id: "birthday", label: "Birthday", type: "date", required: true },
-  { id: "contactNumber", label: "Contact number", type: "tel", required: true },
-]
-
-export default function CustomerInformation() {
+export default function CustomerInformation({ user }: { user: User }) {
   const {
     setAddress,
     setBirthday,
@@ -49,6 +16,40 @@ export default function CustomerInformation() {
     healthIssue,
     setHealthIssue,
   } = useReservationStore()
+
+  const inputFields = [
+    {
+      id: "firstName",
+      label: "First name",
+      type: "text",
+      defaultValue: user.firstName, // Use real data from user
+      required: true,
+    },
+    {
+      id: "lastName",
+      label: "Last name",
+      type: "text",
+      defaultValue: user.lastName, // Use real data from user
+      required: true,
+    },
+    {
+      id: "address",
+      label: "Address",
+      type: "text",
+      required: true,
+      colSpan: true,
+    },
+    {
+      id: "email",
+      label: "Email",
+      type: "email",
+      defaultValue: user.email, // Use real data from user
+      colSpan: true,
+      required: true,
+    },
+    { id: "birthday", label: "Birthday", type: "date", required: true },
+    { id: "contactNumber", label: "Contact number", type: "tel", required: true },
+  ]
 
   const handleInputChange = (id: string, value: string) => {
     if (id === "address") {
@@ -77,8 +78,8 @@ export default function CustomerInformation() {
               type={field.type}
               id={field.id}
               placeholder={`Enter your ${field.label.toLowerCase()}...`}
-              defaultValue={field.defaultValue || ""}
-              disabled={!!field.defaultValue}
+              defaultValue={field.defaultValue || ""} // Use defaultValue from user or fallback
+              disabled={!!field.defaultValue} // Disable if defaultValue exists
               className="bg-white text-black"
               required={field.required}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
