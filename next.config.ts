@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "e-haven-images.pages.dev",
       },
+      {
+        protocol: "https",
+        hostname: "8keb3fa2tw.ufs.sh",
+      },
     ],
   },
 }

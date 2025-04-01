@@ -6,6 +6,7 @@ import { cookies } from "next/headers"
 import { HealthLabel, verifyToken } from "@/lib/utils"
 import bcrypt from "bcryptjs" // Import bcrypt for password hashing
 import * as Sentry from "@sentry/nextjs"
+import { Fields } from "./admin/tables/accommodations/accommodations-action"
 
 const passwordSchema = z.object({
   password: z
@@ -244,31 +245,30 @@ const reservationSchema = z.object({
     .refine((value) => value !== null && value.trim() !== "", {
       message: "Health issue is required in customer section",
     }),
-  guests: z
-    .array(
-      z.object({
-        id: z.string().nonempty("Guest ID is required"),
-        name: z.string().nonempty("Guest name is required"),
-        birthday: z
-          .date()
-          .nullable()
-          .refine((date) => date !== null, {
-            message: "Guest birthday is required",
-          }),
-        gender: z
-          .string()
-          .nullable()
-          .refine((value) => value !== null && value.trim() !== "", {
-            message: "Gender is required in guest section",
-          }),
-        healthIssue: z
-          .string()
-          .nullable()
-          .refine((value) => value !== null && value.trim() !== "", {
-            message: "Health issue is required in guest section",
-          }),
-      })
-    ),
+  guests: z.array(
+    z.object({
+      id: z.string().nonempty("Guest ID is required"),
+      name: z.string().nonempty("Guest name is required"),
+      birthday: z
+        .date()
+        .nullable()
+        .refine((date) => date !== null, {
+          message: "Guest birthday is required",
+        }),
+      gender: z
+        .string()
+        .nullable()
+        .refine((value) => value !== null && value.trim() !== "", {
+          message: "Gender is required in guest section",
+        }),
+      healthIssue: z
+        .string()
+        .nullable()
+        .refine((value) => value !== null && value.trim() !== "", {
+          message: "Health issue is required in guest section",
+        }),
+    })
+  ),
   totalPrice: z.number().positive("Total price must be greater than zero"),
 })
 
@@ -576,6 +576,121 @@ export default async function updateReservation(
   } catch (error) {
     Sentry.captureException(error)
     console.error("Error updating reservation:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
+
+// Define the Zod schema for validation
+const accommodationSchema = z.object({
+  image: z
+    .string()
+    .url("Please upload an image")
+    .nullable()
+    .refine((value) => value !== null && value.trim() !== "", {
+      message: "Please upload an image",
+    }),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  description: z.string().optional(),
+  slug: z.string().min(2, "Slug must be at least 2 characters"),
+  amenities: z.array(z.string()).nonempty("Amenities must not be empty"),
+  numberOfBeds: z.number().min(0, "Number of beds must be at least 0"), // Allow 0 as a valid value
+  price: z.number().min(0, "Price must be a positive number"),
+  virtualPath: z.string().optional(),
+})
+
+import { UTApi, UTFile } from "uploadthing/server"
+const utapi = new UTApi()
+
+export async function updateAccommodation(
+  accommodationId: string,
+  data: Fields
+) {
+  try {
+    const validationResult = accommodationSchema.safeParse(data)
+    if (!validationResult.success) {
+      return {
+        success: false,
+        message: validationResult.error.errors[0].message,
+      }
+    }
+
+    const validatedData = validationResult.data
+
+    if (validatedData.image?.startsWith("data:image")) {
+      try {
+        // Extract the MIME type from the base64 string
+        const mimeTypeMatch = validatedData.image.match(
+          /data:(image\/[a-zA-Z]+);base64,/
+        )
+        if (!mimeTypeMatch) {
+          return { success: false, message: "Invalid image format." }
+        }
+
+        const mimeType = mimeTypeMatch[1] // e.g., "image/png", "image/jpeg"
+        const fileExtension = mimeType.split("/")[1] // e.g., "png", "jpeg"
+
+        const base64Image = validatedData.image.split(",")[1]
+        const buffer = Buffer.from(base64Image, "base64")
+
+        // Generate a unique name and custom ID based on the file type
+        const timestamp = Date.now()
+        const name = `image-${timestamp}.${fileExtension}` // e.g., "image-123456789.png"
+        const customId = `custom-${timestamp}`
+
+        const file = new UTFile([buffer], name, {
+          customId,
+        })
+
+        const uploadResponse = await utapi.uploadFiles([file])
+
+        if (uploadResponse[0].error) {
+          return { success: false, message: "Image upload failed." }
+        } else {
+          // Log the uploaded file URL
+          console.log("Uploaded file URL:", uploadResponse[0].data.ufsUrl)
+
+          // Update the validatedData.image with the uploaded file URL
+          validatedData.image = uploadResponse[0].data.ufsUrl
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        return {
+          success: false,
+          message: "Failed to upload the image. Please try again.",
+        }
+      }
+    }
+
+    const bedKeywordRegex = /\d+x bed/
+    if (validatedData.numberOfBeds === 0) {
+      // @ts-expect-error any
+      validatedData.amenities = validatedData.amenities.filter(
+        (amenity) => !bedKeywordRegex.test(amenity)
+      )
+    } else {
+      const bedKeyword = `${validatedData.numberOfBeds}x bed`
+      // @ts-expect-error any
+      validatedData.amenities = [
+        ...validatedData.amenities.filter(
+          (amenity) => !bedKeywordRegex.test(amenity)
+        ),
+        bedKeyword,
+      ]
+    }
+    const { numberOfBeds, ...rest } = validatedData
+    console.log(numberOfBeds)
+
+    // don't remove this code
+    await db.accommodation.update({
+      where: { id: accommodationId },
+      // @ts-expect-error some values are null
+      data: rest,
+    })
+
+    return { success: true, message: "Accommodation updated successfully" }
+  } catch (error) {
+    Sentry.captureException(error)
+    console.error("Error updating accommodation:", error)
     return { success: false, message: "Server error, please try again later." }
   }
 }
