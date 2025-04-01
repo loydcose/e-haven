@@ -6,7 +6,9 @@ import { verifyToken } from "./lib/utils"
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value
   const adminToken = req.cookies.get("adminToken")?.value
-  const isAuthPage = ["/sign-in", "/sign-up"].includes(req.nextUrl.pathname)
+  const isAuthPage = ["/sign-in", "/sign-up", "/email-verification"].includes(
+    req.nextUrl.pathname
+  )
   const isAdminAuthPage = ["/admin/sign-in", "/admin/sign-up"].includes(
     req.nextUrl.pathname
   )
@@ -14,6 +16,15 @@ export async function middleware(req: NextRequest) {
   const isPasswordPage = ["/forgot-password", "/reset-password"].includes(
     req.nextUrl.pathname
   )
+  const isPublicPage = [
+    "/",
+    "/about-us",
+    "/privacy-policy",
+    "/terms-condition",
+    "/virtual-tour",
+    "/virtual-tour/view",
+    "/sentry-example-page",
+  ].includes(req.nextUrl.pathname)
 
   // Handle regular user token
   if (token) {
@@ -68,7 +79,13 @@ export async function middleware(req: NextRequest) {
   }
 
   // Redirect unauthenticated users trying to access protected pages
-  if (!token && !isAuthPage && !isAdminPage && !isPasswordPage) {
+  if (
+    !token &&
+    !isAuthPage &&
+    !isAdminPage &&
+    !isPasswordPage &&
+    !isPublicPage
+  ) {
     return NextResponse.redirect(new URL("/sign-in", req.url))
   }
 
@@ -88,6 +105,16 @@ export const config = {
     "/sign-up",
     "/forgot-password",
     "/reset-password",
+    "/email-verification",
+    "/about-us",
+    "/privacy-policy",
+    "/terms-condition",
+    "/virtual-tour",
+    "/virtual-tour/view",
+    "/my-account",
+    "/my-reservations",
+    "/reservation/:path*",
     "/admin/:path*",
+    "/sentry-example-page",
   ], // List of protected pages and auth pages
 }
