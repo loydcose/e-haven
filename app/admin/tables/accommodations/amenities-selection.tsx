@@ -1,31 +1,40 @@
 "use client"
-import React from "react"
+import React, { useEffect } from "react"
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector"
 
-const OPTIONS: Option[] = [
-  { label: "Karaoke", value: "karaoke" },
-  { label: "Billiards", value: "billiards" },
-  { label: "Parking", value: "parking" },
-  { label: "Cookstove", value: "cookstove" },
-  { label: "Blanket and pillow", value: "blanketAndPillow" },
+const options: Option[] = [
+  { label: "Karaoke", value: "Karaoke" },
+  { label: "Billiards", value: "Billiards" },
+  { label: "Parking", value: "Parking" },
+  { label: "Cookstove", value: "Cookstove" },
+  { label: "Blanket and pillow", value: "Blanket and pillow" },
 ]
 
-const AmenitiesSelection = ({ amenities }: { amenities: string[] }) => {
-  // Normalize the amenities to lowercase for comparison
-  const normalizedAmenities = amenities.map((amenity) => amenity.toLowerCase())
-
-  // Map the amenities prop to the corresponding Option objects
-  const defaultSelected = OPTIONS.filter((option) =>
-    normalizedAmenities.includes(option.value)
+const AmenitiesSelection = ({
+  amenities,
+  handleFieldChange,
+}: {
+  amenities: string[]
+  handleFieldChange: (field: string, value: string | number | string[]) => void
+}) => {
+  const defaultSelected = options.filter((option) =>
+    amenities.includes(option.value)
   )
 
   const [value, setValue] = React.useState<Option[]>(defaultSelected)
+
+  useEffect(() => {
+    handleFieldChange(
+      "amenities",
+      value.map((v) => v.value)
+    )
+  }, [value])
 
   return (
     <MultipleSelector
       value={value}
       onChange={setValue}
-      defaultOptions={OPTIONS}
+      defaultOptions={options}
       placeholder="Select amenities you like..."
       emptyIndicator={
         <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">

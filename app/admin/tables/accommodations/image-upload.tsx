@@ -8,19 +8,24 @@ import Image from "next/image"
 import React, { useEffect, useRef, useState } from "react"
 
 export default function ImageUpload({
-  accommodationImage,
+  image,
+  handleFieldChange,
 }: {
-  accommodationImage: string
+  image: string
+  handleFieldChange: (field: string, value: string | number | string[] | null) => void
 }) {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null) // Reference to the file input
 
   useEffect(() => {
-    // Set the initial image preview from the accommodationImage prop
-    if (accommodationImage) {
-      setImagePreview(accommodationImage)
+    if (image) {
+      setImagePreview(image)
     }
-  }, [accommodationImage])
+  }, [image])
+
+  useEffect(() => {
+    handleFieldChange("image", imagePreview)
+  }, [imagePreview])
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

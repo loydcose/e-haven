@@ -16,28 +16,57 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import AmenitiesSelection from "./amenities-selection"
 import ImageUpload from "./image-upload"
+import { useState } from "react"
+import SubmitButton from "./submit-button"
+
+export type Fields = {
+  image: string
+  title: string
+  description: string
+  slug: string
+  amenities: string[]
+  numberOfBeds: number
+  price: number
+  virtualPath: string
+}
+
+const extractNumberOfBeds = (amenities: string[]): number => {
+  const bedAmenity = amenities.find((amenity) => amenity.match(/^\d+x bed$/i))
+  if (bedAmenity) {
+    const match = bedAmenity.match(/^(\d+)x bed$/i)
+    return match ? parseInt(match[1], 10) : 0
+  }
+  return 0
+}
 
 export function AccommodationsAction({
   accommodation,
 }: {
   accommodation: Accommodation
 }) {
-  // Extract the number of beds from the amenities array
-  const extractNumberOfBeds = (amenities: string[]): number => {
-    const bedAmenity = amenities.find((amenity) =>
-      amenity.match(/^\d+x bed$/i)
-    )
-    if (bedAmenity) {
-      const match = bedAmenity.match(/^(\d+)x bed$/i)
-      return match ? parseInt(match[1], 10) : 0
-    }
-    return 0
+  const [fields, setFields] = useState<Fields>({
+    image: accommodation.image,
+    title: accommodation.title,
+    description: accommodation.description || "",
+    slug: accommodation.slug,
+    amenities: accommodation.amenities,
+    numberOfBeds: extractNumberOfBeds(accommodation.amenities),
+    price: accommodation.price,
+    virtualPath: accommodation.virtualPath,
+  })
+
+  const handleFieldChange = (
+    field: string,
+    value: string | number | string[] | null
+  ) => {
+    setFields((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
   }
 
-  const numberOfBeds = extractNumberOfBeds(accommodation.amenities || [])
-
   return (
-    <Dialog defaultOpen>
+    <Dialog>
       <DialogTrigger asChild>
         <Button
           type="button"
@@ -60,38 +89,71 @@ export function AccommodationsAction({
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto h-full">
           <div className="flex flex-col gap-2">
-            <ImageUpload accommodationImage={accommodation.image} />
+            <ImageUpload
+              image={fields.image}
+              handleFieldChange={handleFieldChange}
+            />
             <div>
               <Label>Id</Label>
-              <Input defaultValue={accommodation.id} disabled />
+              <Input value={accommodation.id} disabled />
             </div>
             <div>
               <Label>Title</Label>
-              <Input defaultValue={accommodation.title} />
+              <Input
+                value={fields.title}
+                onChange={(e) => handleFieldChange("title", e.target.value)}
+              />
             </div>
             <div>
               <Label>Slug</Label>
-              <Input defaultValue={accommodation.slug} />
+              <Input
+                value={fields.slug}
+                onChange={(e) => handleFieldChange("slug", e.target.value)}
+              />
             </div>
             <div>
               <Label>Description</Label>
-              <Textarea cols={6} defaultValue={accommodation.description || ""} />
+              <Textarea
+                cols={6}
+                value={fields.description}
+                onChange={(e) =>
+                  handleFieldChange("description", e.target.value)
+                }
+              />
             </div>
             <div>
               <Label>Amenities</Label>
-              <AmenitiesSelection amenities={accommodation.amenities || []} />
+              <AmenitiesSelection
+                amenities={fields.amenities}
+                handleFieldChange={handleFieldChange}
+              />
             </div>
             <div>
               <Label>No. of bed</Label>
-              <Input type="number" defaultValue={numberOfBeds} />
+              <Input
+                type="number"
+                value={fields.numberOfBeds}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "numberOfBeds",
+                    parseInt(e.target.value, 10)
+                  )
+                }
+              />
             </div>
             <div>
               <Label>Price (in peso)</Label>
-              <Input type="number" defaultValue={accommodation.price} />
+              <Input
+                type="number"
+                value={fields.price}
+                onChange={(e) =>
+                  handleFieldChange("price", parseFloat(e.target.value))
+                }
+              />
             </div>
             <div>
               <Label>Virtual path</Label>
-              <Input defaultValue={accommodation.virtualPath} disabled/>
+              <Input value={fields.virtualPath} disabled />
             </div>
           </div>
         </div>
@@ -99,7 +161,8 @@ export function AccommodationsAction({
           <Button type="submit" variant={"destructive"}>
             {"Delete accommodation"}
           </Button>
-          <Button type="submit">{"Save changes"}</Button>
+
+          <SubmitButton fields={fields} accommodationId={accommodation.id} />
         </DialogFooter>
       </DialogContent>
     </Dialog>
