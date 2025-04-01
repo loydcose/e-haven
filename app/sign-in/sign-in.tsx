@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Eye, EyeClosed } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import Spinner from "@/components/icons/spinner"
 
 export default function SignIn({ modal }: { modal: string | null | string[] }) {
   const [showPass, setShowPass] = useState(false)
+  const [loading, setLoading] = useState(false) // Add loading state
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -36,6 +38,7 @@ export default function SignIn({ modal }: { modal: string | null | string[] }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true) // Start loading
     const response = await fetch("/api/login", {
       method: "POST",
       headers: {
@@ -54,6 +57,7 @@ export default function SignIn({ modal }: { modal: string | null | string[] }) {
           title: "Error",
           description: data.message,
         })
+        setLoading(false) // Stop loading
         return
       }
 
@@ -74,6 +78,7 @@ export default function SignIn({ modal }: { modal: string | null | string[] }) {
         description: "Try again later",
       })
     }
+    setLoading(false) // Stop loading
   }
 
   return (
@@ -125,8 +130,9 @@ export default function SignIn({ modal }: { modal: string | null | string[] }) {
         type="submit"
         size={"lg"}
         className="mb-8 w-full font-bold text-lg h-12"
+        disabled={loading} // Disable button while loading
       >
-        Login account
+        {loading ? <Spinner /> : "Login account"}
       </Button>
     </form>
   )

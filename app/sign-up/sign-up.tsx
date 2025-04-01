@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { addUser } from "../actions"
 import { useToast } from "@/hooks/use-toast"
 import Agreement from "./agreement"
+import Spinner from "@/components/icons/spinner"
 
 export default function SignUp() {
   const { toast } = useToast()
@@ -190,9 +191,9 @@ export default function SignUp() {
         type="submit"
         size={"lg"}
         className="mb-8 w-full font-bold text-lg h-12"
-        disabled={loading} // Disable the button while loading
+        disabled={loading} // Disable button while loading
       >
-        {loading ? "Signing up..." : "Sign up"}
+        {loading ? <Spinner /> : "Sign up"}
       </Button>
     </form>
   )
