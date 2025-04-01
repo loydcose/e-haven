@@ -10,8 +10,17 @@ const OPTIONS: Option[] = [
   { label: "Blanket and pillow", value: "blanketAndPillow" },
 ]
 
-const AmenitiesSelection = () => {
-  const [value, setValue] = React.useState<Option[]>([])
+const AmenitiesSelection = ({ amenities }: { amenities: string[] }) => {
+  // Normalize the amenities to lowercase for comparison
+  const normalizedAmenities = amenities.map((amenity) => amenity.toLowerCase())
+
+  // Map the amenities prop to the corresponding Option objects
+  const defaultSelected = OPTIONS.filter((option) =>
+    normalizedAmenities.includes(option.value)
+  )
+
+  const [value, setValue] = React.useState<Option[]>(defaultSelected)
+
   return (
     <MultipleSelector
       value={value}

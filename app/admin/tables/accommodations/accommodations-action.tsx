@@ -22,6 +22,20 @@ export function AccommodationsAction({
 }: {
   accommodation: Accommodation
 }) {
+  // Extract the number of beds from the amenities array
+  const extractNumberOfBeds = (amenities: string[]): number => {
+    const bedAmenity = amenities.find((amenity) =>
+      amenity.match(/^\d+x bed$/i)
+    )
+    if (bedAmenity) {
+      const match = bedAmenity.match(/^(\d+)x bed$/i)
+      return match ? parseInt(match[1], 10) : 0
+    }
+    return 0
+  }
+
+  const numberOfBeds = extractNumberOfBeds(accommodation.amenities || [])
+
   return (
     <Dialog defaultOpen>
       <DialogTrigger asChild>
@@ -46,38 +60,38 @@ export function AccommodationsAction({
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto h-full">
           <div className="flex flex-col gap-2">
-            <ImageUpload/>
+            <ImageUpload accommodationImage={accommodation.image} />
             <div>
               <Label>Id</Label>
-              <Input defaultValue={"asddadadadasdasdas"} disabled/>
+              <Input defaultValue={accommodation.id} disabled />
             </div>
             <div>
               <Label>Title</Label>
-              <Input defaultValue={"asddadadadasdasdas"} />
+              <Input defaultValue={accommodation.title} />
             </div>
             <div>
               <Label>Slug</Label>
-              <Input defaultValue={"asddadadadasdasdas"} />
+              <Input defaultValue={accommodation.slug} />
             </div>
             <div>
               <Label>Description</Label>
-              <Textarea />
+              <Textarea cols={6} defaultValue={accommodation.description || ""} />
             </div>
             <div>
               <Label>Amenities</Label>
-              <AmenitiesSelection />
+              <AmenitiesSelection amenities={accommodation.amenities || []} />
             </div>
             <div>
               <Label>No. of bed</Label>
-              <Input type="number" />
+              <Input type="number" defaultValue={numberOfBeds} />
             </div>
             <div>
               <Label>Price (in peso)</Label>
-              <Input defaultValue={"asddadadadasdasdas"} type="number" />
+              <Input type="number" defaultValue={accommodation.price} />
             </div>
             <div>
               <Label>Virtual path</Label>
-              <Input defaultValue={"asddadadadasdasdas"} />
+              <Input defaultValue={accommodation.virtualPath} disabled/>
             </div>
           </div>
         </div>
