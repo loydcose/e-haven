@@ -4,10 +4,11 @@ import Link from "next/link"
 import ProfileDropdown from "./profile-dropdown"
 
 export default function NavBar() {
+
   return (
     <nav className="flex items-center justify-between gap-4 py-6">
-      <Link href="/">
-        <div className="w-[289px] md:w-[389px]">
+      <Link href="/"className="block shrink-1">
+        <div className="w-full max-w-[289px] md:max-w-[389px]">
           <Image
             src="/logo.png"
             alt="e-haven logo"

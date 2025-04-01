@@ -6,9 +6,11 @@ import { Button, buttonVariants } from "./ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Menu } from "lucide-react"
+import { useUserSessionStore } from "@/stores/user-session"
 
 export default function ProfileDropdown() {
   const router = useRouter()
+  const session = useUserSessionStore((state) => state.session)
 
   const handleLogout = async () => {
     await fetch("/api/log-out", {
@@ -17,6 +19,24 @@ export default function ProfileDropdown() {
     router.push("/sign-in")
   }
 
+  const handleSignIn = () => {
+    router.push("/sign-in")
+  }
+
+  if (!session) {
+    // If the user is unsigned, show only the "Sign in" button
+    return (
+      <Button
+        onClick={handleSignIn}
+        type="button"
+        variant={"secondary"}
+      >
+        Sign in
+      </Button>
+    )
+  }
+
+  // If the user is signed in, show the dropdown
   return (
     <Popover>
       <PopoverTrigger asChild>
