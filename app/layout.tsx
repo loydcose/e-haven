@@ -4,7 +4,6 @@ import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { userSessionStore } from "@/stores/user-session"
 const rubikSans = Rubik({
   subsets: ["latin"],
 })
