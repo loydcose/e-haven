@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import AmenitiesSelection from "./amenities-selection"
+import ImageUpload from "./image-upload"
 
 export function AccommodationsAction({
   accommodation,
@@ -45,13 +46,10 @@ export function AccommodationsAction({
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto h-full">
           <div className="flex flex-col gap-2">
-            <div>
-              <Label>Image</Label>
-              <Input defaultValue={"asddadadadasdasdas"} />
-            </div>
+            <ImageUpload/>
             <div>
               <Label>Id</Label>
-              <Input defaultValue={"asddadadadasdasdas"} />
+              <Input defaultValue={"asddadadadasdasdas"} disabled/>
             </div>
             <div>
               <Label>Title</Label>
@@ -84,7 +82,9 @@ export function AccommodationsAction({
           </div>
         </div>
         <DialogFooter className="flex flex-col gap-2 md:flex-row">
-          <Button type="submit" variant={"destructive"}>{"Delete accommodation"}</Button>
+          <Button type="submit" variant={"destructive"}>
+            {"Delete accommodation"}
+          </Button>
           <Button type="submit">{"Save changes"}</Button>
         </DialogFooter>
       </DialogContent>
