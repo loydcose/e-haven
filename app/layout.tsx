@@ -4,9 +4,7 @@ import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { getUserFromToken } from "./actions"
 import { userSessionStore } from "@/stores/user-session"
-
 const rubikSans = Rubik({
   subsets: ["latin"],
 })
@@ -21,11 +19,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const payload = await getUserFromToken()
-
-  // Set the initial value in the Zustand store
-  userSessionStore.setState({ session: payload })
-
+  
   return (
     <html lang="en">
       <body className={`${rubikSans.className} antialiased`}>
