@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CirclePlus, X } from "lucide-react"
 import { useReservationStore } from "@/stores/reservation"
-import { useEffect } from "react"
 import { GenderSelection } from "./gender-selection"
 import { HealthSelection } from "./health-selection"
 
@@ -17,20 +16,6 @@ export default function GuestInformation() {
     setTotalPrice,
     totalPrice,
   } = useReservationStore()
-
-  // Ensure there is always at least one guest
-  useEffect(() => {
-    if (guests.length === 0) {
-      addGuest({
-        id: generateId(),
-        name: "",
-        birthday: null,
-        gender: null,
-        healthIssue: null,
-      })
-      setTotalPrice(100) // Initialize total price for the first guest
-    }
-  }, [guests, addGuest, setTotalPrice])
 
   const generateId = () =>
     `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
@@ -47,10 +32,8 @@ export default function GuestInformation() {
   }
 
   const handleRemoveGuest = (index: number) => {
-    if (guests.length > 1) {
-      removeGuest(index)
-      setTotalPrice(totalPrice - 100) // Decrement total price by 100
-    }
+    removeGuest(index)
+    setTotalPrice(totalPrice - 100) // Decrement total price by 100
   }
 
   const handleGuestChange = (
@@ -77,18 +60,16 @@ export default function GuestInformation() {
             key={guest.id} // Use the unique `id` property for rendering
             className="bg-amber-950 p-6 md:p-8 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 relative"
           >
-            {guests.length > 1 && (
-              <Button
-                type="button"
-                variant={"ghost"}
-                size={"icon"}
-                className="absolute top-2 right-2 rounded-full"
-                title="Remove guest"
-                onClick={() => handleRemoveGuest(index)}
-              >
-                <X />
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant={"ghost"}
+              size={"icon"}
+              className="absolute top-2 right-2 rounded-full"
+              title="Remove guest"
+              onClick={() => handleRemoveGuest(index)}
+            >
+              <X />
+            </Button>
             <div>
               <label htmlFor={`name-${guest.id}`} className="mb-1">
                 Name

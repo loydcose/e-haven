@@ -53,15 +53,15 @@ export function ViewDetails({
                     reservation.status === "pending"
                       ? "bg-orange-500 text-white"
                       : reservation.status === "accepted"
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-500 text-white"
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-500 text-white"
                   }`}
                 >
                   {reservation.status === "pending"
                     ? "Waiting to accept"
                     : reservation.status === "accepted"
-                    ? "Accepted"
-                    : "Paid"}
+                      ? "Accepted"
+                      : "Paid"}
                 </span>
               </div>
               <p className="font-bold text-green-600">
@@ -96,11 +96,11 @@ export function ViewDetails({
           </div>
 
           {/* Guest Information */}
-          <div className="flex flex-col gap-1">
-            <h4 className="font-bold">Guest Information</h4>
-            {Array.isArray(reservation.guests) &&
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              reservation.guests.map((guest: any, index: number) => (
+          {Array.isArray(reservation.guests) && (reservation.guests.length > 0) && (
+            <div className="flex flex-col gap-1">
+              <h4 className="font-bold">Guest Information</h4>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {reservation.guests.map((guest: any, index: number) => (
                 <div key={index} className="mb-2 md:mb-4">
                   <p>{guest.name}</p>
                   <p>{new Date(guest.birthday).toLocaleDateString()}</p>
@@ -108,7 +108,8 @@ export function ViewDetails({
                   <p>{guest.healthIssue}</p>
                 </div>
               ))}
-          </div>
+            </div>
+          )}
 
           <DialogFooter className="justify-end flex items-center gap-2">
             <DialogClose asChild>

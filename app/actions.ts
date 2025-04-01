@@ -268,8 +268,7 @@ const reservationSchema = z.object({
             message: "Health issue is required in guest section",
           }),
       })
-    )
-    .nonempty("At least one guest is required"),
+    ),
   totalPrice: z.number().positive("Total price must be greater than zero"),
 })
 
