@@ -815,3 +815,20 @@ export async function createAccommodation(data: Fields) {
     return { success: false, message: "Server error, please try again later." }
   }
 }
+
+export async function getReviewsWithUserAndAccommodation() {
+  try {
+    const reviews = await db.review.findMany({
+      include: {
+        user: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
+    return reviews
+  } catch (error) {
+    console.error("Error fetching reviews:", error)
+    return []
+  }
+}

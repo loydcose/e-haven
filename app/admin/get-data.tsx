@@ -2,6 +2,7 @@ import { Admin, AdminData } from "./admin"
 import { getAccommodations } from "../actions"
 import { getReservationsWithUserAndAccommodation } from "../actions"
 import { getUsers } from "../actions"
+import { getReviewsWithUserAndAccommodation } from "../actions"
 import { Tab } from "./page"
 
 interface DataFetcherProps {
@@ -17,6 +18,9 @@ async function DataFetcher({ tab }: DataFetcherProps) {
       break
     case "reservations":
       data = { type: "reservations", data: await getReservationsWithUserAndAccommodation() }
+      break
+    case "reviews":
+      data = { type: "reviews", data: await getReviewsWithUserAndAccommodation() }
       break
     case "users":
     default:

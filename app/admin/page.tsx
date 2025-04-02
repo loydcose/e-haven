@@ -5,7 +5,7 @@ import AdminNavbar from "@/components/admin-nav-bar"
 import DataFetcher from "./get-data"
 import LoadingSkeleton from "./loading-skeleton"
 
-export type Tab = "users" | "accommodations" | "reservations"
+export type Tab = "users" | "accommodations" | "reservations" | "reviews"
 
 export default function AdminPage({
   searchParams,

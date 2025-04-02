@@ -2,7 +2,7 @@
 
 import React from "react"
 import { Button } from "@/components/ui/button"
-import { Accommodation, Reservation, User } from "@prisma/client"
+import { Accommodation, Reservation, Review, User } from "@prisma/client"
 import LoadingSkeleton from "./loading-skeleton"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
@@ -15,6 +15,7 @@ import { useAdminFilterStore } from "@/stores/admin-filter"
 import { Tab } from "./page"
 import { useRouter } from "next/navigation"
 import { AddAccommodation } from "./tables/accommodations/add-accommodation"
+import ReviewsTable from "./tables/reviews"
 
 export type ReservationTable = Reservation & {
   user: User
@@ -26,6 +27,7 @@ export type AdminData =
   | { type: "users"; data: User[] }
   | { type: "accommodations"; data: Accommodation[] }
   | { type: "reservations"; data: ReservationTable[] }
+  | { type: "reviews"; data: (Review & { user: User })[] }
 
 type AdminProps = {
   data: AdminData
@@ -54,12 +56,12 @@ export function Admin({ data, defaultTab }: AdminProps) {
         <div className="flex items-center order-2 md:order-1">
           <Button
             type="button"
-            variant={defaultTab === "users" ? "secondary" : "default"}
+            variant={activeSection === "users" ? "secondary" : "default"}
             onClick={() => handleTabChange("users")}
             className={cn(
               "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-br-none rounded-bl-none rounded-tr-none bg-white",
-              defaultTab !== "users" && "bg-amber-900 hover:bg-amber-950",
-              defaultTab === "users" && "hover:bg-white"
+              activeSection !== "users" && "bg-amber-900 hover:bg-amber-950",
+              activeSection === "users" && "hover:bg-white"
             )}
           >
             Users
@@ -67,30 +69,43 @@ export function Admin({ data, defaultTab }: AdminProps) {
           <Button
             type="button"
             variant={
-              defaultTab === "accommodations" ? "secondary" : "default"
+              activeSection === "accommodations" ? "secondary" : "default"
             }
             onClick={() => handleTabChange("accommodations")}
             className={cn(
               "h-8 px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-none bg-white",
-              defaultTab !== "accommodations" &&
+              activeSection !== "accommodations" &&
                 "bg-amber-900 hover:bg-amber-950",
-              defaultTab === "accommodations" && "hover:bg-white"
+              activeSection === "accommodations" && "hover:bg-white"
             )}
           >
             Accommodations
           </Button>
           <Button
             type="button"
-            variant={defaultTab === "reservations" ? "secondary" : "default"}
+            variant={activeSection === "reservations" ? "secondary" : "default"}
             onClick={() => handleTabChange("reservations")}
             className={cn(
-              "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-tl-none rounded-bl-none rounded-br-none bg-white",
-              defaultTab !== "reservations" &&
+              "h-8 px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-none bg-white",
+              activeSection !== "reservations" &&
                 "bg-amber-900 hover:bg-amber-950",
-              defaultTab === "reservations" && "hover:bg-white"
+              activeSection === "reservations" && "hover:bg-white"
             )}
           >
             Reservations
+          </Button>
+          <Button
+            type="button"
+            variant={activeSection === "reviews" ? "secondary" : "default"}
+            onClick={() => handleTabChange("reviews")}
+            className={cn(
+              "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-tl-none rounded-bl-none rounded-br-none bg-white",
+              activeSection !== "reviews" &&
+                "bg-amber-900 hover:bg-amber-950",
+              activeSection === "reviews" && "hover:bg-white"
+            )}
+          >
+            Reviews
           </Button>
         </div>
 
@@ -126,6 +141,9 @@ export function Admin({ data, defaultTab }: AdminProps) {
             )}
             {data.type === "reservations" && (
               <ReservationsTable reservations={data.data} />
+            )}
+            {data.type === "reviews" && (
+              <ReviewsTable reviews={data.data} />
             )}
           </div>
         </ScrollArea>
