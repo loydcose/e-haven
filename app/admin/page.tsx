@@ -7,12 +7,12 @@ import LoadingSkeleton from "./loading-skeleton"
 
 export type Tab = "users" | "accommodations" | "reservations" | "reviews"
 
-export default function AdminPage({
+export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { tab?: string }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const tab = (searchParams.tab || "users") as Tab
+  const tab = ((await searchParams)?.tab || "users" ) as Tab
 
   return (
     <main className="relative">

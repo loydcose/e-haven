@@ -3,7 +3,6 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
 import { Accommodation, Reservation, Review, User } from "@prisma/client"
-import LoadingSkeleton from "./loading-skeleton"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import UsersTable from "./tables/users"

@@ -29,7 +29,7 @@ export default function ReviewsTable({ reviews }: ReviewsTableProps) {
   // Filter and sort reviews
   const filteredAndSortedReviews = useMemo(() => {
     // First filter by search term
-    let filtered = reviews.filter((review) => {
+    const filtered = reviews.filter((review) => {
       const searchTerm = search.toLowerCase()
       return (
         review.comment.toLowerCase().includes(searchTerm) ||
