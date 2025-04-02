@@ -1,18 +1,18 @@
 import Image from "next/image"
-import React from "react"
+import React, { Suspense } from "react"
 import Footer from "@/components/footer"
 import AdminNavbar from "@/components/admin-nav-bar"
-import { Admin } from "./admin"
-
+import DataFetcher from "./get-data"
+import LoadingSkeleton from "./loading-skeleton"
 
 export type Tab = "users" | "accommodations" | "reservations"
 
-export default async function page({
+export default function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: { tab?: string }
 }) {
-  const tab = (await searchParams)?.tab || "users"
+  const tab = (searchParams.tab || "users") as Tab
 
   return (
     <main className="relative">
@@ -32,7 +32,9 @@ export default async function page({
           ADMIN DASHBOARD
         </h1>
         <div className="mb-16 text-white mx-auto rounded-xl flex flex-col">
-          <Admin tab={tab as Tab}/>
+          <Suspense fallback={<LoadingSkeleton />}>
+            <DataFetcher tab={tab} />
+          </Suspense>
         </div>
       </section>
       <Footer />

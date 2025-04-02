@@ -1,12 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-
-import {
-  getUsers,
-  getAccommodations,
-  getReservationsWithUserAndAccommodation,
-} from "../actions"
+import React from "react"
 import { Button } from "@/components/ui/button"
 import { Accommodation, Reservation, User } from "@prisma/client"
 import LoadingSkeleton from "./loading-skeleton"
@@ -28,46 +22,30 @@ export type ReservationTable = Reservation & {
 }
 
 // Define a discriminated union type for the data state
-type AdminData =
+export type AdminData =
   | { type: "users"; data: User[] }
   | { type: "accommodations"; data: Accommodation[] }
   | { type: "reservations"; data: ReservationTable[] }
 
-export function Admin({ tab }: { tab: Tab }) {
+type AdminProps = {
+  data: AdminData
+  defaultTab: Tab
+}
+
+export function Admin({ data, defaultTab }: AdminProps) {
   const { activeSection, setSort, sort, search, setSearch, setActiveSection } =
     useAdminFilterStore()
   const router = useRouter()
 
-  const [data, setData] = useState<AdminData>({ type: tab, data: [] })
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    setActiveSection(tab)
-  }, [tab])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        if (activeSection === "users") {
-          const users = await getUsers()
-          setData({ type: "users", data: users })
-        } else if (activeSection === "accommodations") {
-          const accommodations = await getAccommodations()
-          setData({ type: "accommodations", data: accommodations })
-        } else if (activeSection === "reservations") {
-          const reservations = await getReservationsWithUserAndAccommodation()
-          setData({ type: "reservations", data: reservations })
-        }
-      } catch (error) {
-        console.error(`Error fetching ${activeSection}:`, error)
-      } finally {
-        setLoading(false)
-      }
+  React.useEffect(() => {
+    if (activeSection !== defaultTab) {
+      setActiveSection(defaultTab)
     }
+  }, [defaultTab, setActiveSection, activeSection])
 
-    fetchData()
-  }, [activeSection])
+  const handleTabChange = (tab: Tab) => {
+    router.push(`/admin?tab=${tab}`)
+  }
 
   return (
     <div>
@@ -76,12 +54,12 @@ export function Admin({ tab }: { tab: Tab }) {
         <div className="flex items-center order-2 md:order-1">
           <Button
             type="button"
-            variant={activeSection === "users" ? "secondary" : "default"}
-            onClick={() => router.push("/admin?tab=users")}
+            variant={defaultTab === "users" ? "secondary" : "default"}
+            onClick={() => handleTabChange("users")}
             className={cn(
               "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-br-none rounded-bl-none rounded-tr-none bg-white",
-              activeSection !== "users" && "bg-amber-900 hover:bg-amber-950",
-              activeSection === "users" && "hover:bg-white"
+              defaultTab !== "users" && "bg-amber-900 hover:bg-amber-950",
+              defaultTab === "users" && "hover:bg-white"
             )}
           >
             Users
@@ -89,27 +67,27 @@ export function Admin({ tab }: { tab: Tab }) {
           <Button
             type="button"
             variant={
-              activeSection === "accommodations" ? "secondary" : "default"
+              defaultTab === "accommodations" ? "secondary" : "default"
             }
-            onClick={() => router.push("/admin?tab=accommodations")}
+            onClick={() => handleTabChange("accommodations")}
             className={cn(
               "h-8 px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-none bg-white",
-              activeSection !== "accommodations" &&
+              defaultTab !== "accommodations" &&
                 "bg-amber-900 hover:bg-amber-950",
-              activeSection === "accommodations" && "hover:bg-white"
+              defaultTab === "accommodations" && "hover:bg-white"
             )}
           >
             Accommodations
           </Button>
           <Button
             type="button"
-            variant={activeSection === "reservations" ? "secondary" : "default"}
-            onClick={() => router.push("/admin?tab=reservations")}
+            variant={defaultTab === "reservations" ? "secondary" : "default"}
+            onClick={() => handleTabChange("reservations")}
             className={cn(
               "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-tl-none rounded-bl-none rounded-br-none bg-white",
-              activeSection !== "reservations" &&
+              defaultTab !== "reservations" &&
                 "bg-amber-900 hover:bg-amber-950",
-              activeSection === "reservations" && "hover:bg-white"
+              defaultTab === "reservations" && "hover:bg-white"
             )}
           >
             Reservations
@@ -142,18 +120,12 @@ export function Admin({ tab }: { tab: Tab }) {
         <ScrollArea>
           <ScrollBar orientation="horizontal" />
           <div className="min-h-[200px]">
-            {loading ? (
-              <LoadingSkeleton />
-            ) : (
-              <>
-                {data.type === "users" && <UsersTable users={data.data} />}
-                {data.type === "accommodations" && (
-                  <AccommodationsTable accommodations={data.data} />
-                )}
-                {data.type === "reservations" && (
-                  <ReservationsTable reservations={data.data} />
-                )}
-              </>
+            {data.type === "users" && <UsersTable users={data.data} />}
+            {data.type === "accommodations" && (
+              <AccommodationsTable accommodations={data.data} />
+            )}
+            {data.type === "reservations" && (
+              <ReservationsTable reservations={data.data} />
             )}
           </div>
         </ScrollArea>
