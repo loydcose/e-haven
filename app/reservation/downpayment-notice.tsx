@@ -9,8 +9,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { MessageCircleMore } from "lucide-react"
+import Link from "next/link"
 
 export function DownPaymentNotice({
   dpNoticeOpen,
@@ -36,12 +38,16 @@ export function DownPaymentNotice({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col gap-2">
-          <Button
-            type="button"
-            className="h-12 flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          <Link
+            target="_blank"
+            href="https://www.facebook.com/profile.php?id=61558015206603"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "h-12 flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+            )}
           >
             <FacebookIcon /> Nature&apos;s Haven Resort
-          </Button>
+          </Link>
           <Button
             type="button"
             className="bg-amber-500 hover:bg-amber-600 text-white h-12 flex items-center gap-2"
