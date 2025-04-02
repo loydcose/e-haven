@@ -8,17 +8,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Pencil } from "lucide-react"
-
-import { Accommodation } from "@prisma/client"
+import { Plus } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import AmenitiesSelection from "./amenities-selection"
 import ImageUpload from "./image-upload"
 import { useEffect, useState } from "react"
-import SubmitButton from "./submit-button"
-import { DeleteButton } from "./delete-button"
+import { useToast } from "@/hooks/use-toast"
+import { createAccommodation } from "@/app/actions"
+import Spinner from "@/components/icons/spinner"
 
 export type Fields = {
   image: string | null
@@ -31,42 +30,23 @@ export type Fields = {
   virtualPath: string
 }
 
-const extractNumberOfBeds = (amenities: string[]): number => {
-  const bedAmenity = amenities.find((amenity) => amenity.match(/^\d+x bed$/i))
-  if (bedAmenity) {
-    const match = bedAmenity.match(/^(\d+)x bed$/i)
-    return match ? parseInt(match[1], 10) : 0
-  }
-  return 0
-}
+export function AddAccommodation() {
+  const { toast } = useToast()
+  const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false)
 
-export function AccommodationsAction({
-  accommodation,
-}: {
-  accommodation: Accommodation
-}) {
   const initialFields: Fields = {
-    image: accommodation.image,
-    title: accommodation.title,
-    description: accommodation.description || "",
-    slug: accommodation.slug,
-    amenities: accommodation.amenities,
-    numberOfBeds: extractNumberOfBeds(accommodation.amenities),
-    price: accommodation.price,
-    virtualPath: accommodation.virtualPath,
+    image: null,
+    title: "",
+    description: "",
+    slug: "",
+    amenities: [],
+    numberOfBeds: 0,
+    price: 0,
+    virtualPath: "cottage-5",
   }
 
-  const [hasChange, setHasChange] = useState(false)
-  const [fields, setFields] = useState<Fields>({
-    image: accommodation.image,
-    title: accommodation.title,
-    description: accommodation.description || "",
-    slug: accommodation.slug,
-    amenities: accommodation.amenities,
-    numberOfBeds: extractNumberOfBeds(accommodation.amenities),
-    price: accommodation.price,
-    virtualPath: accommodation.virtualPath,
-  })
+  const [fields, setFields] = useState<Fields>(initialFields)
 
   const handleFieldChange = (
     field: string,
@@ -78,47 +58,66 @@ export function AccommodationsAction({
     }))
   }
 
-  useEffect(() => {
-    setHasChange(JSON.stringify(fields) !== JSON.stringify(initialFields))
-  }, [fields, accommodation])
+  const handleSubmit = async () => {
+    setLoading(true)
+    try {
+      const response = await createAccommodation(fields)
+      if (!response.success) {
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: response.message,
+        })
+      } else {
+        toast({
+          title: "Success",
+          description: response.message,
+          variant: "success",
+        })
+        setFields(initialFields)
+        setOpen(false)
+        location.reload()
+      }
+    } catch {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "An unexpected error occurred. Please try again.",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <Dialog onOpenChange={(v) => !v && setFields(initialFields)}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          type="button"
-          size={"icon"}
-          variant={"destructive"}
-          className="rounded-full mx-auto"
-        >
-          <Pencil className="text-white" />
-        </Button>
+          <Button
+            type="button"
+            className="mt-4 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+          >
+            <Plus /> Add accommodation
+          </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[600px] h-auto">
         <DialogHeader>
-          <DialogTitle>
-            Edit {accommodation.title}&apos;s Accommodation
-          </DialogTitle>
+          <DialogTitle>Add New Accommodation</DialogTitle>
           <DialogDescription>
-            Make changes to accommodation here. Click save when you&apos;re
-            done.
+            Fill in the details for the new accommodation. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto h-full">
           <div className="flex flex-col gap-2">
             <ImageUpload
-              image={fields.image}
+              image={fields.image || ""}
               handleFieldChange={handleFieldChange}
             />
-            <div>
-              <Label>Id</Label>
-              <Input value={accommodation.id} disabled />
-            </div>
             <div>
               <Label>Title</Label>
               <Input
                 value={fields.title}
                 onChange={(e) => handleFieldChange("title", e.target.value)}
+                placeholder="Enter accommodation title"
               />
             </div>
             <div>
@@ -126,6 +125,7 @@ export function AccommodationsAction({
               <Input
                 value={fields.slug}
                 onChange={(e) => handleFieldChange("slug", e.target.value)}
+                placeholder="Enter accommodation slug"
               />
             </div>
             <div>
@@ -133,9 +133,8 @@ export function AccommodationsAction({
               <Textarea
                 cols={6}
                 value={fields.description}
-                onChange={(e) =>
-                  handleFieldChange("description", e.target.value)
-                }
+                onChange={(e) => handleFieldChange("description", e.target.value)}
+                placeholder="Enter accommodation description"
               />
             </div>
             <div>
@@ -151,11 +150,9 @@ export function AccommodationsAction({
                 type="number"
                 value={fields.numberOfBeds}
                 onChange={(e) =>
-                  handleFieldChange(
-                    "numberOfBeds",
-                    parseInt(e.target.value, 10)
-                  )
+                  handleFieldChange("numberOfBeds", parseInt(e.target.value, 10))
                 }
+                placeholder="Enter number of beds"
               />
             </div>
             <div>
@@ -166,22 +163,29 @@ export function AccommodationsAction({
                 onChange={(e) =>
                   handleFieldChange("price", parseFloat(e.target.value))
                 }
+                placeholder="Enter price"
               />
             </div>
             <div>
               <Label>Virtual path</Label>
-              <Input value={fields.virtualPath} disabled />
+              <Input
+                value={fields.virtualPath}
+                onChange={(e) => handleFieldChange("virtualPath", e.target.value)}
+                placeholder="Enter virtual path"
+                disabled
+              />
             </div>
           </div>
         </div>
-        <DialogFooter className="flex flex-col gap-2 md:flex-row">
-          <DeleteButton accommodationId={accommodation.id}/>
-
-          <SubmitButton
-            hasChange={hasChange}
-            fields={fields}
-            accommodationId={accommodation.id}
-          />
+        <DialogFooter>
+          <Button
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? <Spinner /> : "Add Accommodation"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input"
 import { useAdminFilterStore } from "@/stores/admin-filter"
 import { Tab } from "./page"
 import { useRouter } from "next/navigation"
+import { AddAccommodation } from "./tables/accommodations/add-accommodation"
 
 export type ReservationTable = Reservation & {
   user: User
@@ -157,12 +158,7 @@ export function Admin({ tab }: { tab: Tab }) {
           </div>
         </ScrollArea>
         {activeSection === "accommodations" && (
-          <Button
-            type="button"
-            className="mt-4 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
-          >
-            <Plus /> Add accommodation
-          </Button>
+          <AddAccommodation />
         )}
       </div>
     </div>

@@ -12,19 +12,21 @@ export default function ImageUpload({
   image,
   handleFieldChange,
 }: {
-  image: string
+  image: string | null
   handleFieldChange: (
     field: string,
     value: string | number | string[] | null
   ) => void
 }) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement | null>(null) // Reference to the file input
+  const [imagePreview, setImagePreview] = useState<string | null>(image)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const { toast } = useToast()
 
   useEffect(() => {
     if (image) {
       setImagePreview(image)
+    } else {
+      setImagePreview(null)
     }
   }, [image])
 
@@ -50,7 +52,7 @@ export default function ImageUpload({
           variant: "destructive",
         })
         if (fileInputRef.current) {
-          fileInputRef.current.value = "" // Reset the file input value
+          fileInputRef.current.value = ""
         }
         return
       }
@@ -64,9 +66,9 @@ export default function ImageUpload({
   }
 
   const handleRemoveImage = () => {
-    setImagePreview(null) // Clear the image preview
+    setImagePreview(null)
     if (fileInputRef.current) {
-      fileInputRef.current.value = "" // Reset the file input value
+      fileInputRef.current.value = ""
     }
   }
 

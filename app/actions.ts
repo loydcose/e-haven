@@ -7,6 +7,7 @@ import { HealthLabel, verifyToken } from "@/lib/utils"
 import bcrypt from "bcryptjs" // Import bcrypt for password hashing
 import * as Sentry from "@sentry/nextjs"
 import { Fields } from "./admin/tables/accommodations/accommodations-action"
+import { revalidatePath } from "next/cache"
 
 const passwordSchema = z.object({
   password: z
@@ -698,12 +699,105 @@ export async function updateAccommodation(
 // delete accommodation
 export async function deleteAccommodation(accommodationId: string) {
   try {
-    // commented for now
-    // await db.accommodation.delete({ where: { id: accommodationId } })
+    await db.accommodation.delete({ where: { id: accommodationId } })
     return { success: true, message: "Accommodation deleted successfully" }
   } catch (error) {
     Sentry.captureException(error)
     console.error("Error deleting accommodation:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}
+
+export async function createAccommodation(data: Fields) {
+  try {
+    const validationResult = accommodationSchema.safeParse(data)
+    if (!validationResult.success) {
+      return {
+        success: false,
+        message: validationResult.error.errors[0].message,
+      }
+    }
+
+    const validatedData = validationResult.data
+
+    if (validatedData.image?.startsWith("data:image")) {
+      try {
+        // Extract the MIME type from the base64 string
+        const mimeTypeMatch = validatedData.image.match(
+          /data:(image\/[a-zA-Z]+);base64,/
+        )
+        if (!mimeTypeMatch) {
+          return { success: false, message: "Invalid image format." }
+        }
+
+        const mimeType = mimeTypeMatch[1] // e.g., "image/png", "image/jpeg"
+        const fileExtension = mimeType.split("/")[1] // e.g., "png", "jpeg"
+
+        const base64Image = validatedData.image.split(",")[1]
+        const buffer = Buffer.from(base64Image, "base64")
+
+        // Generate a unique name and custom ID based on the file type
+        const timestamp = Date.now()
+        const name = `image-${timestamp}.${fileExtension}` // e.g., "image-123456789.png"
+        const customId = `custom-${timestamp}`
+
+        const file = new UTFile([buffer], name, {
+          customId,
+        })
+
+        const uploadResponse = await utapi.uploadFiles([file])
+
+        if (uploadResponse[0].error) {
+          return { success: false, message: "Image upload failed." }
+        } else {
+          // Log the uploaded file URL
+          console.log("Uploaded file URL:", uploadResponse[0].data.ufsUrl)
+
+          // Update the validatedData.image with the uploaded file URL
+          validatedData.image = uploadResponse[0].data.ufsUrl
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        return {
+          success: false,
+          message: "Failed to upload the image. Please try again.",
+        }
+      }
+    }
+
+    const bedKeywordRegex = /\d+x bed/
+    if (validatedData.numberOfBeds === 0) {
+      // @ts-expect-error any
+      validatedData.amenities = validatedData.amenities.filter(
+        (amenity) => !bedKeywordRegex.test(amenity)
+      )
+    } else {
+      const bedKeyword = `${validatedData.numberOfBeds}x bed`
+      // @ts-expect-error any
+      validatedData.amenities = [
+        ...validatedData.amenities.filter(
+          (amenity) => !bedKeywordRegex.test(amenity)
+        ),
+        bedKeyword,
+      ]
+    }
+
+    const { numberOfBeds, ...rest } = validatedData
+
+    // Create the new accommodation
+    await db.accommodation.create({
+      // @ts-expect-error some values are null
+      data: rest,
+    })
+
+    // Revalidate both admin and accommodations pages
+    revalidatePath("/admin/tables/accommodations")
+    revalidatePath("/accommodations")
+
+    return { success: true, message: "Accommodation created successfully" }
+  } catch (error) {
+    Sentry.captureException(error)
+    console.error("Error creating accommodation:", error)
     return { success: false, message: "Server error, please try again later." }
   }
 }
