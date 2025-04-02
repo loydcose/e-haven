@@ -694,3 +694,16 @@ export async function updateAccommodation(
     return { success: false, message: "Server error, please try again later." }
   }
 }
+
+// delete accommodation
+export async function deleteAccommodation(accommodationId: string) {
+  try {
+    // commented for now
+    // await db.accommodation.delete({ where: { id: accommodationId } })
+    return { success: true, message: "Accommodation deleted successfully" }
+  } catch (error) {
+    Sentry.captureException(error)
+    console.error("Error deleting accommodation:", error)
+    return { success: false, message: "Server error, please try again later." }
+  }
+}

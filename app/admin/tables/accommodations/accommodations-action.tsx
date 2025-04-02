@@ -18,6 +18,7 @@ import AmenitiesSelection from "./amenities-selection"
 import ImageUpload from "./image-upload"
 import { useEffect, useState } from "react"
 import SubmitButton from "./submit-button"
+import { DeleteButton } from "./delete-button"
 
 export type Fields = {
   image: string
@@ -82,7 +83,7 @@ export function AccommodationsAction({
   }, [fields, accommodation])
 
   return (
-    <Dialog onOpenChange={v => !v && setFields(initialFields)}>
+    <Dialog onOpenChange={(v) => !v && setFields(initialFields)}>
       <DialogTrigger asChild>
         <Button
           type="button"
@@ -174,9 +175,7 @@ export function AccommodationsAction({
           </div>
         </div>
         <DialogFooter className="flex flex-col gap-2 md:flex-row">
-          <Button type="submit" variant={"destructive"}>
-            {"Delete accommodation"}
-          </Button>
+          <DeleteButton accommodationId={accommodation.id}/>
 
           <SubmitButton
             hasChange={hasChange}
