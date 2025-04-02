@@ -10,6 +10,8 @@ export type AccommodationWithReservation = Accommodation & {
   reservations: Reservation[]
 }
 
+export const revalidate = 300
+
 export default async function page() {
   const accommodations: AccommodationWithReservation[] = await getAccommodationsWithReservation()
   return (

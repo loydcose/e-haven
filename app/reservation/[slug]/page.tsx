@@ -14,6 +14,8 @@ import { JwtPayload } from "jsonwebtoken"
 
 // TODO: add skeleton laoder using nextjs streaming
 
+export const revalidate = 300
+
 export default async function page({
   params,
 }: {
