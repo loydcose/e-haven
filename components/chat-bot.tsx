@@ -4,6 +4,8 @@ import Image from "next/image"
 import React, { useState, useRef, useEffect } from "react"
 import { Input } from "./ui/input"
 import ReactMarkdown from "react-markdown"
+import { X } from "lucide-react"
+import { Button } from "./ui/button"
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false)
@@ -70,27 +72,31 @@ export default function ChatBot() {
   return (
     <div
       className={`fixed bottom-8 right-[4%] bg-yellow-500 rounded-2xl ${
-        open && "left-[4%] md:left-auto max-w-[400px] right-0"
+        open && "left-[4%] md:left-auto w-[93%] md:max-w-[600px] right-0"
       }`}
     >
       {open && (
         <div className="p-4">
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="w-full text-black/90 font-bold bg-yellow-400 rounded-xl shadow-md p-2 text-center mb-2 md:mb-3"
-          >
+          <div className="flex justify-between items-center gap-2 mb-3">
+            <p className="w-full text-black/90 font-bold bg-yellow-400 rounded-xl shadow-md p-2 text-center">
             ChatBot AI
-          </button>
-          <div className="mx-auto">
-            <p className="text-white text-center mb-2 md:mb-3 text-sm">
-              Do you have any questions? Feel free to ask Chatie!
             </p>
+          <Button
+              type="button"
+              onClick={() => setOpen(false)}
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+            >
+              <X />
+            </Button>
+          </div>
+            <div className="mx-auto">
 
             {/* Chat messages */}
             <div
               ref={chatContainerRef}
-              className="h-64 overflow-y-auto bg-white p-3 rounded-lg shadow-inner mb-4"
+              className="h-[60vh] overflow-y-auto bg-white p-3 rounded-lg shadow-inner mb-4"
             >
               {messages.map((message, index) => (
                 <div
