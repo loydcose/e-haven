@@ -796,6 +796,7 @@ export async function createAccommodation(data: Fields) {
     }
 
     const { numberOfBeds, ...rest } = validatedData
+    console.log(numberOfBeds)
 
     // Create the new accommodation
     await db.accommodation.create({
