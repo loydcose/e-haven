@@ -699,8 +699,21 @@ export async function updateAccommodation(
 // delete accommodation
 export async function deleteAccommodation(accommodationId: string) {
   try {
-    await db.accommodation.delete({ where: { id: accommodationId } })
-    return { success: true, message: "Accommodation deleted successfully" }
+    // First delete all reservations associated with this accommodation
+    await db.reservation.deleteMany({
+      where: { accommodationId },
+    })
+
+    // Then delete the accommodation
+    await db.accommodation.delete({ 
+      where: { id: accommodationId } 
+    })
+
+    // Revalidate both admin and accommodations pages
+    revalidatePath("/admin/tables/accommodations")
+    revalidatePath("/accommodations")
+
+    return { success: true, message: "Accommodation deleted successfully!" }
   } catch (error) {
     Sentry.captureException(error)
     console.error("Error deleting accommodation:", error)

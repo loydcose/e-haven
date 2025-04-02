@@ -59,10 +59,9 @@ export function DeleteButton({ accommodationId }: { accommodationId: string }) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete reservation</AlertDialogTitle>
+          <AlertDialogTitle>Delete reservation?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this accommodation? This action cannot
-            be undone.
+             This will also <b>delete all reservations</b> associated with this accommodation. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
