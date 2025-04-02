@@ -20,6 +20,7 @@ import ReviewsTable from "./tables/reviews"
 export type ReservationTable = Reservation & {
   user: User
   accommodation: Accommodation
+  proofPayment: string | null
 }
 
 // Define a discriminated union type for the data state

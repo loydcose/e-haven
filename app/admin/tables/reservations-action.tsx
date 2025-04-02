@@ -38,6 +38,7 @@ export function ReservationAction({
   const { status, paymentMethod } = userReservationStatusStore()
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [proofPayment, setProofPayment] = useState<string | null>(reservation.proofPayment)
   const { toast } = useToast()
 
   const handleSave = async () => {
@@ -47,6 +48,7 @@ export function ReservationAction({
         status: status || "pending",
         paymentMethod: paymentMethod,
         paymentDate: status !== "pending" ? new Date() : null,
+        proofPayment: proofPayment,
       })
 
       if (result.success) {
@@ -104,6 +106,15 @@ export function ReservationAction({
     }
   }
 
+  const handleFieldChange = (
+    field: string,
+    value: string | number | string[] | null
+  ) => {
+    if (field === "proofPayment") {
+      setProofPayment(value as string | null)
+    }
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -126,7 +137,7 @@ export function ReservationAction({
             done.
           </DialogDescription>
         </DialogHeader>
-        <div>
+        <div className="h-full max-h-[60vh] md:max-h-[70vh] overflow-y-auto">
           <h4 className="font-bold mb-2">Accommodation</h4>
           <div className="w-full aspect-[16/9] relative isolate mb-4 overflow-hidden rounded-xl">
             <Image
@@ -145,7 +156,10 @@ export function ReservationAction({
 
           {/* status */}
           <h4 className="font-bold mb-2">Status</h4>
-          <StatusSelection reservation={reservation} />
+          <StatusSelection 
+            reservation={reservation} 
+            onFieldChange={handleFieldChange}
+          />
         </div>
         <DialogFooter className="flex flex-col gap-2 md:flex-row">
           {/* delete section */}

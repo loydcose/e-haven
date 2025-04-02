@@ -544,6 +544,7 @@ export default async function updateReservation(
     status: "pending" | "accepted" | "paid"
     paymentMethod: string | null
     paymentDate: Date | null
+    proofPayment?: string | null
   }
 ) {
   try {
@@ -570,6 +571,7 @@ export default async function updateReservation(
         status: data.status,
         paymentMethod: data.paymentMethod,
         paymentDate: data.paymentDate,
+        proofPayment: data.proofPayment,  
       },
     })
 

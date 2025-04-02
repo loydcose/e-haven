@@ -67,6 +67,7 @@ model Reservation {
   status        ReservationStatus @default(pending)
   paymentMethod String?
   paymentDate   DateTime?
+  proofPayment  String?
 
   user          User          @relation(fields: [userId], references: [id])
   accommodation Accommodation @relation(fields: [accommodationId], references: [id])
