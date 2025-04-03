@@ -10,20 +10,14 @@ import {
 import { CircleCheckBig } from "lucide-react"
 import { addReservation } from "@/app/actions"
 import { useToast } from "@/hooks/use-toast"
-import type { Accommodation } from "@prisma/client"
 
 export function Confirmation({
   confirmationOpen,
-  setConfirmationOpen,
   reservationData,
-  accommodation,
-  userId,
 }: {
   confirmationOpen: boolean
-  setConfirmationOpen: (value: boolean) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reservationData: any
-  accommodation: Accommodation
-  userId: string
 }) {
   const { toast } = useToast()
 
@@ -43,7 +37,7 @@ export function Confirmation({
           variant: "destructive",
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",

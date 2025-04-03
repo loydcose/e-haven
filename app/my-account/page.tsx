@@ -1,5 +1,4 @@
 import NavBar from "@/components/nav-bar"
-import Image from "next/image"
 import React from "react"
 import Footer from "@/components/footer"
 

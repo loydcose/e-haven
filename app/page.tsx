@@ -7,7 +7,6 @@ import HowToBook from "@/components/how-to-book"
 import NavBar from "@/components/nav-bar"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import Image from "next/image"
 import Link from "next/link"
 
 export default function Home() {
@@ -58,11 +57,11 @@ export default function Home() {
           <p className="text-sm md:text-base text-white opacity-80 py-6 pl-[5%] pr-[5%]">
             Your serene escape nestled deep within a pristine forest. Surrounded
             by fresh air and crystal-clear waters, our resort offers the perfect
-            retreat for nature lovers and adventurers alike. Whether you're here
-            for a peaceful overnight stay or seeking a tranquil environment for
-            your team, we provide comfortable accommodations and a warm,
-            welcoming atmosphere. Experience the beauty of nature while enjoying
-            the comforts of home at Nature&apos;s Haven Resort.
+            retreat for nature lovers and adventurers alike. Whether you&apos;re
+            here for a peaceful overnight stay or seeking a tranquil
+            environment for your team, we provide comfortable accommodations and
+            a warm, welcoming atmosphere. Experience the beauty of nature while
+            enjoying the comforts of home at Nature&apos;s Haven Resort.
           </p>
         </div>
       </div>

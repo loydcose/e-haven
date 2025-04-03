@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { useReservationStore } from "@/stores/reservation"
-import { addReservation } from "@/app/actions"
 import type { Accommodation } from "@prisma/client"
 import { useToast } from "@/hooks/use-toast"
 import { DownPaymentNotice } from "./downpayment-notice"
@@ -59,10 +58,7 @@ export default function SubmitButton({
       />
       <Confirmation
         confirmationOpen={confirmationOpen}
-        setConfirmationOpen={setConfirmationOpen}
         reservationData={filteredStore}
-        accommodation={accommodation}
-        userId={userId}
       />
       <Button
         type="button"

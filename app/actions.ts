@@ -678,6 +678,7 @@ export async function updateAccommodation(
     }
 
     const { numberOfBeds, ...rest } = validatedData
+    console.log(numberOfBeds)
 
     await db.accommodation.update({
       where: { id: accommodationId },
