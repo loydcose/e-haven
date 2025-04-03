@@ -22,13 +22,13 @@ export default function NavBar() {
       <div className="flex items-center gap-8">
         <div className="md:flex hidden items-center gap-8">
           <div className="flex items-center gap-6 text-white font-bold">
-            <Link className="hover:underline" href="/">
+            <Link className="drop-shadow-lg hover:underline" href="/">
               Home
             </Link>
-            <Link className="hover:underline" href="/accommodations">
+            <Link className="drop-shadow-lg hover:underline" href="/accommodations">
               Accommodation
             </Link>
-            <Link className="hover:underline" href="/about-us">
+            <Link className="drop-shadow-lg hover:underline" href="/about-us">
               About
             </Link>
           </div>
