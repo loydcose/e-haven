@@ -37,19 +37,18 @@ export default function ProofPaymentUpload({
   const handleProofPaymentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      // Validate file type
+      // Validate file type - only allow images
       const validImageTypes = [
         "image/jpeg",
         "image/png",
         "image/gif",
-        "image/webp",
-        "application/pdf"
+        "image/webp"
       ]
       if (!validImageTypes.includes(file.type)) {
         toast({
           title: "Error",
           description:
-            "Invalid file type. Please upload a valid image (JPEG, PNG, GIF, WEBP) or PDF.",
+            "Invalid file type. Please upload a valid image (JPEG, PNG, GIF, or WEBP).",
           variant: "destructive",
         })
         if (fileInputRef.current) {
@@ -80,19 +79,13 @@ export default function ProofPaymentUpload({
         {proofPaymentPreview ? (
           <div className="flex items-start gap-2">
             <div className="w-full rounded-md shadow-md overflow-hidden">
-              {proofPaymentPreview.startsWith('data:image') ? (
-                <Image
-                  src={proofPaymentPreview}
-                  alt="Proof of Payment Preview"
-                  className="size-full object-cover"
-                  width={300}
-                  height={300}
-                />
-              ) : (
-                <div className="bg-gray-100 p-4 text-center">
-                  <p>PDF Document</p>
-                </div>
-              )}
+              <Image
+                src={proofPaymentPreview}
+                alt="Proof of Payment Preview"
+                className="size-full object-cover"
+                width={300}
+                height={300}
+              />
             </div>
             <Button
               type="button"
@@ -112,7 +105,7 @@ export default function ProofPaymentUpload({
       <Input
         id="proof-payment-upload"
         type="file"
-        accept="image/*,.pdf"
+        accept="image/*"
         onChange={handleProofPaymentChange}
         ref={fileInputRef}
       />

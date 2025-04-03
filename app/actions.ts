@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs" // Import bcrypt for password hashing
 import * as Sentry from "@sentry/nextjs"
 import { Fields } from "./admin/tables/accommodations/accommodations-action"
 import { revalidatePath } from "next/cache"
+import { UTApi, UTFile } from "uploadthing/server"
 
 const passwordSchema = z.object({
   password: z
@@ -538,48 +539,45 @@ export async function deleteUserAccount(userId: string) {
     return { success: false, message: "Server error, please try again later." }
   }
 }
-export default async function updateReservation(
-  reservationId: string,
-  data: {
-    status: "pending" | "accepted" | "paid"
-    paymentMethod: string | null
-    paymentDate: Date | null
-    proofPayment?: string | null
-  }
-) {
+
+const utapi = new UTApi()
+
+async function uploadFileToUploadThing(
+  base64Data: string,
+  prefix: string
+): Promise<{ success: true; url: string } | { success: false; message: string }> {
   try {
-    // Validation logic
-    if (
-      (data.status === "accepted" || data.status === "paid") &&
-      (!data.paymentMethod?.trim() || !data.paymentDate)
-    ) {
-      return {
-        success: false,
-        message: "Payment method is required for accepted or paid status.",
-      }
+    // Extract the MIME type from the base64 string
+    const mimeTypeMatch = base64Data.match(/data:(image\/[a-zA-Z]+);base64,/)
+    if (!mimeTypeMatch) {
+      return { success: false, message: "Invalid image format." }
     }
 
-    if (data.status === "pending") {
-      data.paymentMethod = null
-      data.paymentDate = null
-    }
+    const mimeType = mimeTypeMatch[1] // e.g., "image/png", "image/jpeg"
+    const fileExtension = mimeType.split("/")[1] // e.g., "png", "jpeg"
 
-    // Update the reservation in the database
-    await db.reservation.update({
-      where: { id: reservationId },
-      data: {
-        status: data.status,
-        paymentMethod: data.paymentMethod,
-        paymentDate: data.paymentDate,
-        proofPayment: data.proofPayment,  
-      },
+    const base64Image = base64Data.split(",")[1]
+    const buffer = Buffer.from(base64Image, "base64")
+
+    // Generate a unique name and custom ID based on the file type
+    const timestamp = Date.now()
+    const name = `${prefix}-${timestamp}.${fileExtension}`
+    const customId = `custom-${timestamp}`
+
+    const file = new UTFile([buffer], name, {
+      customId,
     })
 
-    return { success: true, message: "Reservation updated successfully" }
+    const uploadResponse = await utapi.uploadFiles([file])
+
+    if (uploadResponse[0].error || !uploadResponse[0].data?.ufsUrl) {
+      return { success: false, message: "File upload failed." }
+    }
+
+    return { success: true, url: uploadResponse[0].data.ufsUrl }
   } catch (error) {
-    Sentry.captureException(error)
-    console.error("Error updating reservation:", error)
-    return { success: false, message: "Server error, please try again later." }
+    console.error("Error uploading file:", error)
+    return { success: false, message: "Failed to upload the file. Please try again." }
   }
 }
 
@@ -601,9 +599,6 @@ const accommodationSchema = z.object({
   virtualPath: z.string().optional(),
 })
 
-import { UTApi, UTFile } from "uploadthing/server"
-const utapi = new UTApi()
-
 export async function updateAccommodation(
   accommodationId: string,
   data: Fields
@@ -619,49 +614,13 @@ export async function updateAccommodation(
 
     const validatedData = validationResult.data
 
+    // Handle accommodation image upload
     if (validatedData.image?.startsWith("data:image")) {
-      try {
-        // Extract the MIME type from the base64 string
-        const mimeTypeMatch = validatedData.image.match(
-          /data:(image\/[a-zA-Z]+);base64,/
-        )
-        if (!mimeTypeMatch) {
-          return { success: false, message: "Invalid image format." }
-        }
-
-        const mimeType = mimeTypeMatch[1] // e.g., "image/png", "image/jpeg"
-        const fileExtension = mimeType.split("/")[1] // e.g., "png", "jpeg"
-
-        const base64Image = validatedData.image.split(",")[1]
-        const buffer = Buffer.from(base64Image, "base64")
-
-        // Generate a unique name and custom ID based on the file type
-        const timestamp = Date.now()
-        const name = `image-${timestamp}.${fileExtension}` // e.g., "image-123456789.png"
-        const customId = `custom-${timestamp}`
-
-        const file = new UTFile([buffer], name, {
-          customId,
-        })
-
-        const uploadResponse = await utapi.uploadFiles([file])
-
-        if (uploadResponse[0].error) {
-          return { success: false, message: "Image upload failed." }
-        } else {
-          // Log the uploaded file URL
-          console.log("Uploaded file URL:", uploadResponse[0].data.ufsUrl)
-
-          // Update the validatedData.image with the uploaded file URL
-          validatedData.image = uploadResponse[0].data.ufsUrl
-        }
-      } catch (error) {
-        console.error("Error uploading image:", error)
-        return {
-          success: false,
-          message: "Failed to upload the image. Please try again.",
-        }
+      const uploadResult = await uploadFileToUploadThing(validatedData.image, "image")
+      if (!uploadResult.success) {
+        return uploadResult
       }
+      validatedData.image = uploadResult.url
     }
 
     const bedKeywordRegex = /\d+x bed/
@@ -680,10 +639,9 @@ export async function updateAccommodation(
         bedKeyword,
       ]
     }
-    const { numberOfBeds, ...rest } = validatedData
-    console.log(numberOfBeds)
 
-    // don't remove this code
+    const { numberOfBeds, ...rest } = validatedData
+
     await db.accommodation.update({
       where: { id: accommodationId },
       // @ts-expect-error some values are null
@@ -832,5 +790,60 @@ export async function getReviewsWithUserAndAccommodation() {
   } catch (error) {
     console.error("Error fetching reviews:", error)
     return []
+  }
+}
+
+export default async function updateReservation(
+  reservationId: string,
+  data: {
+    status: "pending" | "accepted" | "paid"
+    paymentMethod: string | null
+    paymentDate: Date | null
+    proofPayment?: string | null
+  }
+) {
+  try {
+    // Validation logic
+    if (
+      (data.status === "accepted" || data.status === "paid") &&
+      (!data.paymentMethod?.trim() || !data.paymentDate)
+    ) {
+      return {
+        success: false,
+        message: "Payment method is required for accepted or paid status.",
+      }
+    }
+
+    if (data.status === "pending") {
+      data.paymentMethod = null
+      data.paymentDate = null
+      data.proofPayment = null
+    }
+
+    // Handle proof of payment upload
+    if (data.proofPayment?.startsWith("data:image")) {
+      const uploadResult = await uploadFileToUploadThing(data.proofPayment, "proof-payment")
+      if (!uploadResult.success) {
+        return uploadResult
+      }
+      data.proofPayment = uploadResult.url
+    }
+
+    // Update the reservation in the database
+    await db.reservation.update({
+      where: { id: reservationId },
+      data: {
+        status: data.status,
+        paymentMethod: data.paymentMethod,
+        paymentDate: data.paymentDate,
+        proofPayment: data.proofPayment,
+      },
+    })
+
+    return { success: true, message: "Reservation updated successfully" }
+  } catch (error) {
+    Sentry.captureException(error)
+    console.error("Error updating reservation:", error)
+    return { success: false, message: "Server error, please try again later." }
   }
 }
