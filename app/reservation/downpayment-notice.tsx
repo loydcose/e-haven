@@ -29,12 +29,10 @@ export function DownPaymentNotice({
         <AlertDialogHeader>
           <AlertDialogTitle>Down Payment Notice</AlertDialogTitle>
           <AlertDialogDescription>
-            Your reservation has been successfully added. Kindly settle the down
-            payment to confirm your reservation.
+            Before proceeding with your reservation, please note that a down payment is required to confirm your booking.
             <br />
             <br />
-            You can confirm your reservation by reaching out through our contact
-            pages below:
+            You can confirm your reservation by reaching out through our contact pages below:
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col gap-2">
@@ -57,7 +55,7 @@ export function DownPaymentNotice({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => setDpNoticeOpen(false)}>
-            Cancel reservation
+            Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
@@ -65,7 +63,7 @@ export function DownPaymentNotice({
               setConfirmationOpen(true)
             }}
           >
-            Done
+            Proceed
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

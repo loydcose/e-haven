@@ -23,12 +23,22 @@ export default function SubmitButton({
   const [dpNoticeOpen, setDpNoticeOpen] = useState(false)
   const [confirmationOpen, setConfirmationOpen] = useState(false)
 
-  const handleClick = async () => {
-    const filteredStore = Object.fromEntries(
-      Object.entries(store).filter(([, value]) => typeof value !== "function")
-    )
+  // Move store filtering outside of handleClick
+  const filteredStore = Object.fromEntries(
+    Object.entries(store).filter(([, value]) => typeof value !== "function")
+  )
 
-    if (!filteredStore.hasCheckAgreement) {
+  // Remove hasCheckAgreement from filtered store
+  delete filteredStore.hasCheckAgreement
+
+  // Add accommodation and user data
+  filteredStore.accommodationId = accommodation.id
+  filteredStore.userId = userId
+  // @ts-expect-error filtered store has no type
+  filteredStore.totalPrice = filteredStore.totalPrice + accommodation.price
+
+  const handleClick = async () => {
+    if (!store.hasCheckAgreement) {
       toast({
         title: "Error",
         description: "Please check the agreement",
@@ -37,32 +47,7 @@ export default function SubmitButton({
       return
     }
 
-    // Remove the `hasCheckAgreement` property
-    delete filteredStore.hasCheckAgreement
-
-    filteredStore.accommodationId = accommodation.id
-    filteredStore.userId = userId
-    // @ts-expect-error filtered store has no type
-    filteredStore.totalPrice = filteredStore.totalPrice + accommodation.price
-
-    console.log({filteredStore})
-
-    // @ts-expect-error `addReservation` expects a filtered store
-    const response = await addReservation(filteredStore)
-    if (response.success) {
-      toast({
-        title: "Reservation added successfully",
-        variant: "success",
-      })
-      setDpNoticeOpen(true)
-    } else {
-      toast({
-        title: "Failed to add reservation",
-        description: response.message,
-        variant: "destructive",
-      })
-    }
-    console.log(response)
+    setDpNoticeOpen(true)
   }
 
   return (
@@ -75,6 +60,9 @@ export default function SubmitButton({
       <Confirmation
         confirmationOpen={confirmationOpen}
         setConfirmationOpen={setConfirmationOpen}
+        reservationData={filteredStore}
+        accommodation={accommodation}
+        userId={userId}
       />
       <Button
         type="button"
