@@ -542,6 +542,22 @@ export async function deleteUserAccount(userId: string) {
 
 const utapi = new UTApi()
 
+async function deleteFileFromUploadThing(url: string): Promise<{ success: boolean; message?: string }> {
+  try {
+    // Extract the file key from the URL
+    const fileKey = url.split('/').pop()
+    if (!fileKey) {
+      return { success: false, message: "Invalid file URL" }
+    }
+
+    await utapi.deleteFiles([fileKey])
+    return { success: true }
+  } catch (error) {
+    console.error("Error deleting file:", error)
+    return { success: false, message: "Failed to delete the file" }
+  }
+}
+
 async function uploadFileToUploadThing(
   base64Data: string,
   prefix: string
@@ -614,13 +630,34 @@ export async function updateAccommodation(
 
     const validatedData = validationResult.data
 
+    // Get current accommodation to check for existing image
+    const currentAccommodation = await db.accommodation.findUnique({
+      where: { id: accommodationId },
+      select: { image: true }
+    })
+
     // Handle accommodation image upload
     if (validatedData.image?.startsWith("data:image")) {
+      // Delete old image if it exists
+      if (currentAccommodation?.image) {
+        const deleteResult = await deleteFileFromUploadThing(currentAccommodation.image)
+        if (!deleteResult.success) {
+          console.warn("Failed to delete old image:", deleteResult.message)
+        }
+      }
+
       const uploadResult = await uploadFileToUploadThing(validatedData.image, "image")
       if (!uploadResult.success) {
         return uploadResult
       }
       validatedData.image = uploadResult.url
+    } else if (validatedData.image === null && currentAccommodation?.image) {
+      // If image is being removed, delete the old one and set to null
+      const deleteResult = await deleteFileFromUploadThing(currentAccommodation.image)
+      if (!deleteResult.success) {
+        console.warn("Failed to delete old image:", deleteResult.message)
+      }
+      validatedData.image = null
     }
 
     const bedKeywordRegex = /\d+x bed/
@@ -814,19 +851,47 @@ export default async function updateReservation(
       }
     }
 
+    // Get current reservation to check for existing proof of payment
+    const currentReservation = await db.reservation.findUnique({
+      where: { id: reservationId },
+      select: { proofPayment: true }
+    })
+
     if (data.status === "pending") {
       data.paymentMethod = null
       data.paymentDate = null
+      // Delete existing proof of payment if any
+      if (currentReservation?.proofPayment) {
+        const deleteResult = await deleteFileFromUploadThing(currentReservation.proofPayment)
+        if (!deleteResult.success) {
+          console.warn("Failed to delete old proof of payment:", deleteResult.message)
+        }
+      }
       data.proofPayment = null
     }
 
     // Handle proof of payment upload
     if (data.proofPayment?.startsWith("data:image")) {
+      // Delete old proof of payment if it exists
+      if (currentReservation?.proofPayment) {
+        const deleteResult = await deleteFileFromUploadThing(currentReservation.proofPayment)
+        if (!deleteResult.success) {
+          console.warn("Failed to delete old proof of payment:", deleteResult.message)
+        }
+      }
+
       const uploadResult = await uploadFileToUploadThing(data.proofPayment, "proof-payment")
       if (!uploadResult.success) {
         return uploadResult
       }
       data.proofPayment = uploadResult.url
+    } else if (data.proofPayment === null && currentReservation?.proofPayment) {
+      // If proof of payment is being removed, delete the old one and set to null
+      const deleteResult = await deleteFileFromUploadThing(currentReservation.proofPayment)
+      if (!deleteResult.success) {
+        console.warn("Failed to delete old proof of payment:", deleteResult.message)
+      }
+      data.proofPayment = null
     }
 
     // Update the reservation in the database
