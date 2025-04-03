@@ -14,6 +14,15 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { messages } = body
 
+    // Validate messages array
+    if (!Array.isArray(messages)) {
+      Sentry.captureException("Invalid messages format", {
+        extra: {
+          messages,
+        },
+      })
+    }
+
     const systemPrompt = {
       role: "system",
       content: `You are an AI assistant for E-Haven Resort's booking system. Your role is to help users with their inquiries and bookings. Here's how you should behave:
@@ -53,16 +62,18 @@ Remember to:
 - And most specially don't do programming or coding or anything related to that.`,
     }
 
+    // Ensure messages is an array before spreading
+    const chatMessages = Array.isArray(messages) ? messages : []
+
     const response = await together.chat.completions.create({
       model: "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-      messages: [systemPrompt, ...messages],
+      messages: [systemPrompt, ...chatMessages],
     })
 
-    const aiReply =
-      response.choices[0]?.message?.content || "No response from AI"
+    const aiReply = response.choices[0]?.message?.content || "No response from AI"
 
     const updatedMessages = [
-      ...messages,
+      ...chatMessages,
       { role: "assistant", content: aiReply },
     ]
 
