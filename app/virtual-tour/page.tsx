@@ -33,13 +33,13 @@ export default async function Page() {
         </div>
         <div className="bg-black/50 mt-auto italic leading-5">
           <p className="text-sm md:text-base text-white opacity-80 py-6 pl-[5%] pr-[5%]">
-            Immerse yourself in the elegance and serenity of Nature’s Haven
-            Resort with E-HAVEN, an interactive platform designed to elevate
-            your experience. This virtual tour invites you to explore the
-            resort’s breathtaking landscapes, luxurious amenities, and tranquil
-            atmosphere, all at your convenience. From seamless navigation to
-            effortless reservations, E-HAVEN combines sophistication and
-            functionality, ensuring that every aspect of your journey is as
+            Immerse yourself in the elegance and serenity of Nature&apos;s
+            Haven Resort with E-HAVEN, an interactive platform designed to
+            elevate your experience. This virtual tour invites you to explore
+            the resort&apos;s breathtaking landscapes, luxurious amenities, and
+            tranquil atmosphere, all at your convenience. From seamless
+            navigation to effortless reservations, E-HAVEN combines sophistication
+            and functionality, ensuring that every aspect of your journey is as
             remarkable as the destination itself. Begin your adventure with us
             and discover the perfect escape in the heart of Antipolo City.
           </p>
@@ -47,14 +47,17 @@ export default async function Page() {
       </section>
       <section className="bg-amber-100 py-16 md:py-20">
         <div className="mx-auto w-11/12">
-          <div className="md:w-[75%] mx-auto text-3xl md:text-4xl mb-8 md:mb-12">
-            <Image
-              src="/virtual-tour/img1.png"
-              alt="virtual-tour image 1"
-              width={1278}
-              height={427}
+          <div className="rounded-2xl overflow-hidden shadow-lg md:w-[75%] mx-auto text-3xl md:text-4xl mb-8 md:mb-12 relative">
+            <div className="bg-black/50 absolute inset-0 z-10"></div>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
               className="size-full object-cover"
-            />
+            >
+              <source src="/videos/virtual-tour.mp4" type="video/mp4" />
+            </video>
           </div>
           <h2 className="font-bold text-center text-3xl md:text-4xl mb-8 md:mb-12 tracking-tight">
             NATURE&apos;S HAVEN RESORT VIDEO CLIPS
