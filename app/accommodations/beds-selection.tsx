@@ -13,14 +13,21 @@ import { Bed } from "lucide-react"
 import { useAccommodationFilterStore } from "@/stores/accommodation-filter"
 
 export function BedsSelection() {
-  const { setNoOfBed } = useAccommodationFilterStore()
+  const { noOfBed, setNoOfBed } = useAccommodationFilterStore()
+  const [value, setValue] = React.useState<string>("")
+
+  // Sync local state with store
+  React.useEffect(() => {
+    setValue(noOfBed === null ? "" : String(noOfBed))
+  }, [noOfBed])
 
   const handleValueChange = (value: string) => {
-    setNoOfBed(Number(value))
+    setValue(value)
+    setNoOfBed(value === "" ? null : Number(value))
   }
 
   return (
-    <Select onValueChange={handleValueChange}>
+    <Select value={value} onValueChange={handleValueChange}>
       <SelectTrigger className="w-[180px] bg-stone-900 outline-none border-none">
         <SelectValue
           placeholder="No. of bed"

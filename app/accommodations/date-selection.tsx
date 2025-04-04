@@ -18,14 +18,20 @@ import { useAccommodationFilterStore } from "@/stores/accommodation-filter"
 export function DateSelection({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>(undefined)
-  const { setDateRange } = useAccommodationFilterStore()
+  const { dateRange, setDateRange } = useAccommodationFilterStore()
+  const [date, setDate] = React.useState<DateRange | undefined>(dateRange)
 
+  // Sync local state with store
   React.useEffect(() => {
-    if (date?.from && date?.to) {
-      setDateRange({ from: date.from, to: date.to })
+    setDate(dateRange)
+  }, [dateRange])
+
+  const handleSelect = (range: DateRange | undefined) => {
+    setDate(range)
+    if (range?.from && range?.to) {
+      setDateRange({ from: range.from, to: range.to })
     }
-  }, [date, setDateRange])
+  }
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -50,7 +56,7 @@ export function DateSelection({
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Date range availability</span>
+              <span className="text-white/75">Date range availability</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -60,7 +66,7 @@ export function DateSelection({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={handleSelect}
             numberOfMonths={2}
           />
         </PopoverContent>

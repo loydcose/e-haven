@@ -78,7 +78,7 @@ export default function Accommodations({
         <AmenitiesSelection />
         <BedsSelection />
         <DateSelection />
-        <Button type="button" onClick={handleReset} disabled={isDefaultFilters}>
+        <Button type="button" onClick={handleReset}>
           Reset
         </Button>
       </div>
