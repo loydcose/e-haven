@@ -1,17 +1,27 @@
 "use client"
 
-import { Canvas, useLoader } from "@react-three/fiber"
+import { Canvas, useLoader, useFrame } from "@react-three/fiber"
 import { BackSide, TextureLoader, Vector3 } from "three"
 import { Html, OrbitControls, Text } from "@react-three/drei"
 import { useRouter } from "next/navigation"
 import InfoPanel from "./info-panel"
-import { Suspense, useState } from "react"
+import { Suspense, useState, useRef } from "react"
 import Spinner from "./spinner"
 import { rooms } from "./rooms"
 
 function RoomScene({ room, isDebugMode }: { room: string; isDebugMode: boolean }) {
   const router = useRouter()
   const [debugPosition, setDebugPosition] = useState<Vector3 | null>(null)
+  const textRefs = useRef<any[]>([])
+
+  // Update text orientation every frame
+  useFrame(({ camera }) => {
+    textRefs.current.forEach((text) => {
+      if (text) {
+        text.lookAt(camera.position)
+      }
+    })
+  })
 
   const texture = useLoader(
     TextureLoader,
@@ -94,6 +104,7 @@ function RoomScene({ room, isDebugMode }: { room: string; isDebugMode: boolean }
 
           {/* Hotspot Label */}
           <Text
+            ref={(el) => (textRefs.current[index] = el)}
             position={[0, 1, 0]}
             fontSize={0.5}
             color="white"

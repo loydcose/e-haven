@@ -45,8 +45,8 @@ export const rooms: Rooms = {
   },
   "lower-swimming-pool": {
     src: "https://e-haven-images.pages.dev/lower-swimming-pool.jpeg",
-    title: "Upper Swimming Pool",
-    desc: "Big 6ft pool",
+    title: "Lower Swimming Pool",
+    desc: "A 4ft pool",
     hotspots: [
       {
         position: [4, -3, -9],
@@ -68,7 +68,7 @@ export const rooms: Rooms = {
   "upper-swimming-pool": {
     src: "https://e-haven-images.pages.dev/upper-swimming-pool.jpg",
     title: "Upper Swimming Pool",
-    desc: "Big 6ft pool",
+    desc: "A 6ft pool",
     hotspots: [
       {
         position: [8, -4, -4],
@@ -84,8 +84,8 @@ export const rooms: Rooms = {
   },
   "billiards": {
     src: "https://e-haven-images.pages.dev/billiards.jpg",
-    title: "Upper Swimming Pool",
-    desc: "Big 6ft pool",
+    title: "Billiards",
+    desc: "A billiards table",
     hotspots: [
       {
         position: [-10, -1, -2],
@@ -101,8 +101,8 @@ export const rooms: Rooms = {
   },
   "overlooking-hut-cottage": {
     src: "https://e-haven-images.pages.dev/overlooking-hut-cottage.jpeg",
-    title: "Upper Swimming Pool",
-    desc: "Big 6ft pool",
+    title: "Overlooking Hut Cottage",
+    desc: "A hut cottage overlooking",
     hotspots: [
       {
         position: [6, -2, 8],
@@ -118,8 +118,8 @@ export const rooms: Rooms = {
   },
     "basketball": {
     src: "https://e-haven-images.pages.dev/basketball.jpg",
-    title: "Upper Swimming Pool",
-    desc: "Big 6ft pool",
+    title: "Basketball",
+    desc: "A basketball court",
     hotspots: [
       {
         position: [7, 7, 5],
@@ -136,12 +136,12 @@ export const rooms: Rooms = {
    "comfort-rooms": {
     src: "https://e-haven-images.pages.dev/comfort-rooms.jpg",
     title: "Comfort Rooms",
-    desc: "These are the comfort rooms beside kitchen",
+    desc: "A room for comfort",
     hotspots: [
       {
         position: [-2, -3, -9],
         target: "kitchen",
-        label: "Back to entrance",
+        label: "Kitchen",
       },
       {
         position: [-7, 4, 5],
@@ -152,8 +152,8 @@ export const rooms: Rooms = {
   },
   "kitchen": {
     src: "https://e-haven-images.pages.dev/kitchen.jpeg",
-    title: "Upper Swimming Pool",
-    desc: "Big 6ft pool",
+    title: "Kitchen",
+    desc: "A kitchen",
     hotspots: [
       {
         position: [-10, 0, 1],
@@ -169,8 +169,8 @@ export const rooms: Rooms = {
   },
   "family-house-nipa-cottage": {
     src: "https://e-haven-images.pages.dev/family-house-nipa-cottage.jpeg",
-    title: "Upper Swimming Pool",
-    desc: "Big 6ft pool",
+    title: "Family House Nipa Cottage",
+    desc: "A family house",
     hotspots: [
       {
         position: [2, 1, -10],
@@ -186,8 +186,8 @@ export const rooms: Rooms = {
   },
   "cozy-hut-cottage": {
     src: "https://e-haven-images.pages.dev/cozy-hut-cottage.jpg",
-    title: "Cottage 5",
-    desc: "Cottage 5 with 4 beds",
+    title: "Cozy Hut Cottage",
+    desc: "A cottage with 4 beds",
     hotspots: [
       {
         position: [2, -1, 10],
