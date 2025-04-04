@@ -16,7 +16,7 @@ export default async function page() {
   console.log(user)
 
   return (
-    <main className="relative bg-[#663C1F">
+    <main className="relative bg-[#FFF3E2]">
       <section className="mx-auto w-11/12 z-10">
         <NavBar />
         <div className="mb-16 bg-[#663C1F] p-6 md:p-16 text-white max-w-[1150px] mx-auto rounded-xl">
