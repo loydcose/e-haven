@@ -24,19 +24,15 @@ export default function UsersTable({ users }: { users: User[] }) {
     if (search) {
       updatedUsers = updatedUsers.filter(
         (user) =>
-          `${user.firstName} ${user.lastName}`
-            .toLowerCase()
-            .includes(search.toLowerCase()) ||
-          user.username.toLowerCase().includes(search.toLowerCase()) ||
-          user.email.toLowerCase().includes(search.toLowerCase())
+          user.username.toLowerCase().includes(search.toLowerCase())
       )
     }
 
-    // Sort by ID (or any other field)
+    // Sort by username
     if (sort === "asc") {
-      updatedUsers.sort((a, b) => a.firstName.localeCompare(b.firstName))
+      updatedUsers.sort((a, b) => a.username.localeCompare(b.username))
     } else if (sort === "desc") {
-      updatedUsers.sort((a, b) => b.firstName.localeCompare(a.firstName))
+      updatedUsers.sort((a, b) => b.username.localeCompare(a.username))
     }
 
     setFilteredUsers(updatedUsers)

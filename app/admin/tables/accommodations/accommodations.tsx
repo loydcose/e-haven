@@ -30,21 +30,15 @@ export default function AccommodationsTable({
     if (search) {
       updatedAccommodations = updatedAccommodations.filter(
         (accommodation) =>
-          accommodation.title.toLowerCase().includes(search.toLowerCase()) ||
-          accommodation.description
-            ?.toLowerCase()
-            .includes(search.toLowerCase()) ||
-          accommodation.amenities.some((amenity) =>
-            amenity.toLowerCase().includes(search.toLowerCase())
-          )
+          accommodation.title.toLowerCase().includes(search.toLowerCase())
       )
     }
 
-    // Sort by Title (or any other field)
+    // Sort by price
     if (sort === "asc") {
-      updatedAccommodations.sort((a, b) => a.title.localeCompare(b.title))
+      updatedAccommodations.sort((a, b) => a.price - b.price)
     } else if (sort === "desc") {
-      updatedAccommodations.sort((a, b) => b.title.localeCompare(a.title))
+      updatedAccommodations.sort((a, b) => b.price - a.price)
     }
 
     setFilteredAccommodations(updatedAccommodations)

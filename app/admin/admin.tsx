@@ -115,7 +115,11 @@ export function Admin({ data, defaultTab }: AdminProps) {
             className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white"
             onClick={() => setSort(sort === "asc" ? "desc" : "asc")}
           >
-            Sort {sort === "asc" ? <ArrowDownZA /> : <ArrowDownAZ />}
+            Sort {activeSection === "users" && "username"}
+            {activeSection === "accommodations" && "price"}
+            {activeSection === "reservations" && "booked by"}
+            {activeSection === "reviews" && "rating"}
+            {sort === "asc" ? <ArrowDownZA /> : <ArrowDownAZ />}
           </Button>
           <div className="flex items-center  bg-white rounded-md pl-3 focus-within:ring-gray-400 focus-within:ring-2 w-full">
             <Search className="text-black/50" />
@@ -123,7 +127,10 @@ export function Admin({ data, defaultTab }: AdminProps) {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={`Search ${activeSection}`}
+              placeholder={`Search ${activeSection === "users" ? "username" : 
+                activeSection === "accommodations" ? "title" :
+                activeSection === "reservations" ? "booked by" :
+                "user"}`}
               className="text-black border-none focus-visible:ring-0 min-w-0 w-full"
             />
           </div>

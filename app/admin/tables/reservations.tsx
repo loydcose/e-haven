@@ -32,27 +32,24 @@ export default function ReservationsTable({
     if (search) {
       updatedReservations = updatedReservations.filter(
         (reservation) =>
-          reservation.address.toLowerCase().includes(search.toLowerCase()) ||
-          reservation.contactNumber
+          `${reservation.user.firstName} ${reservation.user.lastName}`
             .toLowerCase()
-            .includes(search.toLowerCase()) ||
-          (reservation.guests &&
-            (reservation.guests as JsonArray).some((guest) =>
-              (((guest as JsonObject).name || "") as string)
-                .toLowerCase()
-                .includes(search.toLowerCase())
-            ))
+            .includes(search.toLowerCase())
       )
     }
 
-    // Sort by Check-In Date (or any other field)
+    // Sort by Booked by (user's full name)
     if (sort === "asc") {
-      updatedReservations.sort(
-        (a, b) => new Date(a.checkIn).getTime() - new Date(b.checkIn).getTime()
+      updatedReservations.sort((a, b) => 
+        `${a.user.firstName} ${a.user.lastName}`.localeCompare(
+          `${b.user.firstName} ${b.user.lastName}`
+        )
       )
     } else if (sort === "desc") {
-      updatedReservations.sort(
-        (a, b) => new Date(b.checkIn).getTime() - new Date(a.checkIn).getTime()
+      updatedReservations.sort((a, b) => 
+        `${b.user.firstName} ${b.user.lastName}`.localeCompare(
+          `${a.user.firstName} ${a.user.lastName}`
+        )
       )
     }
 

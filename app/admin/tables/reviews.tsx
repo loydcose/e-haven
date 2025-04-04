@@ -32,11 +32,9 @@ export default function ReviewsTable({ reviews }: ReviewsTableProps) {
     const filtered = reviews.filter((review) => {
       const searchTerm = search.toLowerCase()
       return (
-        review.comment.toLowerCase().includes(searchTerm) ||
-        review.user.firstName.toLowerCase().includes(searchTerm) ||
-        review.user.lastName.toLowerCase().includes(searchTerm) ||
-        review.rating.toString().includes(searchTerm) ||
-        (review.visibility ? "visible" : "hidden").includes(searchTerm)
+        `${review.user.firstName} ${review.user.lastName}`
+          .toLowerCase()
+          .includes(searchTerm)
       )
     })
 
@@ -44,9 +42,9 @@ export default function ReviewsTable({ reviews }: ReviewsTableProps) {
     if (sort) {
       filtered.sort((a, b) => {
         if (sort === "asc") {
-          return a.comment.localeCompare(b.comment)
+          return a.rating - b.rating
         } else {
-          return b.comment.localeCompare(a.comment)
+          return b.rating - a.rating
         }
       })
     }
