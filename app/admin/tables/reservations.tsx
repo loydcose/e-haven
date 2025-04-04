@@ -79,57 +79,65 @@ export default function ReservationsTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filteredReservations.map((reservation) => (
-          <TableRow key={reservation.id}>
-            <TableCell>{reservation.id}</TableCell>
-            <TableCell>
-              {reservation.user.firstName} {reservation.user.lastName}
-            </TableCell>
-            <TableCell>
-              {new Date(reservation.checkIn).toLocaleDateString()}
-            </TableCell>
-            <TableCell>
-              {new Date(reservation.checkOut).toLocaleDateString()}
-            </TableCell>
-
-            <TableCell>
-              {new Date(reservation.birthday).toLocaleDateString()}
-            </TableCell>
-            <TableCell>{reservation.gender}</TableCell>
-            <TableCell>{reservation.healthIssue}</TableCell>
-
-            <TableCell>{reservation.address}</TableCell>
-            <TableCell>{reservation.contactNumber}</TableCell>
-            <TableCell>
-              {reservation.guests &&
-              (reservation.guests as JsonArray).length > 0
-                ? (reservation.guests as JsonArray)
-                    .map((guest) => (guest as JsonObject).name || "")
-                    .join(", ")
-                : "No Guests"}
-            </TableCell>
-            <TableCell>{reservation.totalPrice} Php</TableCell>
-            <TableCell>
-              {new Date(reservation.createdAt).toLocaleDateString()}
-            </TableCell>
-            <TableCell>
-              <p
-                className={cn(
-                  "rounded-full py-1 px-3 font-medium",
-                  reservation.status === "pending" &&
-                    "bg-orange-600 text-white",
-                  reservation.status === "paid" && "bg-gray-400 text-white",
-                  reservation.status === "accepted" && "bg-green-600 text-white"
-                )}
-              >
-                {reservation.status}
-              </p>
-            </TableCell>
-            <TableCell>
-              <ReservationAction reservation={reservation} />
+        {filteredReservations.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={14} className="text-center">
+              No reservations found
             </TableCell>
           </TableRow>
-        ))}
+        ) : (
+          filteredReservations.map((reservation) => (
+            <TableRow key={reservation.id}>
+              <TableCell>{reservation.id}</TableCell>
+              <TableCell>
+                {reservation.user.firstName} {reservation.user.lastName}
+              </TableCell>
+              <TableCell>
+                {new Date(reservation.checkIn).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                {new Date(reservation.checkOut).toLocaleDateString()}
+              </TableCell>
+
+              <TableCell>
+                {new Date(reservation.birthday).toLocaleDateString()}
+              </TableCell>
+              <TableCell>{reservation.gender}</TableCell>
+              <TableCell>{reservation.healthIssue}</TableCell>
+
+              <TableCell>{reservation.address}</TableCell>
+              <TableCell>{reservation.contactNumber}</TableCell>
+              <TableCell>
+                {reservation.guests &&
+                (reservation.guests as JsonArray).length > 0
+                  ? (reservation.guests as JsonArray)
+                      .map((guest) => (guest as JsonObject).name || "")
+                      .join(", ")
+                  : "No Guests"}
+              </TableCell>
+              <TableCell>{reservation.totalPrice} Php</TableCell>
+              <TableCell>
+                {new Date(reservation.createdAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <p
+                  className={cn(
+                    "rounded-full py-1 px-3 font-medium",
+                    reservation.status === "pending" &&
+                      "bg-orange-600 text-white",
+                    reservation.status === "paid" && "bg-gray-400 text-white",
+                    reservation.status === "accepted" && "bg-green-600 text-white"
+                  )}
+                >
+                  {reservation.status}
+                </p>
+              </TableCell>
+              <TableCell>
+                <ReservationAction reservation={reservation} />
+              </TableCell>
+            </TableRow>
+          ))
+        )}
       </TableBody>
     </Table>
   )

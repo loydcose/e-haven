@@ -59,26 +59,34 @@ export default function AccommodationsTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filteredAccommodations.map((accommodation) => (
-          <TableRow key={accommodation.id}>
-            <TableCell>{accommodation.id}</TableCell>
-            <TableCell>{accommodation.title}</TableCell>
-            <TableCell>{accommodation.description || "N/A"}</TableCell>
-            <TableCell>{accommodation.price} Php</TableCell>
-            <TableCell>
-              {accommodation.amenities.join(", ") || "None"}
-            </TableCell>
-            <TableCell>
-              {new Date(accommodation.createdAt).toLocaleDateString()}
-            </TableCell>
-            <TableCell>
-              {new Date(accommodation.updatedAt).toLocaleDateString()}
-            </TableCell>
-            <TableCell>
-              <AccommodationsAction accommodation={accommodation} />
+        {filteredAccommodations.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={8} className="text-center">
+              No accommodations found
             </TableCell>
           </TableRow>
-        ))}
+        ) : (
+          filteredAccommodations.map((accommodation) => (
+            <TableRow key={accommodation.id}>
+              <TableCell>{accommodation.id}</TableCell>
+              <TableCell>{accommodation.title}</TableCell>
+              <TableCell>{accommodation.description || "N/A"}</TableCell>
+              <TableCell>{accommodation.price} Php</TableCell>
+              <TableCell>
+                {accommodation.amenities.join(", ") || "None"}
+              </TableCell>
+              <TableCell>
+                {new Date(accommodation.createdAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                {new Date(accommodation.updatedAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <AccommodationsAction accommodation={accommodation} />
+              </TableCell>
+            </TableRow>
+          ))
+        )}
       </TableBody>
     </Table>
   )

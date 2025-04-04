@@ -51,20 +51,28 @@ export default function UsersTable({ users }: { users: User[] }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {filteredUsers.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell>{user.id}</TableCell>
-            <TableCell>
-              {user.firstName} {user.lastName}
-            </TableCell>
-            <TableCell>{user.username}</TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell>{user.isEmailVerified ? "Yes" : "No"}</TableCell>
-            <TableCell>
-              {new Date(user.createdAt).toLocaleDateString()}
+        {filteredUsers.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={6} className="text-center">
+              No users found
             </TableCell>
           </TableRow>
-        ))}
+        ) : (
+          filteredUsers.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>
+                {user.firstName} {user.lastName}
+              </TableCell>
+              <TableCell>{user.username}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>{user.isEmailVerified ? "Yes" : "No"}</TableCell>
+              <TableCell>
+                {new Date(user.createdAt).toLocaleDateString()}
+              </TableCell>
+            </TableRow>
+          ))
+        )}
       </TableBody>
     </Table>
   )
