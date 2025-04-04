@@ -1,16 +1,17 @@
 "use client"
 
 import { Canvas, useLoader } from "@react-three/fiber"
-import { BackSide, TextureLoader } from "three"
+import { BackSide, TextureLoader, Vector3 } from "three"
 import { Html, OrbitControls, Text } from "@react-three/drei"
 import { useRouter } from "next/navigation"
 import InfoPanel from "./info-panel"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import Spinner from "./spinner"
 import { rooms } from "./rooms"
 
-function RoomScene({ room }: { room: string }) {
+function RoomScene({ room, isDebugMode }: { room: string; isDebugMode: boolean }) {
   const router = useRouter()
+  const [debugPosition, setDebugPosition] = useState<Vector3 | null>(null)
 
   const texture = useLoader(
     TextureLoader,
@@ -18,20 +19,55 @@ function RoomScene({ room }: { room: string }) {
   )
 
   const handlePointerOver = () => {
-    document.body.style.cursor = "pointer" // Change cursor to pointer
+    document.body.style.cursor = "pointer"
   }
 
   const handlePointerOut = () => {
-    document.body.style.cursor = "default" // Reset cursor to default
+    document.body.style.cursor = "default"
   }
 
   const handleClick = (target: string) => {
-    document.body.style.cursor = "default" // Reset cursor to default on click
+    document.body.style.cursor = "default"
     router.push(`/virtual-tour/view?room=${target}`)
+  }
+
+  // Add debug click handler
+  const handleDebugClick = (event: any) => {
+    if (!isDebugMode) return
+
+    // Get the click position in 3D space
+    const position = new Vector3()
+    position.copy(event.point)
+    
+    // Scale down the coordinates to match hotspot scale
+    // Divide by 50 to get coordinates in a similar range to your working hotspots
+    const x = Math.round(position.x / 50)
+    const y = Math.round(position.y / 50)
+    const z = Math.round(position.z / 50)
+    
+    setDebugPosition(new Vector3(x, y, z))
+    console.log(`Position: [${x}, ${y}, ${z}]`)
   }
 
   return (
     <>
+      {/* Debug overlay */}
+      {isDebugMode && debugPosition && (
+        <Html position={[0, 20, 0]}>
+          <div className="bg-black/80 text-white p-2 rounded">
+            Position: [{debugPosition.x}, {debugPosition.y}, {debugPosition.z}]
+          </div>
+        </Html>
+      )}
+
+      {/* Clickable debug plane */}
+      {isDebugMode && (
+        <mesh onClick={handleDebugClick}>
+          <sphereGeometry args={[500, 60, 40]} />
+          <meshBasicMaterial transparent opacity={0} side={BackSide} />
+        </mesh>
+      )}
+
       {/* 360 Sphere */}
       <mesh scale={[-1, 1, 1]}>
         <sphereGeometry args={[500, 60, 40]} />
@@ -43,9 +79,9 @@ function RoomScene({ room }: { room: string }) {
         <group key={index} position={hotspot.position}>
           {/* Hotspot Button */}
           <mesh
-            onClick={() => handleClick(hotspot.target)} // Use the new handleClick function
-            onPointerOver={handlePointerOver} // Change cursor on hover
-            onPointerOut={handlePointerOut} // Reset cursor on hover out
+            onClick={() => handleClick(hotspot.target)}
+            onPointerOver={handlePointerOver}
+            onPointerOut={handlePointerOut}
             scale={[1, 1, 1]}
           >
             <sphereGeometry args={[0.5, 32, 32]} />
@@ -73,11 +109,20 @@ function RoomScene({ room }: { room: string }) {
 }
 
 export default function SceneViewer({ room }: { room: string }) {
+  const [isDebugMode, setIsDebugMode] = useState(false)
+
   return (
     <div className="relative h-full w-full">
+      {/* Debug Mode Toggle */}
+      <button
+        onClick={() => setIsDebugMode(!isDebugMode)}
+        className="absolute top-4 right-4 z-50 bg-black/50 text-white px-4 py-2 rounded"
+      >
+        {isDebugMode ? "Exit Debug" : "Debug Mode"}
+      </button>
+
       <Canvas>
         <Suspense fallback={<Loader />}>
-          {/* OrbitControls for interactive navigation */}
           <OrbitControls
             enableZoom={false}
             zoomSpeed={20}
@@ -89,12 +134,10 @@ export default function SceneViewer({ room }: { room: string }) {
             rotateSpeed={-0.5}
           />
 
-          {/* Room Scene */}
-          <RoomScene room={room} />
+          <RoomScene room={room} isDebugMode={isDebugMode} />
         </Suspense>
       </Canvas>
 
-      {/* Info Panel */}
       <InfoPanel title={rooms[room].title} description={rooms[room].desc} />
     </div>
   )
