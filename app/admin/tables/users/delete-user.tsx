@@ -42,7 +42,7 @@ export function DeleteUser({ userId }: { userId: string }) {
           variant: "destructive",
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to delete user",
