@@ -19,14 +19,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Pencil } from "lucide-react"
-import { ReservationTable } from "../admin"
+import { ReservationTable } from "../../admin"
 import Image from "next/image"
-import StatusSelection from "./status-selection"
 import { userReservationStatusStore } from "@/stores/reservation-status"
 import updateReservation, { deleteReservation } from "@/app/actions"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import Spinner from "@/components/icons/spinner"
+import StatusSelection from "./status-selection"
 
 export function ReservationAction({
   reservation,

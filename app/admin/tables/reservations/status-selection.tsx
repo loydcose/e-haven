@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import React, { useEffect, useState } from "react"
-import { ReservationTable } from "../admin"
+import { ReservationTable } from "../../admin"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { userReservationStatusStore } from "@/stores/reservation-status"
-import ProofPaymentUpload from "./reservations/proof-payment-upload"
+import ProofPaymentUpload from "./proof-payment-upload"
 
 type SelectedStatus = "pending" | "paid" | "accepted"
 

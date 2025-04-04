@@ -9,6 +9,7 @@ import {
 import { useAdminFilterStore } from "@/stores/admin-filter"
 import type { User } from "@prisma/client"
 import { useEffect, useState } from "react"
+import { DeleteUser } from "./delete-user"
 
 // Users Table Component
 export default function UsersTable({ users }: { users: User[] }) {
@@ -48,6 +49,7 @@ export default function UsersTable({ users }: { users: User[] }) {
           <TableHead className="text-black">Email</TableHead>
           <TableHead className="text-black">Verified verified</TableHead>
           <TableHead className="text-black">Created At</TableHead>
+          <TableHead className="text-black">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -69,6 +71,9 @@ export default function UsersTable({ users }: { users: User[] }) {
               <TableCell>{user.isEmailVerified ? "Yes" : "No"}</TableCell>
               <TableCell>
                 {new Date(user.createdAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <DeleteUser userId={user.id} />
               </TableCell>
             </TableRow>
           ))

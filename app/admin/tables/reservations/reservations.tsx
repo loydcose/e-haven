@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils"
 import { useAdminFilterStore } from "@/stores/admin-filter"
 import type { JsonArray, JsonObject } from "@prisma/client/runtime/library"
 import { useEffect, useState } from "react"
-import { ReservationAction } from "./reservations/reservations-action"
-import { ReservationTable } from "../admin"
+import { ReservationAction } from "./reservations-action"
+import { ReservationTable } from "../../admin"
 
 // Reservations Table Component
 export default function ReservationsTable({
