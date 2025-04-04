@@ -13,12 +13,15 @@ import { UTApi, UTFile } from "uploadthing/server"
 const passwordSchema = z.object({
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be at most 128 characters"),
-  confirmPassword: z
-    .string()
-    .min(6, "Confirm password must be at least 6 characters")
-    .max(128, "Confirm password must be at most 128 characters"),
+    .min(3, "Password must be at least 3 characters")
+    .max(128, "Password must be at most 128 characters")
+    .refine((password) => !password.includes(" "), {
+      message: "Password cannot contain spaces",
+    })
+    .refine((password) => /^[a-zA-Z0-9!@#$%^&*(),.?":{}|<>]+$/.test(password), {
+      message: "Password can only contain letters, numbers, and special characters",
+    }),
+  confirmPassword: z.string(),
 })
 
 const userSchema = z

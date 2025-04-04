@@ -90,10 +90,11 @@ export default function SignUp() {
           window.location.href = "/"
         }, 2000)
       } else {
+        const errorData = await response.json()
         toast({
           variant: "destructive",
-          title: "Server error",
-          description: "Try again later",
+          title: "Error",
+          description: errorData.message || "Server error, please try again later",
         })
       }
     } catch (error) {
