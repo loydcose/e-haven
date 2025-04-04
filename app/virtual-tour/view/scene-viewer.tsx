@@ -125,12 +125,14 @@ export default function SceneViewer({ room }: { room: string }) {
   return (
     <div className="relative h-full w-full">
       {/* Debug Mode Toggle */}
-      <button
-        onClick={() => setIsDebugMode(!isDebugMode)}
-        className="absolute top-4 right-4 z-50 bg-black/50 text-white px-4 py-2 rounded"
-      >
-        {isDebugMode ? "Exit Debug" : "Debug Mode"}
-      </button>
+      {process.env.NODE_ENV === 'development' && (
+        <button
+          onClick={() => setIsDebugMode(!isDebugMode)}
+          className="absolute top-4 right-4 z-50 bg-black/50 text-white px-4 py-2 rounded"
+        >
+          {isDebugMode ? "Exit Debug" : "Debug Mode"}
+        </button>
+      )}
 
       <Canvas>
         <Suspense fallback={<Loader />}>
