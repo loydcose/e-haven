@@ -28,8 +28,8 @@ export default function Accommodations({
     useState<AccommodationWithReservation[]>(accommodations)
 
   // Check if all filters are in their default state
-  const isDefaultFilters =
-    noOfBed === 0 && amenities.length === 0 && !dateRange.from && !dateRange.to
+  // const isDefaultFilters =
+    // noOfBed === 0 && amenities.length === 0 && !dateRange.from && !dateRange.to
 
   // Reset filters to their default values
   const handleReset = () => {

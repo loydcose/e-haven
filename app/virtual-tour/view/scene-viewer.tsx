@@ -12,6 +12,7 @@ import { rooms } from "./rooms"
 function RoomScene({ room, isDebugMode }: { room: string; isDebugMode: boolean }) {
   const router = useRouter()
   const [debugPosition, setDebugPosition] = useState<Vector3 | null>(null)
+    /* eslint-disable */
   const textRefs = useRef<any[]>([])
 
   // Update text orientation every frame
@@ -42,6 +43,7 @@ function RoomScene({ room, isDebugMode }: { room: string; isDebugMode: boolean }
   }
 
   // Add debug click handler
+  /* eslint-disable */
   const handleDebugClick = (event: any) => {
     if (!isDebugMode) return
 
