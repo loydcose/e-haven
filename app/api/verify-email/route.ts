@@ -16,8 +16,8 @@ const redis = new Redis({
 })
 
 // Token expiration settings
-const tokenExpiration = { expiresIn: "5m", label: "5 minutes" }
-const RATE_LIMIT_WINDOW = 5 * 60 // 15 minutes in seconds
+const tokenExpiration = { expiresIn: "1h", label: "1 hour" }
+const RATE_LIMIT_WINDOW = 1 * 60 * 60 // 1 hour in seconds
 
 export async function POST(req: Request) {
   console.log("went here")
