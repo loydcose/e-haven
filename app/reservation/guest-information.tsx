@@ -97,9 +97,16 @@ export default function GuestInformation() {
                     ? new Date(guest.birthday).toISOString().split("T")[0]
                     : ""
                 }
-                onChange={(e) =>
-                  handleGuestChange(index, "birthday", e.target.value)
-                }
+                max={new Date().toISOString().split("T")[0]} // Disable future dates
+                onChange={(e) => {
+                  const selectedDate = new Date(e.target.value);
+                  const today = new Date();
+                  if (selectedDate > today) {
+                    alert("Future dates are not allowed for the birthday.");
+                    return;
+                  }
+                  handleGuestChange(index, "birthday", e.target.value);
+                }}
               />
             </div>
             <div>

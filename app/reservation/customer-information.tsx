@@ -47,7 +47,7 @@ export default function CustomerInformation({ user }: { user: User }) {
       colSpan: true,
       required: true,
     },
-    { id: "birthday", label: "Birthday", type: "date", required: true },
+    { id: "birthday", label: "Birthday", type: "date", required: true, max: new Date().toISOString().split("T")[0] },
     { id: "contactNumber", label: "Contact number", type: "tel", required: true },
   ]
 
@@ -55,7 +55,13 @@ export default function CustomerInformation({ user }: { user: User }) {
     if (id === "address") {
       setAddress(value)
     } else if (id === "birthday") {
-      setBirthday(new Date(value))
+      const selectedDate = new Date(value);
+      const today = new Date();
+      if (selectedDate > today) {
+        alert("Future dates are not allowed for the birthday.");
+        return;
+      }
+      setBirthday(selectedDate);
     } else if (id === "contactNumber") {
       setContactNumber(value)
     }
@@ -83,6 +89,7 @@ export default function CustomerInformation({ user }: { user: User }) {
               className="bg-white text-black"
               required={field.required}
               onChange={(e) => handleInputChange(field.id, e.target.value)}
+              max={field.max} // Include max attribute for birthday field
             />
           </div>
         ))}
