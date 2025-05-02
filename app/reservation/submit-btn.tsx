@@ -4,9 +4,13 @@ import { Button } from "@/components/ui/button"
 import { useReservationStore } from "@/stores/reservation"
 import type { Accommodation } from "@prisma/client"
 import { useToast } from "@/hooks/use-toast"
-import { DownPaymentNotice } from "./downpayment-notice"
-import { Confirmation } from "./confirmation"
 import { useState } from "react"
+import { Confirmation } from "./modals/confirmation"
+import { DPNotice } from "./modals/dp-notice"
+import { Payment } from "./modals/payment"
+import { ReservationDone } from "./modals/reservation-done"
+
+export type Modal = "confirmation" | "dpNotice" | "payment" | "reservationDone"
 
 export default function SubmitButton({
   accommodation,
@@ -17,8 +21,7 @@ export default function SubmitButton({
 }) {
   const store = useReservationStore()
   const { toast } = useToast()
-  const [dpNoticeOpen, setDpNoticeOpen] = useState(false)
-  const [confirmationOpen, setConfirmationOpen] = useState(false)
+  const [showModal, setShowModal] = useState<Modal | null>(null)
 
   // Move store filtering outside of handleClick
   const filteredStore = Object.fromEntries(
@@ -42,21 +45,26 @@ export default function SubmitButton({
       return
     }
 
-    setDpNoticeOpen(true)
+    setShowModal("confirmation" as Modal)
   }
 
   return (
     <>
-      <DownPaymentNotice
-        dpNoticeOpen={dpNoticeOpen}
-        setDpNoticeOpen={setDpNoticeOpen}
-        setConfirmationOpen={setConfirmationOpen}
-      />
-      <Confirmation
+      {showModal === "confirmation" && (
+        <Confirmation setShowModal={setShowModal} />
+      )}
+      {showModal === "dpNotice" && <DPNotice setShowModal={setShowModal} />}
+      {showModal === "payment" && <Payment setShowModal={setShowModal} />}
+
+      {showModal === "reservationDone" && (
+        <ReservationDone setShowModal={setShowModal} />
+      )}
+
+      {/* <Confirmation
         confirmationOpen={confirmationOpen}
         reservationData={filteredStore}
         accommodationPrice={accommodation.price}
-      />
+      /> */}
       <Button
         type="button"
         size={"lg"}
