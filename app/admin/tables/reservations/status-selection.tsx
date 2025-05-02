@@ -2,48 +2,24 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import React, { useEffect, useState } from "react"
 import { ReservationTable } from "../../admin"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import { userReservationStatusStore } from "@/stores/reservation-status"
-import ProofPaymentUpload from "./proof-payment-upload"
-
 type SelectedStatus = "pending" | "paid" | "accepted"
 
 export default function StatusSelection({
   reservation,
-  onFieldChange,
 }: {
   reservation: ReservationTable
-  onFieldChange?: (field: string, value: string | number | string[] | null) => void
 }) {
-  const { setStatus, paymentMethod, setPaymentMethod } =
-    userReservationStatusStore()
+  const { setStatus } = userReservationStatusStore()
   const [selectedStatus, setSelectedStatus] = useState<SelectedStatus>(
     reservation.status
   )
-  const [proofPayment, setProofPayment] = useState<string | null>(
-    reservation.proofPayment
-  )
-
   useEffect(() => {
     setStatus(selectedStatus)
-    setPaymentMethod(reservation.paymentMethod)
   }, [selectedStatus, reservation.paymentMethod])
 
   const handleStatusChange = (status: SelectedStatus) => {
     setSelectedStatus(status)
-  }
-
-  const handleFieldChange = (
-    field: string,
-    value: string | number | string[] | null
-  ) => {
-    if (field === "proofPayment") {
-      setProofPayment(value as string | null)
-      if (onFieldChange) {
-        onFieldChange(field, value)
-      }
-    }
   }
 
   return (
@@ -79,26 +55,6 @@ export default function StatusSelection({
           Paid
         </Button>
       </div>
-      {/* paid tru */}
-
-      {selectedStatus !== "pending" && (
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="paymentMethod">Payment Method</Label>
-            <Input
-              type="text"
-              placeholder="ex. G-cash, Credit-card, Cash"
-              value={paymentMethod || ""}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            />
-          </div>
-          
-          <ProofPaymentUpload 
-            proofPayment={proofPayment} 
-            handleFieldChange={handleFieldChange} 
-          />
-        </div>
-      )}
     </>
   )
 }

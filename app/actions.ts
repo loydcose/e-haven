@@ -867,92 +867,14 @@ export default async function updateReservation(
   reservationId: string,
   data: {
     status: "pending" | "accepted" | "paid"
-    paymentMethod: string | null
-    paymentDate: Date | null
-    proofPayment?: string | null
   }
 ) {
   try {
-    // Validation logic
-    if (
-      (data.status === "accepted" || data.status === "paid") &&
-      (!data.paymentMethod?.trim() || !data.paymentDate)
-    ) {
-      return {
-        success: false,
-        message: "Payment method is required for accepted or paid status.",
-      }
-    }
-
-    // Get current reservation to check for existing proof of payment
-    const currentReservation = await db.reservation.findUnique({
-      where: { id: reservationId },
-      select: { proofPayment: true },
-    })
-
-    if (data.status === "pending") {
-      data.paymentMethod = null
-      data.paymentDate = null
-      // Delete existing proof of payment if any
-      if (currentReservation?.proofPayment) {
-        const deleteResult = await deleteFileFromUploadThing(
-          currentReservation.proofPayment
-        )
-        if (!deleteResult.success) {
-          console.warn(
-            "Failed to delete old proof of payment:",
-            deleteResult.message
-          )
-        }
-      }
-      data.proofPayment = null
-    }
-
-    // Handle proof of payment upload
-    if (data.proofPayment?.startsWith("data:image")) {
-      // Delete old proof of payment if it exists
-      if (currentReservation?.proofPayment) {
-        const deleteResult = await deleteFileFromUploadThing(
-          currentReservation.proofPayment
-        )
-        if (!deleteResult.success) {
-          console.warn(
-            "Failed to delete old proof of payment:",
-            deleteResult.message
-          )
-        }
-      }
-
-      const uploadResult = await uploadFileToUploadThing(
-        data.proofPayment,
-        "proof-payment"
-      )
-      if (!uploadResult.success) {
-        return uploadResult
-      }
-      data.proofPayment = uploadResult.url
-    } else if (data.proofPayment === null && currentReservation?.proofPayment) {
-      // If proof of payment is being removed, delete the old one and set to null
-      const deleteResult = await deleteFileFromUploadThing(
-        currentReservation.proofPayment
-      )
-      if (!deleteResult.success) {
-        console.warn(
-          "Failed to delete old proof of payment:",
-          deleteResult.message
-        )
-      }
-      data.proofPayment = null
-    }
-
     // Update the reservation in the database
     await db.reservation.update({
       where: { id: reservationId },
       data: {
         status: data.status,
-        paymentMethod: data.paymentMethod,
-        paymentDate: data.paymentDate,
-        proofPayment: data.proofPayment,
       },
     })
 

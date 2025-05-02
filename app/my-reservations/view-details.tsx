@@ -96,18 +96,34 @@ export function ViewDetails({
           </div>
 
           {/* Guest Information */}
-          {Array.isArray(reservation.guests) && (reservation.guests.length > 0) && (
-            <div className="flex flex-col gap-1">
-              <h4 className="font-bold">Guest Information</h4>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {reservation.guests.map((guest: any, index: number) => (
-                <div key={index} className="mb-2 md:mb-4">
-                  <p>{guest.name}</p>
-                  <p>{new Date(guest.birthday).toLocaleDateString()}</p>
-                  <p>{guest.gender}</p>
-                  <p>{guest.healthIssue}</p>
-                </div>
-              ))}
+          {Array.isArray(reservation.guests) &&
+            reservation.guests.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <h4 className="font-bold">Guest Information</h4>
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {reservation.guests.map((guest: any, index: number) => (
+                  <div key={index} className="mb-2 md:mb-4">
+                    <p>{guest.name}</p>
+                    <p>{new Date(guest.birthday).toLocaleDateString()}</p>
+                    <p>{guest.gender}</p>
+                    <p>{guest.healthIssue}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+          {reservation.proofPayment && (
+            <div>
+              <p className="font-bold mb-2">Proof of Payment</p>
+              <div className="w-full sm:w-1/2 lg:w-1/3 rounded-sm shadow-sm overflow-hidden">
+                <Image
+                  src={reservation.proofPayment}
+                  alt="Proof of Payment"
+                  width={400}
+                  height={400}
+                  className="size-full object-cover"
+                />
+              </div>
             </div>
           )}
 

@@ -35,10 +35,9 @@ export function ReservationAction({
 }) {
   const user = reservation.user
   const accommodation = reservation.accommodation
-  const { status, paymentMethod } = userReservationStatusStore()
+  const { status } = userReservationStatusStore()
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [proofPayment, setProofPayment] = useState<string | null>(reservation.proofPayment)
   const { toast } = useToast()
 
   const handleSave = async () => {
@@ -46,9 +45,6 @@ export function ReservationAction({
     try {
       const result = await updateReservation(reservation.id, {
         status: status || "pending",
-        paymentMethod: paymentMethod,
-        paymentDate: status !== "pending" ? new Date() : null,
-        proofPayment: proofPayment,
       })
 
       if (result.success) {
@@ -106,15 +102,6 @@ export function ReservationAction({
     }
   }
 
-  const handleFieldChange = (
-    field: string,
-    value: string | number | string[] | null
-  ) => {
-    if (field === "proofPayment") {
-      setProofPayment(value as string | null)
-    }
-  }
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -154,12 +141,26 @@ export function ReservationAction({
             </div>
           </div>
 
+          {reservation.proofPayment && (
+            <>
+              <h4 className="font-bold mb-2">
+                {user.firstName} {user.lastName}&apos;s Proof of Payment
+              </h4>
+              <div className="w-full sm:w-1/2 lg:w-1/3 rounded-sm shadow-sm overflow-hidden mb-6">
+                <Image
+                  src={reservation.proofPayment}
+                  alt="Proof of Payment"
+                  width={400}
+                  height={400}
+                  className="size-full object-cover"
+                />
+              </div>
+            </>
+          )}
+
           {/* status */}
           <h4 className="font-bold mb-2">Status</h4>
-          <StatusSelection 
-            reservation={reservation} 
-            onFieldChange={handleFieldChange}
-          />
+          <StatusSelection reservation={reservation} />
         </div>
         <DialogFooter className="flex flex-col gap-2 md:flex-row">
           {/* delete section */}
