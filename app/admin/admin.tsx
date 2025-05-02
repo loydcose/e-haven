@@ -15,6 +15,7 @@ import { Tab } from "./page"
 import { useRouter } from "next/navigation"
 import { AddAccommodation } from "./tables/accommodations/add-accommodation"
 import ReviewsTable from "./tables/reviews"
+import GenerateReport from "./tables/reservations/generate-report"
 
 export type ReservationTable = Reservation & {
   user: User
@@ -100,8 +101,7 @@ export function Admin({ data, defaultTab }: AdminProps) {
             onClick={() => handleTabChange("reviews")}
             className={cn(
               "h-8 rounded-xl px-3 text-xs md:text-sm md:h-9 md:px-4 md:py-2 rounded-tl-none rounded-bl-none rounded-br-none bg-white",
-              activeSection !== "reviews" &&
-                "bg-amber-900 hover:bg-amber-950",
+              activeSection !== "reviews" && "bg-amber-900 hover:bg-amber-950",
               activeSection === "reviews" && "hover:bg-white"
             )}
           >
@@ -127,10 +127,15 @@ export function Admin({ data, defaultTab }: AdminProps) {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={`Search ${activeSection === "users" ? "username" : 
-                activeSection === "accommodations" ? "title" :
-                activeSection === "reservations" ? "booked by" :
-                "user"}`}
+              placeholder={`Search ${
+                activeSection === "users"
+                  ? "username"
+                  : activeSection === "accommodations"
+                    ? "title"
+                    : activeSection === "reservations"
+                      ? "booked by"
+                      : "user"
+              }`}
               className="text-black border-none focus-visible:ring-0 min-w-0 w-full"
             />
           </div>
@@ -149,13 +154,12 @@ export function Admin({ data, defaultTab }: AdminProps) {
             {data.type === "reservations" && (
               <ReservationsTable reservations={data.data} />
             )}
-            {data.type === "reviews" && (
-              <ReviewsTable reviews={data.data} />
-            )}
+            {data.type === "reviews" && <ReviewsTable reviews={data.data} />}
           </div>
         </ScrollArea>
-        {activeSection === "accommodations" && (
-          <AddAccommodation />
+        {activeSection === "accommodations" && <AddAccommodation />}
+        {activeSection === "reservations" && data.type === "reservations" && (
+          <GenerateReport reservations={data.data} />
         )}
       </div>
     </div>
