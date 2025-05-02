@@ -1,7 +1,7 @@
 "use client"
 
 import { Button, buttonVariants } from "@/components/ui/button"
-import { CircleCheckBig, Tag } from "lucide-react"
+import { CircleCheck, CircleCheckBig, Tag } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { AmenitiesSelection } from "./amenities-selection"
@@ -29,7 +29,7 @@ export default function Accommodations({
 
   // Check if all filters are in their default state
   // const isDefaultFilters =
-    // noOfBed === 0 && amenities.length === 0 && !dateRange.from && !dateRange.to
+  // noOfBed === 0 && amenities.length === 0 && !dateRange.from && !dateRange.to
 
   // Reset filters to their default values
   const handleReset = () => {
@@ -46,17 +46,17 @@ export default function Accommodations({
         noOfBed === null
           ? true // Display all accommodations when noOfBed is null
           : noOfBed === 0
-          ? !accom.amenities.some((amenity) => /^(\d+)x bed$/.test(amenity)) // No bed label
-          : accom.amenities.some((amenity) => {
-              const bedMatch = amenity.match(/^(\d+)x bed$/) // Match strings like "2x bed"
-              return bedMatch ? parseInt(bedMatch[1], 10) >= noOfBed : false
-            })
-  
+            ? !accom.amenities.some((amenity) => /^(\d+)x bed$/.test(amenity)) // No bed label
+            : accom.amenities.some((amenity) => {
+                const bedMatch = amenity.match(/^(\d+)x bed$/) // Match strings like "2x bed"
+                return bedMatch ? parseInt(bedMatch[1], 10) >= noOfBed : false
+              })
+
       // Filter by amenities (if amenities array is not empty)
       const matchesAmenities =
         amenities.length === 0 ||
         amenities.every((amenity) => accom.amenities.includes(amenity))
-  
+
       // Filter by date range (if both from and to dates are defined)
       const matchesDateRange =
         !dateRange.from ||
@@ -66,10 +66,10 @@ export default function Accommodations({
             (dateRange.from && reservation.checkOut < dateRange.from) || // Reservation ends before the selected range starts
             (dateRange.to && reservation.checkIn > dateRange.to) // Reservation starts after the selected range ends
         )
-  
+
       return matchesBeds && matchesAmenities && matchesDateRange
     })
-  
+
     setFilteredAccommodations(filtered)
   }, [accommodations, noOfBed, amenities, dateRange])
   return (
@@ -123,6 +123,10 @@ export default function Accommodations({
                       {amenity}
                     </li>
                   ))}
+                  <li className="flex items-center gap-3">
+                    <CircleCheck className="text-green-600" />{" "}
+                    <span>Up to {accom.maxCapacity} PAX</span>
+                  </li>
                 </ul>
                 <div className="flex items-center gap-2 mb-2">
                   <Tag />

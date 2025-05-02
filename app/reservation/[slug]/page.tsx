@@ -88,12 +88,16 @@ export default async function page({
                       <span>{amenity}</span>
                     </li>
                   ))}
+                  <li className="flex items-center gap-3">
+                    <CircleCheck className="text-green-600" />{" "}
+                    <span>Up to {accommodation.maxCapacity} PAX</span>
+                  </li>
                 </ul>
               </div>
 
-              <CustomerInformation user={user}/>
+              <CustomerInformation user={user} />
 
-              <GuestInformation />
+              <GuestInformation maxCapacity={accommodation.maxCapacity} />
 
               <div>
                 <div className="mb-4 w-fit mx-auto">

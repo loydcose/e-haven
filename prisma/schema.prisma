@@ -37,6 +37,7 @@ model Accommodation {
   price       Float
   amenities   String[]
   virtualPath String
+  maxCapacity Int
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt

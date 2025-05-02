@@ -7,18 +7,25 @@ import { useReservationStore } from "@/stores/reservation"
 import { GenderSelection } from "./gender-selection"
 import { HealthSelection } from "./health-selection"
 
-export default function GuestInformation() {
-  const {
-    guests,
-    addGuest,
-    removeGuest,
-    updateGuest,
-  } = useReservationStore()
+export default function GuestInformation({
+  maxCapacity,
+}: {
+  maxCapacity: number
+}) {
+  const { guests, addGuest, removeGuest, updateGuest } = useReservationStore()
 
   const generateId = () =>
     `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
+  // customer is belong
+  const paxLength = guests.length + 1
+
   const handleAddGuest = () => {
+    if (paxLength >= maxCapacity) {
+      alert(`Maximum capacity of ${maxCapacity} guests reached.`)
+      return
+    }
+
     addGuest({
       id: generateId(),
       name: "",
@@ -99,13 +106,13 @@ export default function GuestInformation() {
                 }
                 max={new Date().toISOString().split("T")[0]} // Disable future dates
                 onChange={(e) => {
-                  const selectedDate = new Date(e.target.value);
-                  const today = new Date();
+                  const selectedDate = new Date(e.target.value)
+                  const today = new Date()
                   if (selectedDate > today) {
-                    alert("Future dates are not allowed for the birthday.");
-                    return;
+                    alert("Future dates are not allowed for the birthday.")
+                    return
                   }
-                  handleGuestChange(index, "birthday", e.target.value);
+                  handleGuestChange(index, "birthday", e.target.value)
                 }}
               />
             </div>
@@ -133,8 +140,12 @@ export default function GuestInformation() {
         className="flex items-center gap-2 w-fit mx-auto bg-amber-400 hover:bg-amber-500 text-black"
         size={"lg"}
         onClick={handleAddGuest}
+        disabled={paxLength >= maxCapacity} // Disable button if max capacity is reached
       >
-        Add more <CirclePlus className="text-white/75" />
+        {paxLength >= maxCapacity
+          ? `Maximum capacity of ${maxCapacity} guests reached`
+          : "Add Guest"}
+        <CirclePlus className="text-white/75" />
       </Button>
     </>
   )
