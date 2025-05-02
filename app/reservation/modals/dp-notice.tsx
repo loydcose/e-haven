@@ -28,7 +28,23 @@ export function DPNotice({
 
   const daysReserved = getDaysReserved(checkIn, checkOut)
   const accommodationPriceTotal = daysReserved * accommodationPrice
-  const paxPriceTotal = guests.length * 100
+
+  const kidsCount = useMemo(
+    () =>
+      guests.filter((guest) => {
+        if (!guest.birthday) return false
+        const age = new Date().getFullYear() - guest.birthday.getFullYear()
+        return age <= 12 // Kids are 12 years old or below
+      }).length,
+    [guests]
+  )
+
+  const adultsCount = guests.length - kidsCount
+
+  const kidsPriceTotal = kidsCount * 50
+  const adultsPriceTotal = adultsCount * 100
+  const paxPriceTotal = kidsPriceTotal + adultsPriceTotal
+
   const totalAmount = accommodationPriceTotal + paxPriceTotal
 
   useEffect(() => {
@@ -40,9 +56,14 @@ export function DPNotice({
     [accommodationPriceTotal]
   )
 
-  const formattedPaxPriceTotal = useMemo(
-    () => new Intl.NumberFormat("en-US").format(paxPriceTotal),
-    [paxPriceTotal]
+  const formattedKidsPriceTotal = useMemo(
+    () => new Intl.NumberFormat("en-US").format(kidsPriceTotal),
+    [kidsPriceTotal]
+  )
+
+  const formattedAdultsPriceTotal = useMemo(
+    () => new Intl.NumberFormat("en-US").format(adultsPriceTotal),
+    [adultsPriceTotal]
   )
 
   const formattedTotalAmount = useMemo(
@@ -80,10 +101,18 @@ export function DPNotice({
             </div>
             <div className="grid grid-cols-2 text-sm">
               <p className="text-gray-600 border p-2">
-                Included PAX x{guests.length}
+                Included PAX (Adults) x{adultsCount}
               </p>
               <p className="font-bold border p-2">
-                PHP {formattedPaxPriceTotal}
+                PHP {formattedAdultsPriceTotal}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 text-sm">
+              <p className="text-gray-600 border p-2">
+                Included PAX (Kids) x{kidsCount}
+              </p>
+              <p className="font-bold border p-2">
+                PHP {formattedKidsPriceTotal}
               </p>
             </div>
           </div>
