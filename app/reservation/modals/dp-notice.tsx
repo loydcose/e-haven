@@ -11,12 +11,50 @@ import {
 import type { Modal } from "../submit-btn"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { useReservationStore } from "@/stores/reservation"
+import { getDaysReserved } from "@/lib/utils"
+import { useEffect, useMemo } from "react"
 
 export function DPNotice({
   setShowModal,
+  accommodationPrice,
+  setTotalAmount,
 }: {
   setShowModal: React.Dispatch<React.SetStateAction<Modal | null>>
+  accommodationPrice: number
+  setTotalAmount: React.Dispatch<React.SetStateAction<number>>
 }) {
+  const { checkIn, checkOut, guests } = useReservationStore()
+
+  const daysReserved = getDaysReserved(checkIn, checkOut)
+  const accommodationPriceTotal = daysReserved * accommodationPrice
+  const paxPriceTotal = guests.length * 100
+  const totalAmount = accommodationPriceTotal + paxPriceTotal
+
+  useEffect(() => {
+    setTotalAmount(totalAmount)
+  }, [totalAmount])
+
+  const formattedAccommodationPriceTotal = useMemo(
+    () => new Intl.NumberFormat("en-US").format(accommodationPriceTotal),
+    [accommodationPriceTotal]
+  )
+
+  const formattedPaxPriceTotal = useMemo(
+    () => new Intl.NumberFormat("en-US").format(paxPriceTotal),
+    [paxPriceTotal]
+  )
+
+  const formattedTotalAmount = useMemo(
+    () => new Intl.NumberFormat("en-US").format(totalAmount),
+    [totalAmount]
+  )
+
+  const formattedDownPayment = useMemo(
+    () => new Intl.NumberFormat("en-US").format(totalAmount / 2),
+    [totalAmount]
+  )
+
   return (
     <AlertDialog defaultOpen onOpenChange={(v) => !v && setShowModal(null)}>
       <AlertDialogContent>
@@ -32,24 +70,28 @@ export function DPNotice({
             Total Amount To Be Paid
           </h4>
           <div className="w-fit mx-auto">
-            <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
-              <p className="text-gray-600">Cozy hut Cottage x1</p>
-              <p className="font-bold">PHP 1,000</p>
+            <div className="grid grid-cols-2 text-sm">
+              <p className="text-gray-600 border p-2">
+                Cozy hut Cottage x{daysReserved}(day/s)
+              </p>
+              <p className="font-bold border p-2">
+                PHP {formattedAccommodationPriceTotal}
+              </p>
             </div>
-            <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
-              <p className="text-gray-600">Included PAX (Adult) x5</p>
-              <p className="font-bold">PHP 500</p>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mb-6 text-sm">
-              <p className="text-gray-600">Included PAX (Kids) x5</p>
-              <p className="font-bold">PHP 350</p>
+            <div className="grid grid-cols-2 text-sm">
+              <p className="text-gray-600 border p-2">
+                Included PAX x{guests.length}
+              </p>
+              <p className="font-bold border p-2">
+                PHP {formattedPaxPriceTotal}
+              </p>
             </div>
           </div>
 
-          <p className="text-center mb-6">Total: PHP 1,850</p>
+          <p className="text-center mb-6">Total: PHP {formattedTotalAmount}</p>
 
           <p className="text-center mb-10 text-lg md:text-xl font-bold">
-            Total Down Payment (50%): PHP 925
+            Total Down Payment (50%): PHP {formattedDownPayment}
           </p>
 
           <div>

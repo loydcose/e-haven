@@ -47,3 +47,22 @@ export const healthIssues = [
   { label: "Tuberculosis", value: "tuberculosis" },
   { label: "Asthma", value: "asthma" },
 ]
+
+export const getDaysReserved = (
+  checkIn: Date | null,
+  checkOut: Date | null
+) => {
+  if (!checkIn || !checkOut) {
+    return 0
+  }
+
+  const checkInDate = new Date(checkIn)
+  const checkOutDate = new Date(checkOut)
+
+  // Calculate the number of days reserved, ensuring inclusive calculation
+  const timeDifference = checkOutDate.getTime() - checkInDate.getTime()
+  const daysReserved = Math.floor(timeDifference / (1000 * 3600 * 24)) + 1
+
+  // Ensure at least one day is charged
+  return daysReserved < 1 ? 1 : daysReserved
+}

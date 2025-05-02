@@ -6,12 +6,21 @@ import {
 } from "@/components/ui/alert-dialog"
 import type { Modal } from "../submit-btn"
 import { CheckCircle2 } from "lucide-react"
+import { useEffect } from "react"
 
 export function ReservationDone({
   setShowModal,
 }: {
   setShowModal: React.Dispatch<React.SetStateAction<Modal | null>>
 }) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.href = "/my-reservations"
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <AlertDialog defaultOpen onOpenChange={(v) => !v && setShowModal(null)}>
       <AlertDialogContent>

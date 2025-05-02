@@ -22,6 +22,7 @@ export default function SubmitButton({
   const store = useReservationStore()
   const { toast } = useToast()
   const [showModal, setShowModal] = useState<Modal | null>(null)
+  const [totalAmount, setTotalAmount] = useState<number>(0)
 
   // Move store filtering outside of handleClick
   const filteredStore = Object.fromEntries(
@@ -53,18 +54,25 @@ export default function SubmitButton({
       {showModal === "confirmation" && (
         <Confirmation setShowModal={setShowModal} />
       )}
-      {showModal === "dpNotice" && <DPNotice setShowModal={setShowModal} />}
-      {showModal === "payment" && <Payment setShowModal={setShowModal} />}
+      {showModal === "dpNotice" && (
+        <DPNotice
+          setShowModal={setShowModal}
+          accommodationPrice={accommodation.price}
+          setTotalAmount={setTotalAmount}
+        />
+      )}
+      {showModal === "payment" && (
+        <Payment
+          setShowModal={setShowModal}
+          totalAmount={totalAmount}
+          reservationData={filteredStore}
+        />
+      )}
 
       {showModal === "reservationDone" && (
         <ReservationDone setShowModal={setShowModal} />
       )}
 
-      {/* <Confirmation
-        confirmationOpen={confirmationOpen}
-        reservationData={filteredStore}
-        accommodationPrice={accommodation.price}
-      /> */}
       <Button
         type="button"
         size={"lg"}

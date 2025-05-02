@@ -10,6 +10,7 @@ import {
 import { CircleCheckBig } from "lucide-react"
 import { addReservation } from "@/app/actions"
 import { useToast } from "@/hooks/use-toast"
+import { getDaysReserved } from "@/lib/utils"
 
 export function Confirmation({
   confirmationOpen,
@@ -24,21 +25,15 @@ export function Confirmation({
   const { toast } = useToast()
 
   const handleConfirm = async () => {
-    
-    const checkInDate = new Date(reservationData.checkIn);
-    const checkOutDate = new Date(reservationData.checkOut);
+    const daysReserved = getDaysReserved(
+      reservationData.checkIn,
+      reservationData.checkOut
+    )
 
-    // Calculate the number of days reserved, ensuring inclusive calculation
-    const timeDifference = checkOutDate.getTime() - checkInDate.getTime();
-    let daysReserved = Math.floor(timeDifference / (1000 * 3600 * 24)) + 1;
-
-    // Ensure at least one day is charged
-    daysReserved = daysReserved < 1 ? 1 : daysReserved;
-
-    reservationData.totalPrice = accommodationPrice * daysReserved;
+    reservationData.totalPrice = accommodationPrice * daysReserved
 
     // for guests/pax, 100php each
-    reservationData.totalPrice += reservationData.guests.length * 100;
+    reservationData.totalPrice += reservationData.guests.length * 100
 
     try {
       const response = await addReservation(reservationData)
@@ -70,16 +65,15 @@ export function Confirmation({
         <AlertDialogHeader>
           <AlertDialogTitle>Confirm Reservation</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to proceed with this reservation? This will add the reservation to your account.
+            Are you sure you want to proceed with this reservation? This will
+            add the reservation to your account.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex">
           <CircleCheckBig className="text-green-600 m-auto" size={90} />
         </div>
         <AlertDialogFooter>
-          <AlertDialogAction onClick={handleConfirm}>
-            Confirm
-          </AlertDialogAction>
+          <AlertDialogAction onClick={handleConfirm}>Confirm</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
