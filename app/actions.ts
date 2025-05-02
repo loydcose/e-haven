@@ -211,6 +211,51 @@ export async function getAccommodationsWithReservation() {
   })
 }
 
+async function uploadFileToUploadThing(
+  base64Data: string,
+  prefix: string
+): Promise<
+  { success: true; url: string } | { success: false; message: string }
+> {
+  console.log({ base64Data })
+  try {
+    // Extract the MIME type from the base64 string
+    const mimeTypeMatch = base64Data.match(/data:(image\/[a-zA-Z]+);base64,/)
+    if (!mimeTypeMatch) {
+      return { success: false, message: "Invalid image format." }
+    }
+
+    const mimeType = mimeTypeMatch[1] // e.g., "image/png", "image/jpeg"
+    const fileExtension = mimeType.split("/")[1] // e.g., "png", "jpeg"
+
+    const base64Image = base64Data.split(",")[1]
+    const buffer = Buffer.from(base64Image, "base64")
+
+    // Generate a unique name and custom ID based on the file type
+    const timestamp = Date.now()
+    const name = `${prefix}-${timestamp}.${fileExtension}`
+    const customId = `custom-${timestamp}`
+
+    const file = new UTFile([buffer], name, {
+      customId,
+    })
+
+    const uploadResponse = await utapi.uploadFiles([file])
+
+    if (uploadResponse[0].error || !uploadResponse[0].data?.ufsUrl) {
+      return { success: false, message: "File upload failed." }
+    }
+
+    return { success: true, url: uploadResponse[0].data.ufsUrl }
+  } catch (error) {
+    console.error("Error uploading file:", error)
+    return {
+      success: false,
+      message: "Failed to upload the file. Please try again.",
+    }
+  }
+}
+
 // get single accommodation base on slug
 export async function getAccommodation(slug: string) {
   return await db.accommodation.findUnique({ where: { slug } })
@@ -297,9 +342,10 @@ export async function addReservation(reservationData: {
     healthIssue: HealthLabel
   }[]
   totalPrice: number
+  paymentMethod: string
+  paymentDate: Date
+  proofPayment: string
 }) {
-  console.log(reservationData)
-
   // Validate the input data
   const result = reservationSchema.safeParse(reservationData)
   if (!result.success) {
@@ -324,6 +370,17 @@ export async function addReservation(reservationData: {
   try {
     // Add the reservation to the database
     console.log(reservationData)
+
+    // upload proof payment first to uploadthing
+    const uploadResult = await uploadFileToUploadThing(
+      reservationData.proofPayment,
+      "proof-payment"
+    )
+    if (!uploadResult.success) {
+      return uploadResult
+    }
+    reservationData.proofPayment = uploadResult.url
+
     await db.reservation.create({
       data: reservationData,
     })
@@ -562,50 +619,6 @@ async function deleteFileFromUploadThing(
   } catch (error) {
     console.error("Error deleting file:", error)
     return { success: false, message: "Failed to delete the file" }
-  }
-}
-
-async function uploadFileToUploadThing(
-  base64Data: string,
-  prefix: string
-): Promise<
-  { success: true; url: string } | { success: false; message: string }
-> {
-  try {
-    // Extract the MIME type from the base64 string
-    const mimeTypeMatch = base64Data.match(/data:(image\/[a-zA-Z]+);base64,/)
-    if (!mimeTypeMatch) {
-      return { success: false, message: "Invalid image format." }
-    }
-
-    const mimeType = mimeTypeMatch[1] // e.g., "image/png", "image/jpeg"
-    const fileExtension = mimeType.split("/")[1] // e.g., "png", "jpeg"
-
-    const base64Image = base64Data.split(",")[1]
-    const buffer = Buffer.from(base64Image, "base64")
-
-    // Generate a unique name and custom ID based on the file type
-    const timestamp = Date.now()
-    const name = `${prefix}-${timestamp}.${fileExtension}`
-    const customId = `custom-${timestamp}`
-
-    const file = new UTFile([buffer], name, {
-      customId,
-    })
-
-    const uploadResponse = await utapi.uploadFiles([file])
-
-    if (uploadResponse[0].error || !uploadResponse[0].data?.ufsUrl) {
-      return { success: false, message: "File upload failed." }
-    }
-
-    return { success: true, url: uploadResponse[0].data.ufsUrl }
-  } catch (error) {
-    console.error("Error uploading file:", error)
-    return {
-      success: false,
-      message: "Failed to upload the file. Please try again.",
-    }
   }
 }
 

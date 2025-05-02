@@ -42,18 +42,34 @@ export function Payment({
     setProofOfPayment(file)
   }
 
+  const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = () => reject(new Error("Failed to read file"))
+      reader.readAsDataURL(file)
+    })
+  }
+
   const handleDone = async () => {
     if (!proofOfPayment) {
       setError("Please upload a proof of payment before proceeding.")
       return
     }
     setError("")
-
     setIsLoading(true)
 
-    // add reservation to database
     try {
+      // Convert file to base64
+      const proofOfPaymentBase64 = await readFileAsDataURL(proofOfPayment)
+
+      // Update reservation data
       reservationData.totalPrice = totalAmount
+      reservationData.paymentMethod = "G-Cash"
+      reservationData.paymentDate = new Date()
+      reservationData.proofPayment = proofOfPaymentBase64
+
+      // Add reservation
       const response = await addReservation(reservationData)
       if (response.success) {
         setShowModal("reservationDone")
@@ -64,7 +80,6 @@ export function Payment({
           description: response.message,
           variant: "destructive",
         })
-        setIsLoading(false)
       }
     } catch {
       toast({
@@ -72,6 +87,7 @@ export function Payment({
         description: "Something went wrong. Please try again.",
         variant: "destructive",
       })
+    } finally {
       setIsLoading(false)
     }
   }
@@ -124,7 +140,11 @@ export function Payment({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button type="button" onClick={handleDone} disabled={isLoading}>
+          <Button
+            type="button"
+            onClick={handleDone}
+            disabled={isLoading || !proofOfPayment}
+          >
             {isLoading ? <Spinner /> : "Done"}
           </Button>
         </AlertDialogFooter>
