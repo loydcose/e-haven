@@ -8,8 +8,6 @@ import { DownPaymentNotice } from "./downpayment-notice"
 import { Confirmation } from "./confirmation"
 import { useState } from "react"
 
-// TODO: TOBE CONTINUED - adding reservation to database
-
 export default function SubmitButton({
   accommodation,
   userId,
@@ -33,8 +31,6 @@ export default function SubmitButton({
   // Add accommodation and user data
   filteredStore.accommodationId = accommodation.id
   filteredStore.userId = userId
-  // @ts-expect-error filtered store has no type
-  filteredStore.totalPrice = filteredStore.totalPrice + accommodation.price
 
   const handleClick = async () => {
     if (!store.hasCheckAgreement) {
@@ -59,6 +55,7 @@ export default function SubmitButton({
       <Confirmation
         confirmationOpen={confirmationOpen}
         reservationData={filteredStore}
+        accommodationPrice={accommodation.price}
       />
       <Button
         type="button"

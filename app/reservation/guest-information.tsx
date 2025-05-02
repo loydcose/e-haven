@@ -13,8 +13,6 @@ export default function GuestInformation() {
     addGuest,
     removeGuest,
     updateGuest,
-    setTotalPrice,
-    totalPrice,
   } = useReservationStore()
 
   const generateId = () =>
@@ -28,12 +26,10 @@ export default function GuestInformation() {
       gender: null,
       healthIssue: null,
     })
-    setTotalPrice(totalPrice + 100) // Increment total price by 100
   }
 
   const handleRemoveGuest = (index: number) => {
     removeGuest(index)
-    setTotalPrice(totalPrice - 100) // Decrement total price by 100
   }
 
   const handleGuestChange = (
