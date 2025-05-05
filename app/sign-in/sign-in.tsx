@@ -132,7 +132,7 @@ export default function SignIn({ modal }: { modal: string | null | string[] }) {
         className="mb-8 w-full font-bold text-lg h-12"
         disabled={loading} // Disable button while loading
       >
-        {loading ? <Spinner /> : "Login account"}
+        {loading ? <Spinner /> : "Login"}
       </Button>
     </form>
   )
