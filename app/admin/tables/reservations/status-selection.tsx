@@ -52,7 +52,7 @@ export default function StatusSelection({
             selectedStatus === "paid" && "ring-2 ring-gray-500 ring-offset-2"
           )}
         >
-          Paid
+          Fully Paid
         </Button>
       </div>
     </>
