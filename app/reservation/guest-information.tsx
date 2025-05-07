@@ -55,7 +55,7 @@ export default function GuestInformation({
     <>
       <div>
         <h2 className="mb-4 md:mb-6 font-bold text-xl md:text-2xl text-center">
-          Guest Information
+          Add Guest Information
         </h2>
 
         {guests.map((guest, index) => (
